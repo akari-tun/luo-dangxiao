@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="luo.dangxiao.selfservice.app/luo.dangxiao.selfservice.app.csproj" />
+  <Project Path="luo.dangxiao.selfservice/luo.dangxiao.selfservice.csproj" />
+</Solution>
