@@ -1,0 +1,6 @@
+// Placeholder for custom styles
+// Add your Avalonia styles here
+// Example:
+// <Style Selector="Button.primary">
+//     <Setter Property="Background" Value="#007ACC"/>
+// </Style>

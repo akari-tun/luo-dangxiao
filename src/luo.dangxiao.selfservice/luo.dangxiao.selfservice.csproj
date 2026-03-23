@@ -12,6 +12,15 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.1" />
   </ItemGroup>
 
+  <!-- Project references -->
+  <ItemGroup>
+    <ProjectReference Include="..\luo.dangxiao.common\luo.dangxiao.common.csproj" />
+    <ProjectReference Include="..\luo.dangxiao.interfaces\luo.dangxiao.interfaces.csproj" />
+    <ProjectReference Include="..\luo.dangxiao.controls\luo.dangxiao.controls.csproj" />
+    <ProjectReference Include="..\luo.dangxiao.models\luo.dangxiao.models.csproj" />
+    <ProjectReference Include="..\luo.dangxiao.resources\luo.dangxiao.resources.csproj" />
+  </ItemGroup>
+
   <ItemGroup>
     <Compile Update="App.axaml.cs">
       <SubType>Code</SubType>

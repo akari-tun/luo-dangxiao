@@ -4,6 +4,8 @@
   <Project Path="luo.dangxiao.common/luo.dangxiao.common.csproj" Id="ef11316f-a05f-4a26-b3ad-1e792f59b19c" />
   <Project Path="luo.dangxiao.controls/luo.dangxiao.controls.csproj" Id="9d85b323-8fdd-47cd-8f4f-f43e6159244e" />
   <Project Path="luo.dangxiao.interfaces/luo.dangxiao.interfaces.csproj" Id="0ac2dd7f-9c87-4aad-b0c6-2c6edfb32292" />
+  <Project Path="luo.dangxiao.models/luo.dangxiao.models.csproj" />
+  <Project Path="luo.dangxiao.resources/luo.dangxiao.resources.csproj" />
   <Project Path="luo.dangxiao.selfservice.app/luo.dangxiao.selfservice.app.csproj" />
   <Project Path="luo.dangxiao.selfservice/luo.dangxiao.selfservice.csproj" />
 </Solution>

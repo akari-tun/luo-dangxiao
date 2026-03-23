@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.3.12" />
+  </ItemGroup>
+
+  <!-- Resource files configuration -->
+  <ItemGroup>
+    <EmbeddedResource Update="Languages\*.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>%(Filename).Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Compile Update="Languages\*.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>%(Filename).resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <!-- Images as content -->
+  <ItemGroup>
+    <None Update="Images\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <!-- Styles as content -->
+  <ItemGroup>
+    <None Update="Styles\*.axaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
