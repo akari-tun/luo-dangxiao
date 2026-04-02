@@ -1,0 +1,23 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Button Styles using Color Resources -->
+    <Style Selector="Button">
+
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Background" Value="{DynamicResource ButtonDefaultBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextButtonBrush}"/>
+        <Setter Property="FontFamily" Value="SimHei"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+
+        <Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource ButtonHoverBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextButtonBrush}"/>
+        </Style>
+
+        <Style Selector="^:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource ButtonPressedBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextButtonBrush}"/>
+        </Style>
+    </Style>
+</Styles>

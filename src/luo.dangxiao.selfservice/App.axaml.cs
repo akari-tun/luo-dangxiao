@@ -1,10 +1,12 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using luo.dangxiao.selfservice.ViewModels;
 using luo.dangxiao.selfservice.Views;
+using Microsoft.Extensions.DependencyInjection;
+using System.ComponentModel.Design;
 using System.Linq;
 
 namespace luo.dangxiao.selfservice
@@ -14,6 +16,12 @@ namespace luo.dangxiao.selfservice
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
+
+            IServiceCollection serviceCollection = new ServiceCollection()
+                .AddSingleton<MainWindowViewModel>()
+                .AddSingleton<HomePageViewModel>();
+
+            Ioc.Default.ConfigureServices(serviceCollection.BuildServiceProvider());
         }
 
         public override void OnFrameworkInitializationCompleted()

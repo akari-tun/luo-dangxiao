@@ -1,19 +1,25 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:luo.dangxiao.selfservice.ViewModels"
+        xmlns:v="using:luo.dangxiao.selfservice.Views"
+        xmlns:lang="clr-namespace:luo.dangxiao.resources.Languages;assembly=luo.dangxiao.resources"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="1024"
         x:Class="luo.dangxiao.selfservice.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Title="luo.dangxiao.selfservice">
+        WindowState="Maximized"
+        Title="{x:Static lang:LanguageProvider.App_Title}"
+        Width="1280" Height="1024">
 
     <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <Grid>
+        <Image Source="avares://luo.dangxiao.resources/Images/background.png" 
+               Stretch="UniformToFill"/>
+		<v:HomePageView/>
+    </Grid>
 
 </Window>

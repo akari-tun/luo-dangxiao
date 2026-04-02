@@ -1,0 +1,120 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <!-- Primary Colors - Red Theme -->
+    <Color x:Key="PrimaryRedColor">#C42828</Color>
+    <Color x:Key="PrimaryRedDarkColor">#d9230b</Color>
+    <Color x:Key="PrimaryRedLightColor">#ac0600</Color>
+    
+    <!-- Secondary Colors - Golden/Yellow -->
+    <Color x:Key="SecondaryGoldColor">#e6b84d</Color>
+    <Color x:Key="SecondaryGoldLightColor">#ffe3a3</Color>
+    <Color x:Key="SecondaryGoldDarkColor">#ffe748</Color>
+    <Color x:Key="SecondaryYellowColor">#ffde00</Color>
+    <Color x:Key="SecondaryCreamColor">#ffeec4</Color>
+    
+    <!-- Background Colors -->
+    <Color x:Key="BackgroundCreamColor">#faf9f3</Color>
+    <Color x:Key="BackgroundLightColor">#f9f0f0</Color>
+    <Color x:Key="BackgroundRoseColor">#d4afaf</Color>
+    <Color x:Key="BackgroundWhiteColor">#ffffff</Color>
+    <Color x:Key="BackgroundDarkColor">#1a1919</Color>
+    
+    <!-- Text Colors -->
+    <Color x:Key="TextPrimaryColor">#1a1919</Color>
+    <Color x:Key="TextSecondaryColor">#70706d</Color>
+    <Color x:Key="TextMutedColor">#c7c6bf</Color>
+    <Color x:Key="TextWhiteColor">#ffffff</Color>
+    <Color x:Key="TextButtonColor">#ac0600</Color>
+    
+    <!-- Accent Colors -->
+    <Color x:Key="AccentOrangeColor">#ff6000</Color>
+    <Color x:Key="AccentBlueColor">#00345e</Color>
+    <Color x:Key="AccentBlueLightColor">#e3f2fd</Color>
+    
+    <!-- Status Colors -->
+    <Color x:Key="SuccessColor">#4CAF50</Color>
+    <Color x:Key="WarningColor">#ff6000</Color>
+    <Color x:Key="ErrorColor">#d9230b</Color>
+    <Color x:Key="InfoColor">#00345e</Color>
+    
+    <!-- Border Colors -->
+    <Color x:Key="BorderLightColor">#e0e0e0</Color>
+    <Color x:Key="BorderMediumColor">#c7c6bf</Color>
+    <Color x:Key="BorderDarkColor">#350200</Color>
+    <Color x:Key="BorderGoldColor">#e6b84d</Color>
+    
+    <!-- Button Colors -->
+    <Color x:Key="ButtonDefaultStartColor">#f9f0f0</Color>
+    <Color x:Key="ButtonDefaultEndColor">#d4afaf</Color>
+    <Color x:Key="ButtonHoverStartColor">#e6b84d</Color>
+    <Color x:Key="ButtonHoverEndColor">#d4afaf</Color>
+    <Color x:Key="ButtonPressedStartColor">#ffe748</Color>
+    <Color x:Key="ButtonPressedEndColor">#ffde00</Color>
+    <Color x:Key="ButtonDisabledBackgroundColor">#e0e0e0</Color>
+    <Color x:Key="ButtonDisabledTextColor">#a0a0a0</Color>
+    
+    <!-- Input Colors -->
+    <Color x:Key="InputBorderColor">#c7c6bf</Color>
+    <Color x:Key="InputBorderFocusColor">#d9230b</Color>
+    <Color x:Key="InputPlaceholderColor">#c7c6bf</Color>
+    <Color x:Key="InputBackgroundColor">#ffffff</Color>
+    
+    <!-- Card Colors -->
+    <Color x:Key="CardBackgroundColor">#ffffff</Color>
+    <Color x:Key="CardBorderColor">#e0e0e0</Color>
+    <Color x:Key="CardShadowColor">#350200</Color>
+    
+    <!-- Header Colors -->
+    <Color x:Key="HeaderBackgroundStartColor">#f9f0f0</Color>
+    <Color x:Key="HeaderBackgroundEndColor">#d4afaf</Color>
+    <Color x:Key="HeaderTitleColor">#ffffff</Color>
+    <Color x:Key="HeaderSubtitleColor">#ffffff</Color>
+    
+    <!-- Countdown Color -->
+    <Color x:Key="CountdownColor">#ff6000</Color>
+    
+    <!-- Gradient Brushes -->
+    <LinearGradientBrush x:Key="HeaderBackgroundBrush" StartPoint="0%,0%" EndPoint="0%,100%">
+        <GradientStop Offset="0" Color="{StaticResource HeaderBackgroundStartColor}"/>
+        <GradientStop Offset="1" Color="{StaticResource HeaderBackgroundEndColor}"/>
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="ButtonDefaultBrush" StartPoint="0%,0%" EndPoint="0%,100%">
+        <GradientStop Offset="0" Color="{StaticResource ButtonDefaultStartColor}"/>
+        <GradientStop Offset="1" Color="{StaticResource ButtonDefaultEndColor}"/>
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="ButtonHoverBrush" StartPoint="0%,0%" EndPoint="0%,100%">
+        <GradientStop Offset="0" Color="{StaticResource ButtonHoverStartColor}"/>
+        <GradientStop Offset="1" Color="{StaticResource ButtonHoverEndColor}"/>
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="ButtonPressedBrush" StartPoint="0%,0%" EndPoint="0%,100%">
+        <GradientStop Offset="0" Color="{StaticResource ButtonPressedStartColor}"/>
+        <GradientStop Offset="1" Color="{StaticResource ButtonPressedEndColor}"/>
+    </LinearGradientBrush>
+    
+    <!-- Solid Color Brushes -->
+    <SolidColorBrush x:Key="PrimaryRedBrush" Color="{StaticResource PrimaryRedColor}"/>
+    <SolidColorBrush x:Key="PrimaryRedDarkBrush" Color="{StaticResource PrimaryRedDarkColor}"/>
+    <SolidColorBrush x:Key="PrimaryRedLightBrush" Color="{StaticResource PrimaryRedLightColor}"/>
+    <SolidColorBrush x:Key="SecondaryGoldBrush" Color="{StaticResource SecondaryGoldColor}"/>
+    <SolidColorBrush x:Key="SecondaryGoldLightBrush" Color="{StaticResource SecondaryGoldLightColor}"/>
+    <SolidColorBrush x:Key="BackgroundCreamBrush" Color="{StaticResource BackgroundCreamColor}"/>
+    <SolidColorBrush x:Key="BackgroundWhiteBrush" Color="{StaticResource BackgroundWhiteColor}"/>
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource TextPrimaryColor}"/>
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource TextSecondaryColor}"/>
+    <SolidColorBrush x:Key="TextMutedBrush" Color="{StaticResource TextMutedColor}"/>
+    <SolidColorBrush x:Key="TextWhiteBrush" Color="{StaticResource TextWhiteColor}"/>
+    <SolidColorBrush x:Key="TextButtonBrush" Color="{StaticResource TextButtonColor}"/>
+    <SolidColorBrush x:Key="AccentOrangeBrush" Color="{StaticResource AccentOrangeColor}"/>
+    <SolidColorBrush x:Key="AccentBlueBrush" Color="{StaticResource AccentBlueColor}"/>
+    <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource SuccessColor}"/>
+    <SolidColorBrush x:Key="WarningBrush" Color="{StaticResource WarningColor}"/>
+    <SolidColorBrush x:Key="ErrorBrush" Color="{StaticResource ErrorColor}"/>
+    <SolidColorBrush x:Key="BorderLightBrush" Color="{StaticResource BorderLightColor}"/>
+    <SolidColorBrush x:Key="BorderMediumBrush" Color="{StaticResource BorderMediumColor}"/>
+    <SolidColorBrush x:Key="CountdownBrush" Color="{StaticResource CountdownColor}"/>
+    
+</ResourceDictionary>

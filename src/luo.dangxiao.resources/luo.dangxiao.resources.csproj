@@ -23,18 +23,22 @@
     </Compile>
   </ItemGroup>
 
-  <!-- Images as content -->
+  <!-- Images as Avalonia resources -->
   <ItemGroup>
-    <None Update="Images\**\*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <AvaloniaResource Include="Images\**\*" />
   </ItemGroup>
 
-  <!-- Styles as content -->
+  <!-- Styles as Avalonia resources -->
   <ItemGroup>
-    <None Update="Styles\*.axaml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <AvaloniaResource Include="Styles\*.axaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AvaloniaXaml Remove="Styles\ButtonStyles.axaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Languages\Language.Designer.cs">
+      <DependentUpon>Language.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>

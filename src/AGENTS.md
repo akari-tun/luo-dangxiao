@@ -130,19 +130,20 @@ namespace luo.dangxiao.interfaces.Controls;
 | Type | Pattern | Example |
 |------|---------|---------|
 | Class | PascalCase | `MainWindowViewModel.cs` |
-| View (AXAML) | PascalCase.axaml | `MainWindow.axaml` |
-| View Code-behind | PascalCase.axaml.cs | `MainWindow.axaml.cs` |
+| View (AXAML) | {Name}View.axaml | `HomePageView.axaml` |
+| View Code-behind | {Name}View.axaml.cs | `HomePageView.axaml.cs` |
 | Utility | PascalCase | `DoubleUtil.cs` |
 | Interface | IPascalCase | `IMainWindowViewModel.cs` |
 | Enum | PascalCase | `ApplicationState.cs` |
 | Converter | PascalCaseConverter | `BoolToVisibilityConverter.cs` |
+| Colors | Colors.axaml | `Colors.axaml` (in `Styles/` folder) |
 
 ### 4.4 Class Naming
 
 | Type | Pattern | Example |
 |------|---------|---------|
 | ViewModel | {Name}ViewModel | `MainWindowViewModel` |
-| View | {Name} | `MainWindow` (Window/UserControl) |
+| View | {Name}View | `HomePageView` (Window/UserControl) |
 | Base Class | {Name}Base | `ViewModelBase` |
 | Utility | {Name}Util | `DoubleUtil`, `EnumUtility` |
 | Interface | I{Name} | `IMainWindowViewModel` |
@@ -700,6 +701,22 @@ Before declaring code complete, verify:
 2. Add translations to `Languages/Language.zh-Hans.resx` (Simplified Chinese)
 3. Follow naming: `Category_Descriptor` (e.g., `Button_OK`)
 4. Reference in code via `luo.dangxiao.resources.Languages`
+
+### Adding Color Resources
+
+1. Create `Styles/Colors.axaml` in `luo.dangxiao.resources`
+2. Define all color resources as `Color` elements with `x:Key`
+3. Create corresponding `SolidColorBrush` and `LinearGradientBrush` resources
+4. Reference in XAML via `{StaticResource ResourceKey}`
+5. Include in App.axaml: `<StyleInclude Source="avares://luo.dangxiao.resources/Styles/Colors.axaml"/>`
+
+**Color Naming Convention:**
+- Primary colors: `Primary{Name}Color` (e.g., `PrimaryRedColor`)
+- Secondary colors: `Secondary{Name}Color` (e.g., `SecondaryGoldColor`)
+- Background colors: `Background{Name}Color` (e.g., `BackgroundCreamColor`)
+- Text colors: `Text{Name}Color` (e.g., `TextPrimaryColor`)
+- Status colors: `{Status}Color` (e.g., `SuccessColor`, `ErrorColor`)
+- Brush resources: `{ColorName}Brush` (e.g., `PrimaryRedBrush`)
 
 ### Adding a New Module (e.g., admin)
 

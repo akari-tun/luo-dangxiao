@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/解决方案项/">
+    <File Path="AGENTS.md" />
+  </Folder>
   <Project Path="luo.dangxiao.cardcenter.app/luo.dangxiao.cardcenter.app.csproj" />
   <Project Path="luo.dangxiao.cardcenter/luo.dangxiao.cardcenter.csproj" />
   <Project Path="luo.dangxiao.common/luo.dangxiao.common.csproj" Id="ef11316f-a05f-4a26-b3ad-1e792f59b19c" />
@@ -6,6 +9,6 @@
   <Project Path="luo.dangxiao.interfaces/luo.dangxiao.interfaces.csproj" Id="0ac2dd7f-9c87-4aad-b0c6-2c6edfb32292" />
   <Project Path="luo.dangxiao.models/luo.dangxiao.models.csproj" />
   <Project Path="luo.dangxiao.resources/luo.dangxiao.resources.csproj" />
-  <Project Path="luo.dangxiao.selfservice.app/luo.dangxiao.selfservice.app.csproj" />
+  <Project Path="luo.dangxiao.selfservice.app/luo.dangxiao.selfservice.app.csproj" Id="60579826-dcff-4a93-ad62-e32e3bb4c558" />
   <Project Path="luo.dangxiao.selfservice/luo.dangxiao.selfservice.csproj" />
 </Solution>

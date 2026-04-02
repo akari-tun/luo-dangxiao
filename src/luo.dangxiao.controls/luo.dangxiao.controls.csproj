@@ -6,4 +6,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.3.12" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\luo.dangxiao.interfaces\luo.dangxiao.interfaces.csproj" />
+  </ItemGroup>
+
 </Project>

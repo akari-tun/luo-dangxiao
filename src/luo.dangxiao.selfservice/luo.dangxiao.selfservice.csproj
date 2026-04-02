@@ -10,6 +10,26 @@
     <PackageReference Include="Avalonia" Version="11.3.12" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.12" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.5" />
+  </ItemGroup>
+
+  <!-- App.axaml code-behind -->
+
+  <!-- For views with code-behind -->
+  <ItemGroup>
+    <Compile Update="Views\*.axaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <!-- NOTE: Let the SDK include .axaml files as AvaloniaXaml/AvaloniaResource by default. -->
+
+  <!-- If you need a specific .axaml to be treated as designer-only in the IDE, set its SubType to Designer. -->
+  <ItemGroup>
+    <None Update="Views\HomePageView.axaml">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
 
   <!-- Project references -->
@@ -19,19 +39,6 @@
     <ProjectReference Include="..\luo.dangxiao.controls\luo.dangxiao.controls.csproj" />
     <ProjectReference Include="..\luo.dangxiao.models\luo.dangxiao.models.csproj" />
     <ProjectReference Include="..\luo.dangxiao.resources\luo.dangxiao.resources.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="App.axaml.cs">
-      <SubType>Code</SubType>
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="App.axaml">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
 
 </Project>
