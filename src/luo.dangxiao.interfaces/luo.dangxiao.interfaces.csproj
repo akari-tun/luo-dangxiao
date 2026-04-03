@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\luo.dangxiao.common\luo.dangxiao.common.csproj" />
+    <ProjectReference Include="..\luo.dangxiao.models\luo.dangxiao.models.csproj" />
+  </ItemGroup>
+
 </Project>

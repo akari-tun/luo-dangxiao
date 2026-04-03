@@ -19,5 +19,10 @@
             <Setter Property="Background" Value="{DynamicResource ButtonPressedBrush}"/>
             <Setter Property="Foreground" Value="{DynamicResource TextButtonBrush}"/>
         </Style>
+
+        <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource ButtonDisabledBackgroundBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextButtonBrush}"/>
+        </Style>
     </Style>
 </Styles>

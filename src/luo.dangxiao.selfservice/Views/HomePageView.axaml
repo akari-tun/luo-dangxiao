@@ -8,10 +8,6 @@
         x:Class="luo.dangxiao.selfservice.Views.HomePageView"
         x:DataType="vm:HomePageViewModel">
 
-    <Design.DataContext>
-        <vm:HomePageViewModel/>
-    </Design.DataContext>
-
     <Grid RowDefinitions="Auto,*,65">
         <!-- Header -->
         <Grid Grid.Row="0" Height="190" RowDefinitions="35,*,40">
@@ -33,16 +29,16 @@
         </Grid>
         
         <!-- Content Area -->
-        <Grid Grid.Row="1" ColumnDefinitions="*,35,Auto" Margin="45,0,45,0">
+        <Grid Grid.Row="1" ColumnDefinitions="*,35,Auto" Margin="45,0,45,0"
+               IsVisible="{Binding CurrentState, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=HomePage, Mode=OneWay}">
             <Border Grid.Column="0" BorderThickness="1" BorderBrush="{DynamicResource BorderMediumBrush}" CornerRadius="4">
                 <!-- Loop Background Image Area -->
-                <Image Grid.Column="0" 
-                       Source="avares://luo.dangxiao.resources/Images/photo.png" 
+                <Image Source="avares://luo.dangxiao.resources/Images/photo.png" 
                        Stretch="Uniform"/>
             </Border>
 
             <!-- Staff Self Service State -->
-            <Grid Grid.Column="2" IsVisible="{Binding CurrentState, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=StaffSelfService, Mode=OneWay}">
+            <Grid Grid.Column="2" IsVisible="{Binding SelfServiceType, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=StaffSelfService, Mode=OneWay}">
                 <!-- Function Buttons -->
                 <StackPanel Orientation="Vertical"
                             Spacing="15">
@@ -53,8 +49,8 @@
                             CommandParameter="TakeCard"
                             Width="322" Height="95"
                             FontSize="40">
-                        <StackPanel Orientation="Horizontal">
-					     <Image Source="avares://luo.dangxiao.resources/Images/take_card.png" Width="48" Height="48" Margin="0,0,20,0"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+					        <Image Source="avares://luo.dangxiao.resources/Images/take_card.png" Width="48" Height="48"/>
                             <TextBlock Text="{x:Static lang:LanguageProvider.SelfService_TakeCard}" />
                         </StackPanel>
                     </Button>
@@ -62,8 +58,8 @@
                             CommandParameter="ReportLoss"
                             Width="322" Height="95"
                             FontSize="40">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-						    <Image Source="avares://luo.dangxiao.resources/Images/lost_card.png" Width="48" Height="48" Margin="0,0,20,0"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+						    <Image Source="avares://luo.dangxiao.resources/Images/lost_card.png" Width="48" Height="48"/>
                             <TextBlock Text="{x:Static lang:LanguageProvider.SelfService_ReportLoss}" />
                         </StackPanel>
                     </Button>
@@ -71,8 +67,8 @@
                             CommandParameter="Replacement"
                             Width="322" Height="95"
                             FontSize="40">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-						    <Image Source="avares://luo.dangxiao.resources/Images/replacement.png" Width="48" Height="48" Margin="0,0,20,0"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+						    <Image Source="avares://luo.dangxiao.resources/Images/replacement.png" Width="48" Height="48"/>
                             <TextBlock Text="{x:Static lang:LanguageProvider.SelfService_Replacement}" />
                         </StackPanel>
                     </Button>
@@ -80,8 +76,8 @@
                             CommandParameter="Query"
                             Width="322" Height="95"
                             FontSize="40">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-						    <Image Source="avares://luo.dangxiao.resources/Images/check_in.png" Width="48" Height="48" Margin="0,0,20,0"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+						    <Image Source="avares://luo.dangxiao.resources/Images/check_in.png" Width="48" Height="48"/>
                             <TextBlock Text="{x:Static lang:LanguageProvider.SelfService_Query}" />
                         </StackPanel>
                     </Button>
@@ -89,8 +85,8 @@
                             CommandParameter="Recharge"
                             Width="322" Height="95"
                             FontSize="40">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-						    <Image Source="avares://luo.dangxiao.resources/Images/payment.png" Width="48" Height="48" Margin="0,0,20,0"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+						    <Image Source="avares://luo.dangxiao.resources/Images/payment.png" Width="48" Height="48"/>
                             <TextBlock Text="{x:Static lang:LanguageProvider.SelfService_Recharge}" />
                         </StackPanel>
                     </Button>
@@ -98,7 +94,7 @@
             </Grid>
             
             <!-- Student Self Service State -->
-            <Grid Grid.Column="2" IsVisible="{Binding CurrentState, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=StudentSelfService, Mode=OneWay}">
+            <Grid Grid.Column="2" IsVisible="{Binding SelfServiceType, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=StudentSelfService, Mode=OneWay}">
                 <!-- Function Buttons -->
                 <StackPanel Orientation="Vertical"
                             Spacing="15">
@@ -109,8 +105,8 @@
                             CommandParameter="CheckIn"
                             Width="322" Height="95"
                             FontSize="40">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-						    <Image Source="avares://luo.dangxiao.resources/Images/check_in.png" Width="48" Height="48" Margin="0,0,20,0"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+						    <Image Source="avares://luo.dangxiao.resources/Images/check_in.png" Width="48" Height="48"/>
                             <TextBlock Text="{x:Static lang:LanguageProvider.SelfService_CheckIn}" />
                         </StackPanel>
                     </Button>
@@ -118,8 +114,8 @@
                             CommandParameter="TakeCard"
                             Width="322" Height="95"
                             FontSize="40">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-						    <Image Source="avares://luo.dangxiao.resources/Images/take_card.png" Width="48" Height="48" Margin="0,0,20,0"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+						    <Image Source="avares://luo.dangxiao.resources/Images/take_card.png" Width="48" Height="48"/>
                             <TextBlock Text="{x:Static lang:LanguageProvider.SelfService_TakeCard}" />
                         </StackPanel>
                     </Button>
@@ -127,8 +123,8 @@
                             CommandParameter="ReportLoss"
                             Width="322" Height="95"
                             FontSize="40">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-						    <Image Source="avares://luo.dangxiao.resources/Images/lost_card.png" Width="48" Height="48" Margin="0,0,20,0"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+						    <Image Source="avares://luo.dangxiao.resources/Images/lost_card.png" Width="48" Height="48"/>
                             <TextBlock Text="{x:Static lang:LanguageProvider.SelfService_ReportLoss}" />
                         </StackPanel>
                     </Button>
@@ -136,20 +132,20 @@
                             CommandParameter="Replacement"
                             Width="322" Height="95"
                             FontSize="40">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-						    <Image Source="avares://luo.dangxiao.resources/Images/replacement.png" Width="48" Height="48" Margin="0,0,20,0"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+						    <Image Source="avares://luo.dangxiao.resources/Images/replacement.png" Width="48" Height="48"/>
                             <TextBlock Text="{x:Static lang:LanguageProvider.SelfService_Replacement}" />
                         </StackPanel>
                     </Button>
                 </StackPanel>
             </Grid>
-            
-            <!-- SubPage Container State -->
-            <Border Grid.ColumnSpan="3" IsVisible="{Binding CurrentState, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=SubPageContainer, Mode=OneWay}"
-                    Background="{StaticResource BackgroundCreamBrush}"
-                    CornerRadius="7">
-                <ContentControl Content="{Binding SubPageContent}"/>
-            </Border>
         </Grid>
+
+        <!-- SubPage Container State -->
+        <Border Grid.Row="1" Margin="45,0,45,0"
+                IsVisible="{Binding CurrentState, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=SubPageContainer, Mode=OneWay}"
+                CornerRadius="7">
+            <ContentControl Content="{Binding SubPageContent}"/>
+        </Border>
     </Grid>
 </UserControl>

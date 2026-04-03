@@ -1,0 +1,157 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:luo.dangxiao.selfservice.ViewModels"
+             xmlns:lang="clr-namespace:luo.dangxiao.resources.Languages;assembly=luo.dangxiao.resources"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignWidth="950"
+             d:DesignHeight="500"
+             x:Class="luo.dangxiao.selfservice.Views.SMSVerifyPageView"
+             x:DataType="vm:SMSVerifyPageViewModel">
+
+    <Grid RowDefinitions="40,Auto,40,Auto,12,Auto,20,Auto,*"
+          ColumnDefinitions="80,128,20,Auto,20,Auto,*">
+        <Grid.Styles>
+            <Style Selector="TextBox">
+                <Setter Property="Background" Value="{DynamicResource InputBackgroundBrush}"/>
+                <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+
+                <Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                    <Setter Property="Background" Value="{DynamicResource InputHoverBackgroundColor}"/>
+                </Style>
+
+                <Style Selector="^:focus /template/ ContentPresenter#PART_ContentPresenter">
+                    <Setter Property="Background" Value="{DynamicResource InputFocusBackgroundBrush}"/>
+                </Style>
+            </Style>
+        </Grid.Styles>
+        <StackPanel Grid.Row="1" Grid.Column="1"
+                    Orientation="Horizontal"
+                    VerticalAlignment="Center"
+                    Spacing="12">
+            <Border Width="6"
+                    Height="40"
+                    Background="{DynamicResource PrimaryRedDarkBrush}"/>
+            <TextBlock Text="{x:Static lang:LanguageProvider.SelfService_Verify_SMS_Title}"
+                       FontFamily="SimHei"
+                       FontSize="36"
+                       FontWeight="Bold"
+                       Foreground="{DynamicResource TextPrimaryBrush}"/>
+        </StackPanel>
+
+        <TextBlock Grid.Row="3" Grid.Column="1"
+                   Text="{x:Static lang:LanguageProvider.SelfService_Verify_SMS_Phone}"
+                   HorizontalAlignment="Right"
+                   VerticalAlignment="Center"
+                   FontFamily="SimHei"
+                   FontSize="28"
+                   Foreground="{DynamicResource TextSecondaryBrush}"/>
+        <TextBox Grid.Row="3" Grid.Column="3"
+                 HorizontalAlignment="Left"
+                 VerticalAlignment="Center"
+                 Height="48"
+                 FontFamily="SimHei"
+                 FontSize="28"
+                 MinWidth="280"
+                 Watermark="{x:Static lang:LanguageProvider.SelfService_Verify_SMS_PhonePlaceholder}"
+                 Text="{Binding PhoneNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <TextBlock Grid.Row="5" Grid.Column="1"
+                   Text="{x:Static lang:LanguageProvider.SelfService_Verify_SMS_Code}"
+                   HorizontalAlignment="Right"
+                   VerticalAlignment="Center"
+                   FontFamily="SimHei"
+                   FontSize="28"
+                   Foreground="{DynamicResource TextSecondaryBrush}"/>
+        <TextBox Grid.Row="5" Grid.Column="3"
+                 HorizontalAlignment="Left"
+                 VerticalAlignment="Center"
+                 Height="48"
+                 FontFamily="SimHei"
+                 FontSize="28"
+                 MinWidth="280"
+                 Watermark="{x:Static lang:LanguageProvider.SelfService_Verify_SMS_CodePlaceholder}"
+                 Text="{Binding VerificationCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <TextBlock Grid.Row="5" Grid.Column="5"
+                   IsVisible="{Binding IsCodeSended, Mode=OneWay}"
+                   VerticalAlignment="Center"
+                   Text="{Binding CountdownSeconds, Converter={StaticResource StringFormatConverter}, ConverterParameter={x:Static lang:LanguageProvider.SelfService_Verify_SMS_Resend}, Mode=OneWay}"
+                   FontFamily="SimHei"
+                   FontSize="28"
+                   Foreground="{DynamicResource AccentOrangeColor}"/>
+        <Button Grid.Row="5" Grid.Column="5"
+                IsVisible="{Binding IsCodeSended, Converter={StaticResource BooleanNotConverter}, Mode=OneWay}"
+                Height="48"
+                Width="168"
+                Command="{Binding SendVerificationCodeCommand, Mode=OneWay}"
+                FontFamily="SimHei"
+                FontSize="24"
+                Foreground="{DynamicResource TextPrimaryColor}">
+                <Button.Background>
+                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                        <GradientStop Offset="0" Color="#ffe346"/>
+                        <GradientStop Offset="1" Color="#f6ad00"/>
+                    </LinearGradientBrush>
+                </Button.Background>
+                <Button.Styles>
+                    <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                        <Setter Property="Background" Value="{DynamicResource ButtonPressedBrush}"/>
+                        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryColor}"/>
+                    </Style>
+                    <Style Selector="Button:pressed /template/ ContentPresenter#PART_ContentPresenter">
+                        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryColor}"/>
+                    </Style>
+                    <Style Selector="Button:disabled /template/ ContentPresenter#PART_ContentPresenter">
+                        <Setter Property="Background" Value="{DynamicResource ButtonDisabledBackgroundColor}"/>
+                        <Setter Property="Foreground" Value="{DynamicResource TextWhiteBrush}"/>
+                    </Style>
+                </Button.Styles>
+                <TextBlock Text="{x:Static lang:LanguageProvider.SelfService_Verify_SMS_SendCode}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        </Button>
+
+        <StackPanel Grid.Row="7" Grid.Column="3"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Spacing="20">
+            <Button Width="280"
+                    Height="66"
+                    Command="{Binding VerifyCodeCommand}"
+                    FontFamily="SimHei"
+                    FontSize="30"
+                    FontWeight="Bold"
+                    CornerRadius="8"
+                    IsEnabled="{Binding CanVerify, Mode=OneWay}"
+                    Foreground="{DynamicResource TextWhiteBrush}">
+                <Button.Background>
+                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                        <GradientStop Offset="0" Color="#ff1400"/>
+                        <GradientStop Offset="1" Color="#ca0000"/>
+                    </LinearGradientBrush>
+                </Button.Background>
+                <Button.Styles>
+                    <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                        <Setter Property="Background" Value="{DynamicResource ButtonPressedBrush}"/>
+                        <Setter Property="Foreground" Value="{DynamicResource TextWhiteBrush}"/>
+                    </Style>
+                    <Style Selector="Button:pressed /template/ ContentPresenter#PART_ContentPresenter">
+                        <Setter Property="Foreground" Value="{DynamicResource TextWhiteBrush}"/>
+                    </Style>
+                    <Style Selector="Button:disabled /template/ ContentPresenter#PART_ContentPresenter">
+                        <Setter Property="Background" Value="{DynamicResource ButtonDisabledBackgroundColor}"/>
+                        <Setter Property="Foreground" Value="{DynamicResource TextWhiteBrush}"/>
+                    </Style>
+                </Button.Styles>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+				    <Image Source="avares://luo.dangxiao.resources/Images/next.png" Width="48" Height="48"/>
+                    <TextBlock Text="{x:Static lang:LanguageProvider.SelfService_Verify_SMS_Next}" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+            <TextBlock Text="{Binding ErrorMessage}"
+                       FontFamily="SimHei"
+                       FontSize="24"
+                       Foreground="{DynamicResource ErrorBrush}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

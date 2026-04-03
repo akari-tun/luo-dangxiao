@@ -198,4 +198,64 @@
   <data name="SelfService_CheckIn" xml:space="preserve">
     <value>自助报到</value>
   </data>
+  <data name="SelfService_Verify_SelectMethod" xml:space="preserve">
+    <value>请选择验证方式</value>
+  </data>
+  <data name="SelfService_Verify_IDCard" xml:space="preserve">
+    <value>身份证验证</value>
+  </data>
+  <data name="SelfService_Verify_SMS" xml:space="preserve">
+    <value>短信验证</value>
+  </data>
+  <data name="SelfService_Verify_IDCardInstruction" xml:space="preserve">
+    <value>请将二代身份证放置于感应区</value>
+  </data>
+  <data name="SelfService_Verify_IDCardZoneTitle" xml:space="preserve">
+    <value>二代身份证感应</value>
+  </data>
+  <data name="SelfService_Verify_IDCardWaiting" xml:space="preserve">
+    <value>等待读取身份证...</value>
+  </data>
+  <data name="SelfService_Verify_IDCardProcessing" xml:space="preserve">
+    <value>正在处理证件信息，请稍候...</value>
+  </data>
+  <data name="SelfService_Verify_IDCardSuccess" xml:space="preserve">
+    <value>验证成功</value>
+  </data>
+  <data name="SelfService_Verify_IDCardFailed" xml:space="preserve">
+    <value>验证失败</value>
+  </data>
+  <data name="SelfService_Verify_SwitchToSMS" xml:space="preserve">
+    <value>切换到短信验证 →</value>
+  </data>
+  <data name="SelfService_Verify_SMS_Title" xml:space="preserve">
+    <value>短信验证</value>
+  </data>
+  <data name="SelfService_Verify_SMS_Phone" xml:space="preserve">
+    <value>手机号</value>
+  </data>
+  <data name="SelfService_Verify_SMS_Code" xml:space="preserve">
+    <value>验证码</value>
+  </data>
+  <data name="SelfService_Verify_SMS_PhonePlaceholder" xml:space="preserve">
+    <value>请输入手机号</value>
+  </data>
+  <data name="SelfService_Verify_SMS_CodePlaceholder" xml:space="preserve">
+    <value>请输入验证码</value>
+  </data>
+  <data name="SelfService_Verify_SMS_SendCode" xml:space="preserve">
+    <value>获取验证码</value>
+  </data>
+  <data name="SelfService_Verify_SMS_Resend" xml:space="preserve">
+    <value>重新获取[0]秒</value>
+  </data>
+  <data name="SelfService_Verify_SMS_Next" xml:space="preserve">
+    <value>下一步</value>
+  </data>
+  <data name="SelfService_Verify_SwitchToIDCard" xml:space="preserve">
+    <value>切换到身份证验证 →</value>
+  </data>
+  <data name="Button_Back" xml:space="preserve">
+    <value>返回</value>
+  </data>
 </root>

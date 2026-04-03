@@ -79,6 +79,15 @@ namespace luo.dangxiao.resources.Languages {
         }
         
         /// <summary>
+        ///   查找类似 Back 的本地化字符串。
+        /// </summary>
+        public static string Button_Back {
+            get {
+                return ResourceManager.GetString("Button_Back", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Cancel 的本地化字符串。
         /// </summary>
         public static string Button_Cancel {
@@ -300,6 +309,177 @@ namespace luo.dangxiao.resources.Languages {
         public static string SelfService_TakeCard {
             get {
                 return ResourceManager.GetString("SelfService_TakeCard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 ID Card Verification 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Verify_IDCard {
+            get {
+                return ResourceManager.GetString("SelfService_Verify_IDCard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Verification failed 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Verify_IDCardFailed {
+            get {
+                return ResourceManager.GetString("SelfService_Verify_IDCardFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Please place your ID card on the sensing area 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Verify_IDCardInstruction {
+            get {
+                return ResourceManager.GetString("SelfService_Verify_IDCardInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Processing card information, please wait... 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Verify_IDCardProcessing {
+            get {
+                return ResourceManager.GetString("SelfService_Verify_IDCardProcessing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Verification succeeded 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Verify_IDCardSuccess {
+            get {
+                return ResourceManager.GetString("SelfService_Verify_IDCardSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Waiting for ID card reading... 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Verify_IDCardWaiting {
+            get {
+                return ResourceManager.GetString("SelfService_Verify_IDCardWaiting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 ID Card Sensing Area 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Verify_IDCardZoneTitle {
+            get {
+                return ResourceManager.GetString("SelfService_Verify_IDCardZoneTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Please select verification method 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Verify_SelectMethod {
+            get {
+                return ResourceManager.GetString("SelfService_Verify_SelectMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 SMS Verification 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Verify_SMS {
+            get {
+                return ResourceManager.GetString("SelfService_Verify_SMS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Verification Code 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Verify_SMS_Code {
+            get {
+                return ResourceManager.GetString("SelfService_Verify_SMS_Code", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Please enter verification code 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Verify_SMS_CodePlaceholder {
+            get {
+                return ResourceManager.GetString("SelfService_Verify_SMS_CodePlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Next 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Verify_SMS_Next {
+            get {
+                return ResourceManager.GetString("SelfService_Verify_SMS_Next", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Phone Number 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Verify_SMS_Phone {
+            get {
+                return ResourceManager.GetString("SelfService_Verify_SMS_Phone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Please enter phone number 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Verify_SMS_PhonePlaceholder {
+            get {
+                return ResourceManager.GetString("SelfService_Verify_SMS_PhonePlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Resend [0]s 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Verify_SMS_Resend {
+            get {
+                return ResourceManager.GetString("SelfService_Verify_SMS_Resend", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Get Verification Code 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Verify_SMS_SendCode {
+            get {
+                return ResourceManager.GetString("SelfService_Verify_SMS_SendCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 SMS Verification 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Verify_SMS_Title {
+            get {
+                return ResourceManager.GetString("SelfService_Verify_SMS_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Switch to ID Card Verification → 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Verify_SwitchToIDCard {
+            get {
+                return ResourceManager.GetString("SelfService_Verify_SwitchToIDCard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Switch to SMS Verification → 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Verify_SwitchToSMS {
+            get {
+                return ResourceManager.GetString("SelfService_Verify_SwitchToSMS", resourceCulture);
             }
         }
     }

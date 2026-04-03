@@ -2,7 +2,9 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
+using Avalonia.Styling;
 using CommunityToolkit.Mvvm.DependencyInjection;
+using luo.dangxiao.models;
 using luo.dangxiao.selfservice.ViewModels;
 using luo.dangxiao.selfservice.Views;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,9 +21,19 @@ namespace luo.dangxiao.selfservice
 
             IServiceCollection serviceCollection = new ServiceCollection()
                 .AddSingleton<MainWindowViewModel>()
-                .AddSingleton<HomePageViewModel>();
+                .AddSingleton<HomePageViewModel>()
+                .AddSingleton<CfgDataModel>()
+                .AddTransient<VerifyPageViewModel>()
+                .AddTransient<IDCardVerifyPageViewModel>()
+                .AddTransient<SMSVerifyPageViewModel>();
 
             Ioc.Default.ConfigureServices(serviceCollection.BuildServiceProvider());
+
+            var cfgData = Ioc.Default.GetRequiredService<CfgDataModel>();
+            if (Current is { } app)
+            {
+                app.RequestedThemeVariant = cfgData.Theme;
+            }
         }
 
         public override void OnFrameworkInitializationCompleted()

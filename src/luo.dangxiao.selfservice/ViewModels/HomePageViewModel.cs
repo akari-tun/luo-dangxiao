@@ -1,34 +1,22 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using luo.dangxiao.common.Enums;
+using luo.dangxiao.interfaces.ViewModels;
+using luo.dangxiao.selfservice.Views;
+using System.ComponentModel;
 
 namespace luo.dangxiao.selfservice.ViewModels;
 
 /// <summary>
-/// Home page state enumeration
-/// </summary>
-public enum HomePageState
-{
-    StaffSelfService,
-    StudentSelfService,
-    SubPageContainer
-}
-
-/// <summary>
-/// User type enumeration
-/// </summary>
-public enum UserType
-{
-    Staff,
-    Student
-}
-
-/// <summary>
 /// ViewModel for HomePage - Main container for self-service system
 /// </summary>
-public partial class HomePageViewModel : ViewModelBase
+public partial class HomePageViewModel : ViewModelBase, IPageViewModel
 {
     [ObservableProperty]
-    private HomePageState _currentState = HomePageState.StudentSelfService;
+    private HomePageState _currentState = HomePageState.HomePage;
+
+    [ObservableProperty]
+    private SelfServiceType _selfServiceType = SelfServiceType.StudentSelfService;
 
     [ObservableProperty]
     private object? _subPageContent;
@@ -49,8 +37,7 @@ public partial class HomePageViewModel : ViewModelBase
     {
         switch (value)
         {
-            case HomePageState.StaffSelfService:
-            case HomePageState.StudentSelfService:
+            case HomePageState.HomePage:
                 IsCountdownVisible = false;
                 SubPageContent = null;
                 break;
@@ -71,6 +58,7 @@ public partial class HomePageViewModel : ViewModelBase
 
     private void LoadVerifyPage()
     {
+        SubPageContent = new VerifyPageView(SelectedFunction);
     }
 
     private void StartCountdown()

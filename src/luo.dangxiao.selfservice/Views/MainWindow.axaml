@@ -12,10 +12,6 @@
         Title="{x:Static lang:LanguageProvider.App_Title}"
         Width="1280" Height="1024">
 
-    <Design.DataContext>
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
-
     <Grid>
         <Image Source="avares://luo.dangxiao.resources/Images/background.png" 
                Stretch="UniformToFill"/>

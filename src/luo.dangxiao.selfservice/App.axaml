@@ -10,6 +10,8 @@
           <ResourceInclude Source="avares://luo.dangxiao.resources/Styles/AppStyles.axaml"/>
         </ResourceDictionary.MergedDictionaries>
         <converter:EnumToBoolConverter x:Key="EnumToBoolConverter"/>
+        <converter:StringFormatConverter x:Key="StringFormatConverter"/>
+        <converter:BooleanNotConverter  x:Key="BooleanNotConverter"/>
       </ResourceDictionary>
     </Application.Resources>
     

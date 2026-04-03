@@ -10,10 +10,32 @@ public static class LanguageProvider
     private static string Get(string key) => ResourceManager.GetString(key, CultureInfo.CurrentUICulture) ?? key;
 
     public static string App_Title => Get(nameof(App_Title));
+    public static string Button_Back => Get(nameof(Button_Back));
+
     public static string SelfService_TakeCard => Get(nameof(SelfService_TakeCard));
     public static string SelfService_ReportLoss => Get(nameof(SelfService_ReportLoss));
     public static string SelfService_Replacement => Get(nameof(SelfService_Replacement));
     public static string SelfService_Query => Get(nameof(SelfService_Query));
     public static string SelfService_Recharge => Get(nameof(SelfService_Recharge));
     public static string SelfService_CheckIn => Get(nameof(SelfService_CheckIn));
+
+    public static string SelfService_Verify_SelectMethod => Get(nameof(SelfService_Verify_SelectMethod));
+    public static string SelfService_Verify_IDCard => Get(nameof(SelfService_Verify_IDCard));
+    public static string SelfService_Verify_SMS => Get(nameof(SelfService_Verify_SMS));
+    public static string SelfService_Verify_IDCardInstruction => Get(nameof(SelfService_Verify_IDCardInstruction));
+    public static string SelfService_Verify_IDCardZoneTitle => Get(nameof(SelfService_Verify_IDCardZoneTitle));
+    public static string SelfService_Verify_IDCardWaiting => Get(nameof(SelfService_Verify_IDCardWaiting));
+    public static string SelfService_Verify_IDCardProcessing => Get(nameof(SelfService_Verify_IDCardProcessing));
+    public static string SelfService_Verify_IDCardSuccess => Get(nameof(SelfService_Verify_IDCardSuccess));
+    public static string SelfService_Verify_IDCardFailed => Get(nameof(SelfService_Verify_IDCardFailed));
+    public static string SelfService_Verify_SwitchToSMS => Get(nameof(SelfService_Verify_SwitchToSMS));
+    public static string SelfService_Verify_SMS_Title => Get(nameof(SelfService_Verify_SMS_Title));
+    public static string SelfService_Verify_SMS_Phone => Get(nameof(SelfService_Verify_SMS_Phone));
+    public static string SelfService_Verify_SMS_Code => Get(nameof(SelfService_Verify_SMS_Code));
+    public static string SelfService_Verify_SMS_PhonePlaceholder => Get(nameof(SelfService_Verify_SMS_PhonePlaceholder));
+    public static string SelfService_Verify_SMS_CodePlaceholder => Get(nameof(SelfService_Verify_SMS_CodePlaceholder));
+    public static string SelfService_Verify_SMS_SendCode => Get(nameof(SelfService_Verify_SMS_SendCode));
+    public static string SelfService_Verify_SMS_Resend => Get(nameof(SelfService_Verify_SMS_Resend));
+    public static string SelfService_Verify_SMS_Next => Get(nameof(SelfService_Verify_SMS_Next));
+    public static string SelfService_Verify_SwitchToIDCard => Get(nameof(SelfService_Verify_SwitchToIDCard));
 }

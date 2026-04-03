@@ -47,18 +47,20 @@
     <!-- Button Colors -->
     <Color x:Key="ButtonDefaultStartColor">#f9f0f0</Color>
     <Color x:Key="ButtonDefaultEndColor">#d4afaf</Color>
-    <Color x:Key="ButtonHoverStartColor">#e6b84d</Color>
-    <Color x:Key="ButtonHoverEndColor">#d4afaf</Color>
-    <Color x:Key="ButtonPressedStartColor">#ffe748</Color>
-    <Color x:Key="ButtonPressedEndColor">#ffde00</Color>
-    <Color x:Key="ButtonDisabledBackgroundColor">#e0e0e0</Color>
+    <Color x:Key="ButtonHoverStartColor">#d4afaf</Color>
+    <Color x:Key="ButtonHoverEndColor">#e6b84d</Color>
+    <Color x:Key="ButtonPressedStartColor">#ffe000</Color>
+    <Color x:Key="ButtonPressedEndColor">#ca3912</Color>
+    <Color x:Key="ButtonDisabledBackgroundColor">#b0b0b0</Color>
     <Color x:Key="ButtonDisabledTextColor">#a0a0a0</Color>
     
     <!-- Input Colors -->
     <Color x:Key="InputBorderColor">#c7c6bf</Color>
     <Color x:Key="InputBorderFocusColor">#d9230b</Color>
     <Color x:Key="InputPlaceholderColor">#c7c6bf</Color>
-    <Color x:Key="InputBackgroundColor">#ffffff</Color>
+    <Color x:Key="InputBackgroundColor">#dddddd</Color>
+    <Color x:Key="InputHoverBackgroundColor">#eeeeee</Color>
+    <Color x:Key="InputFocusBackgroundColor">#ffffff</Color>
     
     <!-- Card Colors -->
     <Color x:Key="CardBackgroundColor">#ffffff</Color>
@@ -117,4 +119,14 @@
     <SolidColorBrush x:Key="BorderMediumBrush" Color="{StaticResource BorderMediumColor}"/>
     <SolidColorBrush x:Key="CountdownBrush" Color="{StaticResource CountdownColor}"/>
     
+    <SolidColorBrush x:Key="ButtonDisabledBackgroundBrush" Color="{StaticResource ButtonDisabledBackgroundColor}"/>
+    <SolidColorBrush x:Key="ButtonDisabledTextBrush" Color="{StaticResource ButtonDisabledTextColor}"/>
+
+    <SolidColorBrush x:Key="InputBorderBrush" Color="{StaticResource InputBorderColor}"/>
+    <SolidColorBrush x:Key="InputBorderFocusBrush" Color="{StaticResource InputBorderFocusColor}"/>
+    <SolidColorBrush x:Key="InputPlaceholderBrush" Color="{StaticResource InputPlaceholderColor}"/>
+    <SolidColorBrush x:Key="InputBackgroundBrush" Color="{StaticResource InputBackgroundColor}"/>
+    <SolidColorBrush x:Key="InputHoverBackgroundBrush" Color="{StaticResource InputHoverBackgroundColor}"/>
+    <SolidColorBrush x:Key="InputFocusBackgroundBrush" Color="{StaticResource InputFocusBackgroundColor}"/>
+
 </ResourceDictionary>

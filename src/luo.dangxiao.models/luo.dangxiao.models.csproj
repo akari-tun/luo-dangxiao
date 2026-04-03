@@ -6,4 +6,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="CfgDataModel.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\luo.dangxiao.common\luo.dangxiao.common.csproj" />
+  </ItemGroup>
+
 </Project>
