@@ -3,8 +3,8 @@
 > **页面代码**: StaffInfoPage  
 > **适用用户**: 教职工  
 > **页面类型**: 模块页面（嵌入功能子页面）  
-> **文档版本**: 1.0  
-> **最后更新**: 2026-03-26
+> **文档版本**: 1.1  
+> **最后更新**: 2026-04-10
 
 ---
 
@@ -12,127 +12,49 @@
 
 ### 1.1 设计说明
 
-教职工信息模块是一个可复用的信息展示模块，嵌入到需要展示教职工信息的功能子页面中。模块展示教职工的基本信息、部门信息、卡片信息、余额信息等。
+教职工信息模块是一个可复用的信息展示模块，嵌入到需要展示教职工信息的功能子页面中。模块采用固定四行表单结构，展示姓名、人员编号、卡片类型、卡有效期、所在部门、消费余额与补助余额。
 
 ### 1.2 参考设计
 
 | 参考设计 | 来源 | 说明 |
 |----------|------|------|
-| user_info_page_2.jpg | 自助机/ | 教职工信息展示参考 |
-| 基本信息切图说明.png | 切图说明/ | 布局切图说明 |
+| staff_info_layout.png | 自助机裁图/user_info_page/ | 教职工信息模块布局参考 |
 
 ---
 
 ## 二、模块布局结构
 
-### 2.1 标准信息卡片布局
+### 2.1 参考图实际布局
+
+参考图展示的是一个固定的四行表单式信息区，不是多场景切换的信息卡片。整体采用“两列字段 + 单行通栏 + 两列金额”的组合布局。
 
 ```
-┌─────────────────────────────────────────┐
-│  教职工信息                              │
-├─────────────────────────────────────────┤
-│                                         │
-│   姓名：张明华          性别：男        │
-│                                         │
-│   身份证号：430101198502031234          │
-│                                         │
-│   部门：教务处                          │
-│                                         │
-│   工号：T2020001                        │
-│                                         │
-│   卡号：2020001001                      │
-│                                         │
-│   卡片状态：正常                        │
-│                                         │
-│   卡片余额：¥125.50                     │
-│                                         │
-│   手机号：13800138000                   │
-│                                         │
-└─────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│ 姓名        [________________]   人员编号   [______________] │
+│                                                              │
+│ 卡片类型    [________________]   卡有效期   [______________] │
+│                                                              │
+│ 所在部门    [______________________________________________] │
+│                                                              │
+│ 消费余额    [________________]   补助余额   [______________] │
+└──────────────────────────────────────────────────────────────┘
 ```
 
-### 2.2 取卡/挂失/补卡场景布局
+### 2.2 行级布局说明
 
-```
-┌─────────────────────────────────────────┐
-│  教职工信息                              │
-├─────────────────────────────────────────┤
-│                                         │
-│   ┌──────────┐   姓名：张明华          │
-│   │          │   性别：男              │
-│   │  照片    │                         │
-│   │          │   部门：教务处          │
-│   │  120×150 │                        │
-│   │          │   工号：T2020001        │
-│   │          │                         │
-│   └──────────┘   卡号：2020001001      │
-│                                         │
-│   卡片状态：待领取                      │
-│                                         │
-│   卡片余额：¥0.00                       │
-│                                         │
-└─────────────────────────────────────────┘
-```
+| 行号 | 左侧内容 | 右侧内容 | 布局特征 |
+|------|----------|----------|----------|
+| 第 1 行 | 姓名 | 人员编号 | 左右双列，均为“标签 + 白色输入框” |
+| 第 2 行 | 卡片类型 | 卡有效期 | 左右双列，结构与第 1 行一致 |
+| 第 3 行 | 所在部门 | - | 单行通栏，部门值横向占满主要内容区 |
+| 第 4 行 | 消费余额 | 补助余额 | 左右双列，两个金额字段并排展示 |
 
-### 2.3 充值场景布局
+### 2.3 模块结构要点
 
-```
-┌─────────────────────────────────────────┐
-│  教职工信息                              │
-├─────────────────────────────────────────┤
-│                                         │
-│   姓名：张明华          部门：教务处    │
-│                                         │
-│   工号：T2020001                        │
-│                                         │
-│   卡号：2020001001                      │
-│                                         │
-│   卡片状态：正常                        │
-│                                         │
-│   ┌─────────────────────────────────┐   │
-│   │      当前余额：¥125.50         │   │
-│   │                                 │   │
-│   │      充值金额：¥100.00         │   │
-│   │                                 │   │
-│   │      充值后余额：¥225.50       │   │
-│   │              ★                │   │
-│   └─────────────────────────────────┘   │
-│                                         │
-│   请确认充值金额是否正确                │
-│                                         │
-└─────────────────────────────────────────┘
-```
-
-### 2.4 查询场景布局（完整信息）
-
-```
-┌─────────────────────────────────────────┐
-│  教职工信息                              │
-├─────────────────────────────────────────┤
-│                                         │
-│   姓名：张明华          性别：男        │
-│                                         │
-│   身份证号：430101198502031234          │
-│                                         │
-│   部门：教务处                          │
-│                                         │
-│   工号：T2020001                        │
-│                                         │
-│   ┌─────────────────────────────────┐   │
-│   │        卡片信息                 │   │
-│   │                                 │   │
-│   │   卡号：2020001001             │   │
-│   │   状态：正常                   │   │
-│   │   余额：¥125.50                │   │
-│   │   发卡日期：2020-01-01         │   │
-│   │   有效期至：2025-12-31         │   │
-│   │                                 │   │
-│   └─────────────────────────────────┘   │
-│                                         │
-│   手机号：13800138000                   │
-│                                         │
-└─────────────────────────────────────────┘
-```
+- 所有字段均按行对齐，标签位于输入框左侧。
+- 第 1、2、4 行为左右双列布局，左列与右列宽度保持一致。
+- 第 3 行“所在部门”为唯一通栏字段，占据整行内容宽度。
+- 页面中未出现头像区、卡片信息子卡片、充值预览区或查询场景扩展块。
 
 ---
 
@@ -142,84 +64,54 @@
 
 | 属性 | 值 |
 |------|-----|
-| 背景 | #ffffff 白色 |
-| 边框 | 1px solid #e0e0e0 |
-| 圆角 | 7px |
-| 内边距 | 30px |
+| 背景 | #faf9f3 米黄色 |
+| 边框 | 无明显描边，以内容块分区为主 |
+| 圆角 | 模块整体弱圆角 |
+| 内边距 | 20px ~ 30px |
 | 外边距 | 根据父页面调整 |
 
 ### 3.2 标题区
 
-| 元素 | 位置 | 规格 | 说明 |
-|------|------|------|------|
-| 标题 | 顶部 | "教职工信息" | 黑体 32px bold |
-| 分隔线 | 标题下方 | 1px solid #e0e0e0 | 分隔标题和内容 |
+参考图裁切范围内未展示独立标题栏，模块通常以内嵌信息区形式出现在父页面中，因此布局重点在字段行本身，而不是标题装饰。
 
 ### 3.3 信息字段布局
 
-**标准布局（双列）**:
+**双列字段行**:
 | 字段 | 位置 | 字体 | 说明 |
 |------|------|------|------|
-| 标签 | 左侧 | 黑体 28px, #70706d | 如"姓名：" |
-| 内容 | 标签右侧 | 黑体 28px, #1a1919 | 如"张明华" |
-| 行间距 | - | 25px | 字段间垂直间距 |
+| 标签 | 每列左侧 | 黑体 28px, #70706d | 如“姓名”“人员编号” |
+| 值区 | 标签右侧 | 黑体 28px, #1a1919 | 白色矩形信息框 |
+| 行间距 | - | 20px~25px | 字段行垂直间距 |
 
-**单行长字段**:
+**通栏字段行**:
 | 字段 | 位置 | 字体 | 说明 |
 |------|------|------|------|
-| 标签+内容 | 整行 | 黑体 28px | 身份证号等长字段 |
+| 所在部门 | 第 3 行 | 黑体 28px | 标签位于左侧，值区横向占满主要内容区 |
 
-### 3.4 照片区域（可选）
-
-| 属性 | 值 |
-|------|-----|
-| 尺寸 | 120×150px |
-| 位置 | 左侧 |
-| 边框 | 1px solid #c7c6bf |
-| 背景 | #f5f5f5 |
-| 占位图 | 默认头像图标 |
-
-### 3.5 状态标签
-
-| 状态 | 颜色 | 说明 |
-|------|------|------|
-| 正常 | #4CAF50 | 卡片状态正常 |
-| 待领取 | #ff6000 | 卡片待领取 |
-| 已挂失 | #d9230b | 卡片已挂失 |
-| 已冻结 | #d9230b | 卡片已冻结 |
-
-### 3.6 余额显示
-
-| 场景 | 样式 | 说明 |
-|------|------|------|
-| 普通显示 | 黑体 28px, #1a1919 | 正常余额 |
-| 充值预览 | 黑体 32px bold, #d9230b | 充值金额高亮 |
-| 余额变化 | 动画过渡 | 数字变化动画 |
-
-### 3.7 卡片信息区（可选）
+### 3.4 字段值区
 
 | 属性 | 值 |
 |------|-----|
-| 背景 | #faf9f3 |
-| 边框 | 1px solid #e6b84d |
-| 圆角 | 5px |
-| 内边距 | 20px |
-| 标题 | 黑体 30px bold, #1a1919 |
-| 信息项 | 黑体 28px |
-| 余额数字 | 黑体 32px bold, #d9230b |
+| 背景 | #ffffff 白色 |
+| 圆角 | 6px |
+| 内边距 | 12px 20px |
+| 内容对齐 | 垂直居中，文本左对齐 |
+| 适用字段 | 姓名、人员编号、卡片类型、卡有效期、消费余额、补助余额、所在部门 |
 
-### 3.8 充值预览区
+### 3.5 金额字段
 
-| 属性 | 值 |
-|------|-----|
-| 背景 | #fff8e1 金黄色浅色 |
-| 边框 | 2px solid #e6b84d |
-| 圆角 | 5px |
-| 内边距 | 25px |
-| 当前余额 | 黑体 28px |
-| 充值金额 | 黑体 32px bold, #d9230b |
-| 充值后余额 | 黑体 32px bold, #4CAF50 |
-| 提示文字 | 黑体 28px, #70706d |
+| 字段 | 位置 | 字体 | 说明 |
+|------|------|------|------|
+| 消费余额 | 第 4 行左侧 | 黑体 28px, #1a1919 | 显示消费账户余额，保留两位小数 |
+| 补助余额 | 第 4 行右侧 | 黑体 28px, #1a1919 | 显示补助账户余额，保留两位小数 |
+
+### 3.6 对齐规则
+
+| 规则 | 说明 |
+|------|------|
+| 左右双列对齐 | 第 1、2、4 行左右两列保持统一宽度与起始位置 |
+| 通栏优先级 | 第 3 行“所在部门”单独占据整行 |
+| 字段顺序 | 页面按“基础身份 → 卡务信息 → 所在部门 → 余额信息”自上而下排列 |
 
 ---
 
@@ -227,50 +119,26 @@
 
 ### 4.1 模块用途
 
-StaffInfoPage 是一个可复用的信息展示模块，用于在功能子页面中展示教职工的详细信息。模块根据使用场景可以显示不同组合的信息字段，支持充值金额的预览展示。
+StaffInfoPage 是一个可复用的信息展示模块，用于在功能子页面中展示教职工的固定信息摘要。模块按照参考图中的四行表单结构呈现身份信息、卡务信息、部门信息与余额信息。
 
-### 4.2 显示模式
+### 4.2 固定显示内容
 
-**模式 1: 标准信息模式**
-- 显示基本身份信息
-- 显示部门信息
-- 显示卡片信息和余额
-- 用于：验证后的信息确认
-
-**模式 2: 照片信息模式**
-- 显示教职工照片
-- 显示基本信息
-- 显示卡片状态
-- 用于：取卡、挂失、补卡
-
-**模式 3: 充值预览模式**
-- 显示基本信息
-- 显示当前余额
-- 显示充值金额
-- 显示充值后余额预览
-- 用于：充值确认
-
-**模式 4: 完整信息模式**
-- 显示所有信息
-- 显示详细卡片信息
-- 用于：查询
+- 第 1 行：姓名（左）+ 人员编号（右）
+- 第 2 行：卡片类型（左）+ 卡有效期（右）
+- 第 3 行：所在部门（通栏）
+- 第 4 行：消费余额（左）+ 补助余额（右）
 
 ### 4.3 数据字段
 
-| 字段名 | 说明 | 显示条件 |
+| 字段名 | 说明 | 页面位置 |
 |--------|------|----------|
-| 姓名 | 教职工姓名 | 始终显示 |
-| 性别 | 男/女 | 始终显示 |
-| 身份证号 | 完整身份证号 | 始终显示 |
-| 部门 | 所属部门 | 始终显示 |
-| 工号 | 教职工工号 | 始终显示 |
-| 卡号 | 教职工卡号 | 有卡时显示 |
-| 卡片状态 | 正常/待领取/已挂失等 | 有卡时显示 |
-| 卡片余额 | 当前余额 | 有卡时显示 |
-| 发卡日期 | 卡片发放日期 | 完整信息模式 |
-| 有效期至 | 卡片有效期 | 完整信息模式 |
-| 手机号 | 联系手机 | 始终显示 |
-| 照片 | 教职工照片 | 照片模式 |
+| 姓名 | 教职工姓名 | 第 1 行左侧 |
+| 人员编号 | 教职工唯一编号 | 第 1 行右侧 |
+| 卡片类型 | 卡片或人员类别 | 第 2 行左侧 |
+| 卡有效期 | 卡片有效截止时间 | 第 2 行右侧 |
+| 所在部门 | 所属部门名称 | 第 3 行通栏 |
+| 消费余额 | 消费账户余额 | 第 4 行左侧 |
+| 补助余额 | 补助账户余额 | 第 4 行右侧 |
 
 ---
 
@@ -281,11 +149,11 @@ StaffInfoPage 是一个可复用的信息展示模块，用于在功能子页面
 ```
 接收参数
     ↓
-根据模式确定显示字段
-    ↓
 加载教职工数据
     ↓
-渲染信息卡片
+字段映射与格式化
+    ↓
+渲染四行表单
     ↓
 显示在父页面中
 ```
@@ -293,35 +161,29 @@ StaffInfoPage 是一个可复用的信息展示模块，用于在功能子页面
 ### 5.2 详细交互
 
 **1. 参数接收**:
-- 从父页面接收显示模式参数
 - 接收教职工ID或教职工信息对象
-- 接收可选的充值金额（充值模式）
 
 **2. 数据加载**:
 - 根据教职工ID查询详细信息
 - 或直接使用传入的教职工信息
-- 格式化数据显示
+- 提取页面所需的七个字段
 
-**3. 动态字段**:
-- 根据显示模式隐藏/显示字段
-- 根据数据状态显示不同颜色标签
-- 照片区域根据模式决定是否显示
+**3. 字段映射**:
+- 姓名映射到第 1 行左侧
+- 人员编号映射到第 1 行右侧
+- 卡片类型与卡有效期映射到第 2 行
+- 所在部门映射到第 3 行通栏
+- 消费余额与补助余额映射到第 4 行左右两侧
 
-**4. 充值预览**:
-- 显示当前余额
-- 显示充值金额（从参数获取）
-- 计算并显示充值后余额
-- 充值金额高亮显示
+**4. 格式化显示**:
+- 卡有效期按统一日期格式显示
+- 消费余额与补助余额保留两位小数
+- 空值字段显示为空字符串或默认值
 
-**5. 余额动画**:
-- 充值成功后显示余额变化动画
-- 数字从旧余额滚动到新余额
-- 使用过渡动画效果
-
-**6. 刷新机制**:
+**5. 刷新机制**:
 - 支持外部触发刷新
 - 刷新后更新显示数据
-- 保持当前显示模式
+- 重新按固定布局渲染字段
 
 ### 5.3 参数定义
 
@@ -330,33 +192,18 @@ public class StaffInfoPageParameter
 {
     public string StaffId { get; set; }
     public StaffInfo Data { get; set; }  // 可选，直接传入数据
-    public DisplayMode Mode { get; set; }
-    public decimal? RechargeAmount { get; set; }  // 充值模式使用
-}
-
-public enum DisplayMode
-{
-    Standard,        // 标准信息模式
-    WithPhoto,       // 照片信息模式
-    RechargePreview, // 充值预览模式
-    FullInfo         // 完整信息模式
 }
 
 public class StaffInfo
 {
     public string Id { get; set; }
     public string Name { get; set; }
-    public string Gender { get; set; }
-    public string IdCardNumber { get; set; }
-    public string Department { get; set; }
     public string EmployeeNumber { get; set; }
-    public string CardNumber { get; set; }
-    public CardStatus CardStatus { get; set; }
-    public decimal CardBalance { get; set; }
-    public DateTime? CardIssueDate { get; set; }
+    public string CardType { get; set; }
     public DateTime? CardExpiryDate { get; set; }
-    public string PhoneNumber { get; set; }
-    public string PhotoUrl { get; set; }
+    public string Department { get; set; }
+    public decimal ConsumptionBalance { get; set; }
+    public decimal SubsidyBalance { get; set; }
 }
 ```
 
@@ -368,55 +215,38 @@ public class StaffInfo
 
 | 用途 | 颜色值 |
 |------|--------|
-| 模块背景 | #ffffff |
-| 模块边框 | #e0e0e0 |
-| 标题文字 | #1a1919 |
+| 模块背景 | #faf9f3 |
 | 信息标签 | #70706d |
 | 信息内容 | #1a1919 |
-| 分隔线 | #e0e0e0 |
-| 照片边框 | #c7c6bf |
-| 状态-正常 | #4CAF50 |
-| 状态-警告 | #ff6000 |
-| 状态-错误 | #d9230b |
-| 卡片信息区边框 | #e6b84d |
-| 卡片信息区背景 | #faf9f3 |
-| 充值预览区背景 | #fff8e1 |
-| 充值金额 | #d9230b |
-| 余额数字 | #1a1919 |
-| 充值后余额 | #4CAF50 |
+| 字段值区背景 | #ffffff |
+| 辅助说明 | #70706d |
 
 ### 6.2 字体规范
 
 | 元素 | 字体 | 字号 | 字重 |
 |------|------|------|------|
-| 模块标题 | 黑体 | 32px | bold |
 | 信息标签 | 黑体 | 28px | normal |
 | 信息内容 | 黑体 | 28px | normal |
-| 卡片信息标题 | 黑体 | 30px | bold |
-| 余额数字 | 黑体 | 32px | bold |
-| 充值金额 | 黑体 | 32px | bold |
-| 状态标签 | 黑体 | 28px | bold |
+| 余额数字 | 黑体 | 28px | normal |
 
 ### 6.3 间距规范
 
 | 元素 | 间距 |
 |------|------|
 | 模块内边距 | 30px |
-| 标题下边距 | 20px |
-| 信息行间距 | 25px |
+| 信息行间距 | 20px~25px |
 | 标签与内容间距 | 10px |
-| 照片与信息间距 | 30px |
-| 卡片信息区内边距 | 20px |
-| 卡片信息区上边距 | 25px |
-| 充值预览区内边距 | 25px |
+| 左右列间距 | 40px |
+| 通栏字段上下间距 | 25px |
 
 ### 6.4 尺寸规范
 
 | 元素 | 尺寸 |
 |------|------|
 | 模块最小宽度 | 500px |
-| 照片尺寸 | 120×150px |
-| 信息列宽 | 左列30%，右列70% |
+| 左侧字段区 | 约48% |
+| 右侧字段区 | 约48% |
+| 通栏字段区 | 100% |
 
 ---
 
@@ -429,45 +259,9 @@ public partial class StaffInfoViewModel : ViewModelBase
 {
     [ObservableProperty]
     private StaffInfo _staffInfo;
-    
-    [ObservableProperty]
-    private DisplayMode _currentMode;
-    
-    [ObservableProperty]
-    private decimal? _rechargeAmount;
-    
-    [ObservableProperty]
-    private decimal _balanceAfterRecharge;
-    
-    [ObservableProperty]
-    private bool _showPhoto;
-    
-    [ObservableProperty]
-    private bool _showCardInfo;
-    
-    [ObservableProperty]
-    private bool _showRechargePreview;
-    
-    partial void OnCurrentModeChanged(DisplayMode value)
-    {
-        ShowPhoto = value == DisplayMode.WithPhoto;
-        ShowCardInfo = value == DisplayMode.FullInfo;
-        ShowRechargePreview = value == DisplayMode.RechargePreview;
-    }
-    
-    partial void OnRechargeAmountChanged(decimal? value)
-    {
-        if (value.HasValue && StaffInfo != null)
-        {
-            BalanceAfterRecharge = StaffInfo.CardBalance + value.Value;
-        }
-    }
-    
+
     public async Task LoadDataAsync(StaffInfoPageParameter parameter)
     {
-        CurrentMode = parameter.Mode;
-        RechargeAmount = parameter.RechargeAmount;
-        
         if (parameter.Data != null)
         {
             StaffInfo = parameter.Data;
@@ -476,84 +270,47 @@ public partial class StaffInfoViewModel : ViewModelBase
         {
             StaffInfo = await StaffService.GetStaffInfoAsync(parameter.StaffId);
         }
-        
-        if (RechargeAmount.HasValue)
-        {
-            BalanceAfterRecharge = StaffInfo.CardBalance + RechargeAmount.Value;
-        }
     }
-    
-    // 余额变化动画
-    public async Task AnimateBalanceChange(decimal newBalance)
-    {
-        var oldBalance = StaffInfo.CardBalance;
-        StaffInfo.CardBalance = newBalance;
-        
-        // 触发属性变更通知，触发UI动画
-        OnPropertyChanged(nameof(StaffInfo));
-    }
-    
-    // 状态颜色转换
-    public string GetStatusColor(CardStatus status)
-    {
-        return status switch
-        {
-            CardStatus.Normal => "#4CAF50",
-            CardStatus.PendingPickup => "#ff6000",
-            CardStatus.Lost => "#d9230b",
-            CardStatus.Frozen => "#d9230b",
-            _ => "#70706d"
-        };
-    }
+
+    public string CardExpiryText =>
+        StaffInfo?.CardExpiryDate?.ToString("yyyy-MM-dd") ?? string.Empty;
+
+    public string ConsumptionBalanceText =>
+        StaffInfo == null ? "0.00" : StaffInfo.ConsumptionBalance.ToString("F2");
+
+    public string SubsidyBalanceText =>
+        StaffInfo == null ? "0.00" : StaffInfo.SubsidyBalance.ToString("F2");
 }
 ```
 
 ### 7.2 使用示例
 
 ```csharp
-// 在父页面中嵌入 - 标准模式
-public void LoadStaffInfoModule(string staffId, DisplayMode mode)
+// 在父页面中嵌入 - 根据 staffId 加载
+public void LoadStaffInfoModule(string staffId)
 {
     var parameter = new StaffInfoPageParameter
     {
-        StaffId = staffId,
-        Mode = mode
+        StaffId = staffId
     };
-    
-    StaffInfoContent = new StaffInfoPage 
-    { 
-        DataContext = new StaffInfoViewModel(parameter) 
+
+    StaffInfoContent = new StaffInfoPage
+    {
+        DataContext = new StaffInfoViewModel(parameter)
     };
 }
 
-// 充值预览模式
-public void LoadStaffInfoForRecharge(StaffInfo info, decimal rechargeAmount)
+// 直接传入数据对象
+public void LoadStaffInfoModule(StaffInfo info)
 {
     var parameter = new StaffInfoPageParameter
     {
-        Data = info,
-        Mode = DisplayMode.RechargePreview,
-        RechargeAmount = rechargeAmount
+        Data = info
     };
-    
-    StaffInfoContent = new StaffInfoPage 
-    { 
-        DataContext = new StaffInfoViewModel(parameter) 
-    };
-}
 
-// 完整信息模式
-public void LoadFullStaffInfo(string staffId)
-{
-    var parameter = new StaffInfoPageParameter
+    StaffInfoContent = new StaffInfoPage
     {
-        StaffId = staffId,
-        Mode = DisplayMode.FullInfo
-    };
-    
-    StaffInfoContent = new StaffInfoPage 
-    { 
-        DataContext = new StaffInfoViewModel(parameter) 
+        DataContext = new StaffInfoViewModel(parameter)
     };
 }
 ```
@@ -578,6 +335,7 @@ public void LoadFullStaffInfo(string staffId)
 
 | 版本 | 日期 | 修改内容 | 作者 |
 |------|------|----------|------|
+| 1.1 | 2026-04-10 | 按 staff_info_layout.png 修正固定四行布局及相关字段说明 | OpenCode Agent |
 | 1.0 | 2026-03-26 | 初始版本，描述模块四种显示模式和使用方式 | OpenCode Agent |
 
 ---

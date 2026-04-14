@@ -1,0 +1,100 @@
+﻿
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:luo.dangxiao.selfservice.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignWidth="950"
+             d:DesignHeight="620"
+             x:Class="luo.dangxiao.selfservice.Views.StaffInfoPageView"
+             x:DataType="vm:StaffInfoPageViewModel">
+
+    <Design.DataContext>
+        <vm:StaffInfoPageViewModel/>
+    </Design.DataContext>
+
+    <Border MinWidth="500" Padding="30" BorderThickness="1" BorderBrush="{DynamicResource BorderLightBrush}" Background="{DynamicResource BackgroundWhiteBrush}" CornerRadius="7">
+        <Grid RowDefinitions="Auto,20,1,25,Auto,25,Auto,25,Auto">
+            <TextBlock Grid.Row="0" Text="教职工信息" FontFamily="SimHei" FontSize="32" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+            <Border Grid.Row="2" Height="1" Background="{DynamicResource BorderLightBrush}"/>
+
+            <Grid Grid.Row="4" ColumnDefinitions="Auto,30,*">
+                <Border Grid.Column="0" Width="120" Height="150" BorderThickness="1" BorderBrush="{DynamicResource BorderMediumBrush}" Background="#f5f5f5" IsVisible="{Binding ShowPhoto}">
+                    <TextBlock Text="照片" FontFamily="SimHei" FontSize="24" Foreground="{DynamicResource TextMutedBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+
+                <Grid Grid.Column="2" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="18">
+                    <Grid Grid.Row="0" ColumnDefinitions="Auto,*,60,Auto,*">
+                        <TextBlock Grid.Column="0" Text="姓名：" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        <TextBlock Grid.Column="1" Text="{Binding StaffInfo.Name}" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                        <TextBlock Grid.Column="3" Text="性别：" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextSecondaryBrush}" IsVisible="{Binding ShowGender}"/>
+                        <TextBlock Grid.Column="4" Text="{Binding StaffInfo.Gender}" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextPrimaryBrush}" IsVisible="{Binding ShowGender}"/>
+                    </Grid>
+                    <Grid Grid.Row="1" IsVisible="{Binding ShowIdCardNumber}" ColumnDefinitions="Auto,*">
+                        <TextBlock Grid.Column="0" Text="身份证号：" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        <TextBlock Grid.Column="1" Text="{Binding StaffInfo.IdCardNumber}" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                    </Grid>
+                    <Grid Grid.Row="2" ColumnDefinitions="Auto,*">
+                        <TextBlock Grid.Column="0" Text="部门：" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        <TextBlock Grid.Column="1" Text="{Binding StaffInfo.Department}" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                    </Grid>
+                    <Grid Grid.Row="3" ColumnDefinitions="Auto,*">
+                        <TextBlock Grid.Column="0" Text="工号：" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        <TextBlock Grid.Column="1" Text="{Binding StaffInfo.EmployeeNumber}" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                    </Grid>
+                    <Grid Grid.Row="4" IsVisible="{Binding ShowCardInfo}" ColumnDefinitions="Auto,*">
+                        <TextBlock Grid.Column="0" Text="卡号：" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        <TextBlock Grid.Column="1" Text="{Binding StaffInfo.CardNumber}" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                    </Grid>
+                    <Grid Grid.Row="5" IsVisible="{Binding ShowCardInfo}" ColumnDefinitions="Auto,*">
+                        <TextBlock Grid.Column="0" Text="卡片状态：" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        <TextBlock Grid.Column="1" Text="{Binding CardStatusText}" FontFamily="SimHei" FontSize="28" FontWeight="Bold" Foreground="{Binding CardStatusBrush}"/>
+                    </Grid>
+                    <Grid Grid.Row="6" IsVisible="{Binding ShowCardInfo}" ColumnDefinitions="Auto,*">
+                        <TextBlock Grid.Column="0" Text="卡片余额：" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextSecondaryBrush}" IsVisible="{Binding ShowCardBalance}"/>
+                        <TextBlock Grid.Column="1" Text="{Binding StaffInfo.CardBalance, StringFormat=¥{0:F2}}" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextPrimaryBrush}" IsVisible="{Binding ShowCardBalance}"/>
+                    </Grid>
+                    <Grid Grid.Row="7" IsVisible="{Binding ShowPhoneNumber}" ColumnDefinitions="Auto,*">
+                        <TextBlock Grid.Column="0" Text="手机号：" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        <TextBlock Grid.Column="1" Text="{Binding StaffInfo.PhoneNumber}" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                    </Grid>
+                </Grid>
+            </Grid>
+            <Border Grid.Row="6" IsVisible="{Binding ShowCardDetailInfo}" Padding="20" CornerRadius="5" BorderThickness="1" BorderBrush="#e6b84d" Background="#faf9f3">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="卡片信息" FontFamily="SimHei" FontSize="30" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="8">
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="卡号：" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding StaffInfo.CardNumber}" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="状态：" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding CardStatusText}" FontFamily="SimHei" FontSize="28" FontWeight="Bold" Foreground="{Binding CardStatusBrush}"/>
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="余额：" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding StaffInfo.CardBalance, StringFormat=¥{0:F2}}" FontFamily="SimHei" FontSize="32" FontWeight="Bold" Foreground="#d9230b"/>
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="发卡日期：" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding CardIssueDateText}" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="有效期至：" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding CardExpiryDateText}" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+            <Border Grid.Row="8" IsVisible="{Binding ShowRechargePreview}" Padding="25" CornerRadius="5" BorderThickness="2" BorderBrush="#e6b84d" Background="#fff8e1">
+                <StackPanel Spacing="18">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <TextBlock Grid.Column="0" Text="当前余额：" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        <TextBlock Grid.Column="1" Text="{Binding StaffInfo.CardBalance, StringFormat=¥{0:F2}}" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                    </Grid>
+                    <Grid ColumnDefinitions="Auto,*">
+                        <TextBlock Grid.Column="0" Text="充值金额：" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        <TextBlock Grid.Column="1" Text="{Binding RechargeAmount, StringFormat=¥{0:F2}}" FontFamily="SimHei" FontSize="32" FontWeight="Bold" Foreground="#d9230b"/>
+                    </Grid>
+                    <Grid ColumnDefinitions="Auto,*">
+                        <TextBlock Grid.Column="0" Text="充值后余额：" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        <TextBlock Grid.Column="1" Text="{Binding BalanceAfterRecharge, StringFormat=¥{0:F2}}" FontFamily="SimHei" FontSize="32" FontWeight="Bold" Foreground="#4CAF50"/>
+                    </Grid>
+                    <TextBlock Text="请确认充值金额是否正确" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>

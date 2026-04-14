@@ -1,4 +1,120 @@
 <Solution>
+  <Folder Name="/doc/">
+    <File Path="../doc/YC_Card.pdf" />
+    <File Path="../doc/客户端程序界面.docx" />
+  </Folder>
+  <Folder Name="/doc/Design/" />
+  <Folder Name="/doc/Design/CardCenter/">
+    <File Path="../doc/Design/CardCenter/卡务中心设计规格说明书.md" />
+  </Folder>
+  <Folder Name="/doc/Design/CardCenter/PageDesign/">
+    <File Path="../doc/Design/CardCenter/PageDesign/README.md" />
+  </Folder>
+  <Folder Name="/doc/Design/SelfService/">
+    <File Path="../doc/Design/SelfService/自助终端设计规格说明书.md" />
+  </Folder>
+  <Folder Name="/doc/Design/SelfService/PageDesign/">
+    <File Path="../doc/Design/SelfService/PageDesign/CardProcessPage.md" />
+    <File Path="../doc/Design/SelfService/PageDesign/CheckInPage.md" />
+    <File Path="../doc/Design/SelfService/PageDesign/CompletionPage.md" />
+    <File Path="../doc/Design/SelfService/PageDesign/HomePage.md" />
+    <File Path="../doc/Design/SelfService/PageDesign/IDCardVerifyPage.md" />
+    <File Path="../doc/Design/SelfService/PageDesign/QRCodePage.md" />
+    <File Path="../doc/Design/SelfService/PageDesign/README.md" />
+    <File Path="../doc/Design/SelfService/PageDesign/RechargePage.md" />
+    <File Path="../doc/Design/SelfService/PageDesign/ReplacementPage.md" />
+    <File Path="../doc/Design/SelfService/PageDesign/ReportLossPage.md" />
+    <File Path="../doc/Design/SelfService/PageDesign/SMSVerifyPage.md" />
+    <File Path="../doc/Design/SelfService/PageDesign/SpecialTipPage.md" />
+    <File Path="../doc/Design/SelfService/PageDesign/StaffInfoPage.md" />
+    <File Path="../doc/Design/SelfService/PageDesign/StudentInfoPage.md" />
+    <File Path="../doc/Design/SelfService/PageDesign/TakeCardPage.md" />
+    <File Path="../doc/Design/SelfService/PageDesign/UserInfoPage.md" />
+    <File Path="../doc/Design/SelfService/PageDesign/VerifyPage.md" />
+  </Folder>
+  <Folder Name="/doc/Design/SelfService/切图说明/">
+    <File Path="../doc/Design/SelfService/切图说明/主界面切图说明.png" />
+    <File Path="../doc/Design/SelfService/切图说明/刷身份证提示.png" />
+    <File Path="../doc/Design/SelfService/切图说明/基本信息切图说明.png" />
+    <File Path="../doc/Design/SelfService/切图说明/特别提示切图说明.png" />
+    <File Path="../doc/Design/SelfService/切图说明/身份证扫描切图说明.png" />
+  </Folder>
+  <Folder Name="/doc/Design/SelfService/自助机/">
+    <File Path="../doc/Design/SelfService/自助机/background.png" />
+    <File Path="../doc/Design/SelfService/自助机/home_page_1.jpg" />
+    <File Path="../doc/Design/SelfService/自助机/home_page_2.jpg" />
+    <File Path="../doc/Design/SelfService/自助机/sms_page_1.png" />
+    <File Path="../doc/Design/SelfService/自助机/sms_page_2.png" />
+    <File Path="../doc/Design/SelfService/自助机/special_tip_page.jpg" />
+    <File Path="../doc/Design/SelfService/自助机/swipe_card_page_1.png" />
+    <File Path="../doc/Design/SelfService/自助机/swipe_card_page_2.png" />
+    <File Path="../doc/Design/SelfService/自助机/user_info_page_1.jpg" />
+    <File Path="../doc/Design/SelfService/自助机/user_info_page_2.jpg" />
+  </Folder>
+  <Folder Name="/doc/Design/SelfService/自助机裁图/" />
+  <Folder Name="/doc/Design/SelfService/自助机裁图/home_page/">
+    <File Path="../doc/Design/SelfService/自助机裁图/home_page/background.png" />
+    <File Path="../doc/Design/SelfService/自助机裁图/home_page/check_in_128.png" />
+    <File Path="../doc/Design/SelfService/自助机裁图/home_page/check_in_32.png" />
+    <File Path="../doc/Design/SelfService/自助机裁图/home_page/check_in_64.png" />
+    <File Path="../doc/Design/SelfService/自助机裁图/home_page/home_page_layout.png" />
+    <File Path="../doc/Design/SelfService/自助机裁图/home_page/logo.png" />
+    <File Path="../doc/Design/SelfService/自助机裁图/home_page/logo2.ico" />
+    <File Path="../doc/Design/SelfService/自助机裁图/home_page/lost_card_128.png" />
+    <File Path="../doc/Design/SelfService/自助机裁图/home_page/lost_card_32.png" />
+    <File Path="../doc/Design/SelfService/自助机裁图/home_page/lost_card_64.png" />
+    <File Path="../doc/Design/SelfService/自助机裁图/home_page/payment_128.png" />
+    <File Path="../doc/Design/SelfService/自助机裁图/home_page/payment_32.png" />
+    <File Path="../doc/Design/SelfService/自助机裁图/home_page/payment_64.png" />
+    <File Path="../doc/Design/SelfService/自助机裁图/home_page/photo.png" />
+    <File Path="../doc/Design/SelfService/自助机裁图/home_page/replacement_128.png" />
+    <File Path="../doc/Design/SelfService/自助机裁图/home_page/replacement_32.png" />
+    <File Path="../doc/Design/SelfService/自助机裁图/home_page/replacement_64.png" />
+    <File Path="../doc/Design/SelfService/自助机裁图/home_page/take_card_128.png" />
+    <File Path="../doc/Design/SelfService/自助机裁图/home_page/take_card_32.png" />
+    <File Path="../doc/Design/SelfService/自助机裁图/home_page/take_card_64.png" />
+  </Folder>
+  <Folder Name="/doc/Design/SelfService/自助机裁图/special_tip_page/">
+    <File Path="../doc/Design/SelfService/自助机裁图/special_tip_page/icon.png" />
+    <File Path="../doc/Design/SelfService/自助机裁图/special_tip_page/spacial_tip.png" />
+    <File Path="../doc/Design/SelfService/自助机裁图/special_tip_page/spacial_tip_layout.png" />
+  </Folder>
+  <Folder Name="/doc/Design/SelfService/自助机裁图/swipe_card_page/">
+    <File Path="../doc/Design/SelfService/自助机裁图/swipe_card_page/bg.png" />
+    <File Path="../doc/Design/SelfService/自助机裁图/swipe_card_page/page1_layout.png" />
+    <File Path="../doc/Design/SelfService/自助机裁图/swipe_card_page/page2_layout.png" />
+    <File Path="../doc/Design/SelfService/自助机裁图/swipe_card_page/swipe_id_card.png" />
+  </Folder>
+  <Folder Name="/doc/Design/SelfService/自助机裁图/user_info_page/">
+    <File Path="../doc/Design/SelfService/自助机裁图/user_info_page/back_icon.png" />
+    <File Path="../doc/Design/SelfService/自助机裁图/user_info_page/checkboxpress.png" />
+    <File Path="../doc/Design/SelfService/自助机裁图/user_info_page/checkbox_normal.png" />
+    <File Path="../doc/Design/SelfService/自助机裁图/user_info_page/payment_icon.png" />
+    <File Path="../doc/Design/SelfService/自助机裁图/user_info_page/user_icon.png" />
+    <File Path="../doc/Design/SelfService/自助机裁图/user_info_page/user_info_layout.png" />
+  </Folder>
+  <Folder Name="/doc/Resources/">
+    <File Path="../doc/Resources/back.png" />
+    <File Path="../doc/Resources/background.png" />
+    <File Path="../doc/Resources/badge.jpg" />
+    <File Path="../doc/Resources/card_replacemnet.png" />
+    <File Path="../doc/Resources/check_in.png" />
+    <File Path="../doc/Resources/guide.png" />
+    <File Path="../doc/Resources/guide2.png" />
+    <File Path="../doc/Resources/loss_reporting.png" />
+    <File Path="../doc/Resources/lower_left_corner.png" />
+    <File Path="../doc/Resources/main.jpg" />
+    <File Path="../doc/Resources/next.png" />
+    <File Path="../doc/Resources/payment.png" />
+    <File Path="../doc/Resources/phone.png" />
+    <File Path="../doc/Resources/qr_code_sample.png" />
+    <File Path="../doc/Resources/special_tip.png" />
+    <File Path="../doc/Resources/split_line.png" />
+    <File Path="../doc/Resources/swipe_card.png" />
+    <File Path="../doc/Resources/taking_card.png" />
+    <File Path="../doc/Resources/tip.png" />
+    <File Path="../doc/Resources/upper_right_corner.png" />
+  </Folder>
   <Folder Name="/解决方案项/">
     <File Path="AGENTS.md" />
   </Folder>

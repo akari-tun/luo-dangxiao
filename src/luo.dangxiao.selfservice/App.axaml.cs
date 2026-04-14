@@ -25,7 +25,9 @@ namespace luo.dangxiao.selfservice
                 .AddSingleton<CfgDataModel>()
                 .AddTransient<VerifyPageViewModel>()
                 .AddTransient<IDCardVerifyPageViewModel>()
-                .AddTransient<SMSVerifyPageViewModel>();
+                .AddTransient<SMSVerifyPageViewModel>()
+                .AddTransient<StudentInfoPageViewModel>()
+                .AddTransient<StaffInfoPageViewModel>();
 
             Ioc.Default.ConfigureServices(serviceCollection.BuildServiceProvider());
 
