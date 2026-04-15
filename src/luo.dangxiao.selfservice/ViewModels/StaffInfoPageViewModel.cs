@@ -1,6 +1,9 @@
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using luo.dangxiao.common.Enums;
+using luo.dangxiao.interfaces.ViewModels;
+using luo.dangxiao.models;
 
 namespace luo.dangxiao.selfservice.ViewModels;
 
@@ -13,17 +16,6 @@ public enum StaffInfoDisplayMode
     WithPhoto,
     RechargePreview,
     FullInfo
-}
-
-/// <summary>
-/// Staff card status.
-/// </summary>
-public enum StaffCardStatus
-{
-    Normal,
-    PendingPickup,
-    Lost,
-    Frozen
 }
 
 /// <summary>
@@ -41,53 +33,25 @@ public sealed class StaffInfoPageParameter
 }
 
 /// <summary>
-/// Staff basic data.
-/// </summary>
-public sealed class StaffInfoModel
-{
-    public string Id { get; set; } = string.Empty;
-
-    public string Name { get; set; } = string.Empty;
-
-    public string Gender { get; set; } = string.Empty;
-
-    public string IdCardNumber { get; set; } = string.Empty;
-
-    public string Department { get; set; } = string.Empty;
-
-    public string EmployeeNumber { get; set; } = string.Empty;
-
-    public string CardNumber { get; set; } = string.Empty;
-
-    public StaffCardStatus CardStatus { get; set; }
-
-    public decimal CardBalance { get; set; }
-
-    public DateTime? CardIssueDate { get; set; }
-
-    public DateTime? CardExpiryDate { get; set; }
-
-    public string PhoneNumber { get; set; } = string.Empty;
-
-    public string PhotoUrl { get; set; } = string.Empty;
-}
-
-/// <summary>
 /// ViewModel for StaffInfoPage module.
 /// </summary>
-public partial class StaffInfoPageViewModel : ViewModelBase
+public partial class StaffInfoPageViewModel : ViewModelBase, IPageViewModel
 {
     [ObservableProperty]
     private StaffInfoModel _staffInfo = new()
     {
         Id = "STF2020001",
         Name = "张明华",
+        UserType = UserType.Staff,
         Gender = "男",
         IdCardNumber = "430101198502031234",
         Department = "教务处",
         EmployeeNumber = "T2020001",
+        CardType = "教职工卡",
         CardNumber = "2020001001",
         CardStatus = StaffCardStatus.Normal,
+        ConsumptionBalance = 125.50m,
+        SubsidyBalance = 80.00m,
         CardBalance = 125.50m,
         CardIssueDate = new DateTime(2020, 1, 1),
         CardExpiryDate = new DateTime(2025, 12, 31),
@@ -201,6 +165,6 @@ public partial class StaffInfoPageViewModel : ViewModelBase
 
     private void UpdateBalanceAfterRecharge()
     {
-        BalanceAfterRecharge = StaffInfo.CardBalance + (RechargeAmount ?? 0m);
+        BalanceAfterRecharge = StaffInfo.ConsumptionBalance + (RechargeAmount ?? 0m);
     }
 }

@@ -8,7 +8,6 @@ using luo.dangxiao.models;
 using luo.dangxiao.selfservice.ViewModels;
 using luo.dangxiao.selfservice.Views;
 using Microsoft.Extensions.DependencyInjection;
-using System.ComponentModel.Design;
 using System.Linq;
 
 namespace luo.dangxiao.selfservice
@@ -26,6 +25,7 @@ namespace luo.dangxiao.selfservice
                 .AddTransient<VerifyPageViewModel>()
                 .AddTransient<IDCardVerifyPageViewModel>()
                 .AddTransient<SMSVerifyPageViewModel>()
+                .AddTransient<UserInfoPageViewModel>()
                 .AddTransient<StudentInfoPageViewModel>()
                 .AddTransient<StaffInfoPageViewModel>();
 

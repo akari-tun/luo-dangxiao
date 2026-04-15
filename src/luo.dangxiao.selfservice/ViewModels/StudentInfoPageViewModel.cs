@@ -1,6 +1,9 @@
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using luo.dangxiao.common.Enums;
+using luo.dangxiao.interfaces.ViewModels;
+using luo.dangxiao.models;
 
 namespace luo.dangxiao.selfservice.ViewModels;
 
@@ -12,35 +15,6 @@ public enum StudentInfoDisplayMode
     Standard,
     WithPhoto,
     FullInfo
-}
-
-/// <summary>
-/// Student card status.
-/// </summary>
-public enum StudentCardStatus
-{
-    Normal,
-    PendingPickup,
-    Lost,
-    Unissued
-}
-
-/// <summary>
-/// Check-in status.
-/// </summary>
-public enum StudentCheckInStatus
-{
-    CheckedIn,
-    NotCheckedIn
-}
-
-/// <summary>
-/// Payment status.
-/// </summary>
-public enum StudentPaymentStatus
-{
-    Paid,
-    Unpaid
 }
 
 /// <summary>
@@ -58,68 +32,26 @@ public sealed class StudentInfoPageParameter
 }
 
 /// <summary>
-/// Student basic/training/card data.
-/// </summary>
-public sealed class StudentInfoModel
-{
-    public string Id { get; set; } = string.Empty;
-
-    public string Name { get; set; } = string.Empty;
-
-    public string Gender { get; set; } = string.Empty;
-
-    public string IdCardNumber { get; set; } = string.Empty;
-
-    public string ClassName { get; set; } = string.Empty;
-
-    public DateTime TrainingStartDate { get; set; }
-
-    public DateTime TrainingEndDate { get; set; }
-
-    public string CardNumber { get; set; } = string.Empty;
-
-    public StudentCardStatus CardStatus { get; set; }
-
-    public string RoomNumber { get; set; } = string.Empty;
-
-    public StudentCheckInStatus CheckInStatus { get; set; }
-
-    public string PhotoUrl { get; set; } = string.Empty;
-}
-
-/// <summary>
-/// Student fee data.
-/// </summary>
-public sealed class StudentFeeInfoModel
-{
-    public decimal TrainingFee { get; set; }
-
-    public decimal AccommodationFee { get; set; }
-
-    public decimal MealFee { get; set; }
-
-    public decimal TotalFee { get; set; }
-
-    public StudentPaymentStatus PaymentStatus { get; set; }
-}
-
-/// <summary>
 /// ViewModel for StudentInfoPage module.
 /// </summary>
-public partial class StudentInfoPageViewModel : ViewModelBase
+public partial class StudentInfoPageViewModel : ViewModelBase, IPageViewModel
 {
     [ObservableProperty]
     private StudentInfoModel _studentInfo = new()
     {
         Id = "STU20260001",
         Name = "李天明",
+        UserType = UserType.Student,
         Gender = "男",
         IdCardNumber = "430101199001011234",
         ClassName = "测试培训班一",
+        CheckInStartTime = new DateTime(2020, 09, 01, 14, 0, 0),
+        CheckInEndTime = new DateTime(2020, 09, 05, 12, 0, 0),
         TrainingStartDate = new DateTime(2020, 09, 01),
         TrainingEndDate = new DateTime(2020, 09, 05),
         CardNumber = "20200901001",
         CardStatus = StudentCardStatus.PendingPickup,
+        RoomName = "301房",
         RoomNumber = "301房",
         CheckInStatus = StudentCheckInStatus.NotCheckedIn
     };
@@ -143,13 +75,25 @@ public partial class StudentInfoPageViewModel : ViewModelBase
 
     public bool ShowIdCardNumber => CurrentMode != StudentInfoDisplayMode.WithPhoto;
 
-    public bool ShowRoomNumber => !string.IsNullOrWhiteSpace(StudentInfo.RoomNumber) && CurrentMode != StudentInfoDisplayMode.WithPhoto;
+    public bool ShowRoomNumber => !string.IsNullOrWhiteSpace(RoomDisplay) && CurrentMode != StudentInfoDisplayMode.WithPhoto;
 
     public bool ShowCheckInStatus => CurrentMode != StudentInfoDisplayMode.WithPhoto;
 
     public bool ShowCardInfo => !string.IsNullOrWhiteSpace(StudentInfo.CardNumber);
 
-    public string TrainingDateRange => $"{StudentInfo.TrainingStartDate:yyyy-MM-dd} 至 {StudentInfo.TrainingEndDate:yyyy-MM-dd}";
+    public string RoomDisplay => string.IsNullOrWhiteSpace(StudentInfo.RoomName)
+        ? StudentInfo.RoomNumber
+        : StudentInfo.RoomName;
+
+    public string CheckInStartText => FormatDateTime(StudentInfo.CheckInStartTime);
+
+    public string CheckInEndText => FormatDateTime(StudentInfo.CheckInEndTime);
+
+    public string TrainingStartText => FormatDate(StudentInfo.TrainingStartDate);
+
+    public string TrainingEndText => FormatDate(StudentInfo.TrainingEndDate);
+
+    public string TrainingDateRange => $"{TrainingStartText} 至 {TrainingEndText}";
 
     public string CardStatusText => StudentInfo.CardStatus switch
     {
@@ -210,6 +154,11 @@ public partial class StudentInfoPageViewModel : ViewModelBase
     {
         OnPropertyChanged(nameof(ShowRoomNumber));
         OnPropertyChanged(nameof(ShowCardInfo));
+        OnPropertyChanged(nameof(RoomDisplay));
+        OnPropertyChanged(nameof(CheckInStartText));
+        OnPropertyChanged(nameof(CheckInEndText));
+        OnPropertyChanged(nameof(TrainingStartText));
+        OnPropertyChanged(nameof(TrainingEndText));
         OnPropertyChanged(nameof(TrainingDateRange));
         OnPropertyChanged(nameof(CardStatusText));
         OnPropertyChanged(nameof(CardStatusBrush));
@@ -248,6 +197,11 @@ public partial class StudentInfoPageViewModel : ViewModelBase
         OnPropertyChanged(nameof(ShowRoomNumber));
         OnPropertyChanged(nameof(ShowCheckInStatus));
         OnPropertyChanged(nameof(ShowCardInfo));
+        OnPropertyChanged(nameof(RoomDisplay));
+        OnPropertyChanged(nameof(CheckInStartText));
+        OnPropertyChanged(nameof(CheckInEndText));
+        OnPropertyChanged(nameof(TrainingStartText));
+        OnPropertyChanged(nameof(TrainingEndText));
         OnPropertyChanged(nameof(TrainingDateRange));
         OnPropertyChanged(nameof(CardStatusText));
         OnPropertyChanged(nameof(CardStatusBrush));
@@ -255,5 +209,15 @@ public partial class StudentInfoPageViewModel : ViewModelBase
         OnPropertyChanged(nameof(CheckInStatusBrush));
         OnPropertyChanged(nameof(PaymentStatusText));
         OnPropertyChanged(nameof(PaymentStatusBrush));
+    }
+
+    private static string FormatDateTime(DateTime? value)
+    {
+        return value?.ToString("yyyy-MM-dd HH:mm") ?? string.Empty;
+    }
+
+    private static string FormatDate(DateTime value)
+    {
+        return value.ToString("yyyy-MM-dd");
     }
 }

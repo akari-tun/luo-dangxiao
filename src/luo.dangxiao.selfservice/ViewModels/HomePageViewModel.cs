@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using luo.dangxiao.common.Enums;
 using luo.dangxiao.interfaces.ViewModels;
+using luo.dangxiao.models;
 using luo.dangxiao.selfservice.Views;
 using System.ComponentModel;
 
@@ -56,7 +57,24 @@ public partial class HomePageViewModel : ViewModelBase, IPageViewModel
         LoadVerifyPage();
     }
 
-    private void LoadVerifyPage()
+    public void NavigateToUserInfo(UserInfoModel userInfo, string targetFunction)
+    {
+        SelectedFunction = targetFunction;
+        CurrentState = HomePageState.SubPageContainer;
+        SubPageContent = new UserInfoPageView(new UserInfoPageParameter
+        {
+            TargetFunction = targetFunction,
+            Data = userInfo
+        });
+    }
+
+    public void ReturnHome()
+    {
+        SelectedFunction = string.Empty;
+        CurrentState = HomePageState.HomePage;
+    }
+
+    public void LoadVerifyPage()
     {
         SubPageContent = new VerifyPageView(SelectedFunction);
     }

@@ -1,6 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using luo.dangxiao.common.Enums;
+using luo.dangxiao.interfaces.ViewModels;
 using luo.dangxiao.interfaces.Views;
 using luo.dangxiao.selfservice.Views;
 
@@ -11,7 +13,7 @@ namespace luo.dangxiao.selfservice.ViewModels;
 /// <summary>
 /// ViewModel for VerifyPage.
 /// </summary>
-public partial class VerifyPageViewModel : ViewModelBase
+public partial class VerifyPageViewModel : ViewModelBase, IPageViewModel
 {
     [ObservableProperty]
     private VerifyMethod _verifyMethod = VerifyMethod.IDCard;
@@ -22,13 +24,18 @@ public partial class VerifyPageViewModel : ViewModelBase
     [ObservableProperty]
     private IPageView _verifyPageContent;
 
-    private IDCardVerifyPageView _idCardView;
-    private SMSVerifyPageView _smsModuleView;
+    private readonly IDCardVerifyPageView _idCardView;
+    private readonly SMSVerifyPageView _smsModuleView;
 
     public VerifyPageViewModel()
     {
         _idCardView = new IDCardVerifyPageView();
         _smsModuleView = new SMSVerifyPageView();
+
+        if (_idCardView.DataContext is IDCardVerifyPageViewModel idCardViewModel)
+        {
+            idCardViewModel.VerificationSucceeded += OnVerificationSucceeded;
+        }
 
         VerifyPageContent = _idCardView;
     }
@@ -55,5 +62,10 @@ public partial class VerifyPageViewModel : ViewModelBase
     {
         VerifyMethod = VerifyMethod.SMS;
         VerifyPageContent = _smsModuleView;
+    }
+
+    private void OnVerificationSucceeded(object? sender, IDCardVerificationSucceededEventArgs e)
+    {
+        Ioc.Default.GetRequiredService<HomePageViewModel>().NavigateToUserInfo(e.UserInfo, TargetFunction);
     }
 }

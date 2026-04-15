@@ -1,0 +1,79 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:luo.dangxiao.selfservice.ViewModels"
+             xmlns:lang="clr-namespace:luo.dangxiao.resources.Languages;assembly=luo.dangxiao.resources"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignWidth="1100"
+             d:DesignHeight="700"
+             x:Class="luo.dangxiao.selfservice.Views.UserInfoPageView"
+             x:DataType="vm:UserInfoPageViewModel">
+
+    <Design.DataContext>
+        <vm:UserInfoPageViewModel/>
+    </Design.DataContext>
+
+    <UserControl.Styles>
+        <Style Selector="TextBlock.page-description">
+            <Setter Property="FontFamily" Value="SimHei"/>
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="*,130">
+        <Grid>
+            <Image Source="avares://luo.dangxiao.resources/Images/bg.png" Stretch="Fill"/>
+
+            <Border Margin="45,30,45,30"
+                    CornerRadius="7">
+                <Grid RowDefinitions="430,*">
+                    <Border Grid.Row="0"
+                            Margin="0,8,0,0"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Top"
+                            Background="Transparent">
+                        <ContentControl HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Top"
+                                        Content="{Binding UserInfoModuleContent}"/>
+                    </Border>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.Styles>
+                <StyleInclude Source="avares://luo.dangxiao.resources/Styles/ButtonStyles.axaml"/>
+            </Grid.Styles>
+
+            <Button Command="{Binding BackCommand}"
+                    Width="322"
+                    Height="95"
+                    FontSize="40"
+                    HorizontalAlignment="Left">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Image Source="avares://luo.dangxiao.resources/Images/back_icon.png"
+                           Width="48"
+                           Height="48"
+                           Margin="0,0,20,0"/>
+                    <TextBlock Text="{x:Static lang:LanguageProvider.Button_Back}"/>
+                </StackPanel>
+            </Button>
+
+            <Button Width="322"
+                    Height="95"
+                    FontSize="40"
+                    HorizontalAlignment="Right"
+                    IsVisible="{Binding ShowPrimaryAction}">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Image Source="{Binding PrimaryActionIcon}"
+                           Width="48"
+                           Height="48"
+                           Margin="0,0,20,0"/>
+                    <TextBlock Text="{Binding PrimaryActionText}"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+    </Grid>
+</UserControl>

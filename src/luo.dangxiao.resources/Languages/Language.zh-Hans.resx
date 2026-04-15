@@ -255,6 +255,45 @@
   <data name="SelfService_Verify_SwitchToIDCard" xml:space="preserve">
     <value>切换到身份证验证 →</value>
   </data>
+  <data name="SelfService_Info_BasicInfo" xml:space="preserve">
+    <value>基本信息</value>
+  </data>
+  <data name="SelfService_Info_Name" xml:space="preserve">
+    <value>姓名</value>
+  </data>
+  <data name="SelfService_Info_StaffNumber" xml:space="preserve">
+    <value>人员编号</value>
+  </data>
+  <data name="SelfService_Info_CardType" xml:space="preserve">
+    <value>卡片类型</value>
+  </data>
+  <data name="SelfService_Info_CardExpiryDate" xml:space="preserve">
+    <value>卡有效期</value>
+  </data>
+  <data name="SelfService_Info_Department" xml:space="preserve">
+    <value>所在部门</value>
+  </data>
+  <data name="SelfService_Info_ConsumptionBalance" xml:space="preserve">
+    <value>消费余额</value>
+  </data>
+  <data name="SelfService_Info_SubsidyBalance" xml:space="preserve">
+    <value>补助余额</value>
+  </data>
+  <data name="SelfService_Info_CheckInRoom" xml:space="preserve">
+    <value>入住房间</value>
+  </data>
+  <data name="SelfService_Info_CheckInTime" xml:space="preserve">
+    <value>入住时间</value>
+  </data>
+  <data name="SelfService_Info_RangeSeparator" xml:space="preserve">
+    <value>至</value>
+  </data>
+  <data name="SelfService_Info_ClassName" xml:space="preserve">
+    <value>班级名称</value>
+  </data>
+  <data name="SelfService_Info_TrainingTime" xml:space="preserve">
+    <value>培训时间</value>
+  </data>
   <data name="Button_Back" xml:space="preserve">
     <value>返回</value>
   </data>

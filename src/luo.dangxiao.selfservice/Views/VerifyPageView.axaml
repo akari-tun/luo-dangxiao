@@ -20,11 +20,11 @@
             </Grid>
         </Border>
 
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="1">
             <Grid.Styles>
 			    <StyleInclude Source="avares://luo.dangxiao.resources/Styles/ButtonStyles.axaml"/>
             </Grid.Styles>
-            <Button CommandParameter="Back"
+            <Button Command="{Binding BackCommand}"
                     Width="322" Height="95"
                     FontSize="40"
                     HorizontalAlignment="Left">

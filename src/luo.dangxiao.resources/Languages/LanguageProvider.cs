@@ -38,4 +38,18 @@ public static class LanguageProvider
     public static string SelfService_Verify_SMS_Resend => Get(nameof(SelfService_Verify_SMS_Resend));
     public static string SelfService_Verify_SMS_Next => Get(nameof(SelfService_Verify_SMS_Next));
     public static string SelfService_Verify_SwitchToIDCard => Get(nameof(SelfService_Verify_SwitchToIDCard));
+
+    public static string SelfService_Info_BasicInfo => Get(nameof(SelfService_Info_BasicInfo));
+    public static string SelfService_Info_Name => Get(nameof(SelfService_Info_Name));
+    public static string SelfService_Info_StaffNumber => Get(nameof(SelfService_Info_StaffNumber));
+    public static string SelfService_Info_CardType => Get(nameof(SelfService_Info_CardType));
+    public static string SelfService_Info_CardExpiryDate => Get(nameof(SelfService_Info_CardExpiryDate));
+    public static string SelfService_Info_Department => Get(nameof(SelfService_Info_Department));
+    public static string SelfService_Info_ConsumptionBalance => Get(nameof(SelfService_Info_ConsumptionBalance));
+    public static string SelfService_Info_SubsidyBalance => Get(nameof(SelfService_Info_SubsidyBalance));
+    public static string SelfService_Info_CheckInRoom => Get(nameof(SelfService_Info_CheckInRoom));
+    public static string SelfService_Info_CheckInTime => Get(nameof(SelfService_Info_CheckInTime));
+    public static string SelfService_Info_RangeSeparator => Get(nameof(SelfService_Info_RangeSeparator));
+    public static string SelfService_Info_ClassName => Get(nameof(SelfService_Info_ClassName));
+    public static string SelfService_Info_TrainingTime => Get(nameof(SelfService_Info_TrainingTime));
 }

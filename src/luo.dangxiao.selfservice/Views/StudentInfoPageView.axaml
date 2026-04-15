@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:luo.dangxiao.selfservice.ViewModels"
+             xmlns:lang="clr-namespace:luo.dangxiao.resources.Languages;assembly=luo.dangxiao.resources"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
@@ -14,145 +15,92 @@
     </Design.DataContext>
 
     <UserControl.Styles>
+        <Style Selector="TextBlock.page-title">
+            <Setter Property="FontFamily" Value="SimHei"/>
+            <Setter Property="FontSize" Value="36"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        </Style>
         <Style Selector="TextBlock.info-label">
             <Setter Property="FontFamily" Value="SimHei"/>
             <Setter Property="FontSize" Value="28"/>
-            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
         </Style>
         <Style Selector="TextBlock.info-value">
             <Setter Property="FontFamily" Value="SimHei"/>
             <Setter Property="FontSize" Value="28"/>
-            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
-        <Style Selector="TextBlock.info-status-value">
+        <Style Selector="TextBlock.range-separator">
             <Setter Property="FontFamily" Value="SimHei"/>
             <Setter Property="FontSize" Value="28"/>
-            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="Border.field-box">
+            <Setter Property="Background" Value="{StaticResource BackgroundWhiteBrush}"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="8,6"/>
         </Style>
     </UserControl.Styles>
 
     <Border MinWidth="500"
             Padding="30"
-            BorderThickness="1"
-            BorderBrush="{DynamicResource BorderLightBrush}"
-            Background="{DynamicResource BackgroundWhiteBrush}"
-            CornerRadius="7">
-        <Grid RowDefinitions="Auto,20,1,25,Auto,25,Auto">
-            <TextBlock Grid.Row="0"
-                       Text="学员信息"
-                       FontFamily="SimHei"
-                       FontSize="32"
-                       FontWeight="Bold"
-                       Foreground="{DynamicResource TextPrimaryBrush}"/>
+            CornerRadius="7"
+            VerticalAlignment="Top">
+        <Grid RowDefinitions="Auto,20,Auto,12,Auto,12,Auto,12,Auto">
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="12">
+                <Border Width="8" Height="32" Background="{StaticResource PrimaryRedDarkBrush}" CornerRadius="4"/>
+                <TextBlock Text="{x:Static lang:LanguageProvider.SelfService_Info_BasicInfo}" Classes="page-title"/>
+            </StackPanel>
 
-            <Border Grid.Row="2"
-                    Height="1"
-                    Background="{DynamicResource BorderLightBrush}"/>
-
-            <Border Grid.Row="4"
-                    Padding="20"
-                    Background="#fcfcfc"
-                    BorderThickness="1"
-                    BorderBrush="{DynamicResource BorderLightBrush}"
-                    CornerRadius="6">
-                <Grid ColumnDefinitions="Auto,30,*"
-                      ColumnSpacing="0">
-                    <Border Grid.Column="0"
-                            Width="120"
-                            Height="150"
-                            BorderThickness="1"
-                            BorderBrush="{DynamicResource BorderMediumBrush}"
-                            Background="#f5f5f5"
-                            IsVisible="{Binding ShowPhoto, Mode=OneWay}">
-                        <TextBlock Text="照片"
-                                   FontFamily="SimHei"
-                                   FontSize="24"
-                                   Foreground="{DynamicResource TextMutedBrush}"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"/>
+            <Grid Grid.Row="2" ColumnDefinitions="Auto,64,*">
+                <Grid Grid.Column="0" ColumnDefinitions="128,12,256">
+                    <TextBlock Grid.Column="0" Text="{x:Static lang:LanguageProvider.SelfService_Info_Name}" Classes="info-label"/>
+                    <Border Grid.Column="2" Classes="field-box">
+                        <TextBlock Text="{Binding StudentInfo.Name}" Classes="info-value"/>
                     </Border>
-
-                    <Grid Grid.Column="2" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="18">
-                        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,60,Auto,*">
-                            <TextBlock Grid.Column="0" Text="姓名：" Classes="info-label"/>
-                            <TextBlock Grid.Column="1" Text="{Binding StudentInfo.Name}" Classes="info-value"/>
-                            <TextBlock Grid.Column="3" Text="性别：" Classes="info-label"/>
-                            <TextBlock Grid.Column="4" Text="{Binding StudentInfo.Gender}" Classes="info-value"/>
-                        </Grid>
-
-                        <Grid Grid.Row="1" IsVisible="{Binding ShowIdCardNumber, Mode=OneWay}" ColumnDefinitions="Auto,*">
-                            <TextBlock Grid.Column="0" Text="身份证号：" Classes="info-label"/>
-                            <TextBlock Grid.Column="1" Text="{Binding StudentInfo.IdCardNumber}" Classes="info-value"/>
-                        </Grid>
-
-                        <Grid Grid.Row="2" ColumnDefinitions="Auto,*">
-                            <TextBlock Grid.Column="0" Text="班级：" Classes="info-label"/>
-                            <TextBlock Grid.Column="1" Text="{Binding StudentInfo.ClassName}" Classes="info-value"/>
-                        </Grid>
-
-                        <Grid Grid.Row="3" ColumnDefinitions="Auto,*">
-                            <TextBlock Grid.Column="0" Text="培训时间：" Classes="info-label"/>
-                            <TextBlock Grid.Column="1" Text="{Binding TrainingDateRange}" Classes="info-value"/>
-                        </Grid>
-
-                        <Grid Grid.Row="4" IsVisible="{Binding ShowCardInfo, Mode=OneWay}" ColumnDefinitions="Auto,*">
-                            <TextBlock Grid.Column="0" Text="卡号：" Classes="info-label"/>
-                            <TextBlock Grid.Column="1" Text="{Binding StudentInfo.CardNumber}" Classes="info-value"/>
-                        </Grid>
-
-                        <Grid Grid.Row="5" IsVisible="{Binding ShowCardInfo, Mode=OneWay}" ColumnDefinitions="Auto,*">
-                            <TextBlock Grid.Column="0" Text="卡片状态：" Classes="info-label"/>
-                            <TextBlock Grid.Column="1" Text="{Binding CardStatusText}" Classes="info-status-value" Foreground="{Binding CardStatusBrush}"/>
-                        </Grid>
-
-                        <Grid Grid.Row="6" IsVisible="{Binding ShowRoomNumber, Mode=OneWay}" ColumnDefinitions="Auto,*">
-                            <TextBlock Grid.Column="0" Text="房间号：" Classes="info-label"/>
-                            <TextBlock Grid.Column="1" Text="{Binding StudentInfo.RoomNumber}" Classes="info-value"/>
-                        </Grid>
-
-                        <Grid Grid.Row="7" IsVisible="{Binding ShowCheckInStatus, Mode=OneWay}" ColumnDefinitions="Auto,*">
-                            <TextBlock Grid.Column="0" Text="报到状态：" Classes="info-label"/>
-                            <TextBlock Grid.Column="1" Text="{Binding CheckInStatusText}" Classes="info-status-value" Foreground="{Binding CheckInStatusBrush}"/>
-                        </Grid>
-                    </Grid>
                 </Grid>
-            </Border>
+                <Grid Grid.Column="2" ColumnDefinitions="128,12,256" >
+                    <TextBlock Grid.Column="0" Text="{x:Static lang:LanguageProvider.SelfService_Info_CheckInRoom}" Classes="info-label"/>
+                    <Border Grid.Column="2" Classes="field-box">
+                        <TextBlock Text="{Binding RoomDisplay}" Classes="info-value"/>
+                    </Border>
+                </Grid>
+            </Grid>
 
-            <Border Grid.Row="6"
-                    IsVisible="{Binding ShowFeeInfo, Mode=OneWay}"
-                    Margin="0,25,0,0"
-                    Padding="20"
-                    CornerRadius="5"
-                    BorderThickness="1"
-                    BorderBrush="#e6b84d"
-                    Background="#faf9f3">
-                <StackPanel Spacing="12">
-                    <TextBlock Text="费用信息"
-                               FontFamily="SimHei"
-                               FontSize="30"
-                               FontWeight="Bold"
-                               Foreground="#d9230b"/>
-                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="8">
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="培训费：" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextPrimaryBrush}"/>
-                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding FeeInfo.TrainingFee, StringFormat=¥{0:F2}}" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextPrimaryBrush}"/>
+            <Grid Grid.Row="4" ColumnDefinitions="128,12,256,12,40,12,256">
+                <TextBlock Grid.Column="0" Text="{x:Static lang:LanguageProvider.SelfService_Info_CheckInTime}" Classes="info-label"/>
+                <Border Grid.Column="2" Classes="field-box">
+                    <TextBlock Text="{Binding CheckInStartText}" Classes="info-value"/>
+                </Border>
+                <TextBlock Grid.Column="4" Text="{x:Static lang:LanguageProvider.SelfService_Info_RangeSeparator}" Classes="range-separator"/>
+                <Border Grid.Column="6" Classes="field-box">
+                    <TextBlock Text="{Binding CheckInEndText}" Classes="info-value"/>
+                </Border>
+            </Grid>
 
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="住宿费：" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextPrimaryBrush}"/>
-                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding FeeInfo.AccommodationFee, StringFormat=¥{0:F2}}" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextPrimaryBrush}"/>
+            <Grid Grid.Row="6" ColumnDefinitions="128,12,256">
+                <TextBlock Grid.Column="0" Text="{x:Static lang:LanguageProvider.SelfService_Info_ClassName}" Classes="info-label"/>
+                <Border Grid.Column="2" Classes="field-box">
+                    <TextBlock Text="{Binding StudentInfo.ClassName}" Classes="info-value"/>
+                </Border>
+            </Grid>
 
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="餐费：" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextPrimaryBrush}"/>
-                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding FeeInfo.MealFee, StringFormat=¥{0:F2}}" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextPrimaryBrush}"/>
-
-                        <TextBlock Grid.Row="3" Grid.Column="0" Text="合计：" FontFamily="SimHei" FontSize="32" FontWeight="Bold" Foreground="#d9230b"/>
-                        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding FeeInfo.TotalFee, StringFormat=¥{0:F2}}" FontFamily="SimHei" FontSize="32" FontWeight="Bold" Foreground="#d9230b"/>
-
-                        <TextBlock Grid.Row="4" Grid.Column="0" Text="缴费状态：" FontFamily="SimHei" FontSize="28" Foreground="{DynamicResource TextPrimaryBrush}"/>
-                        <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding PaymentStatusText}" FontFamily="SimHei" FontSize="28" FontWeight="Bold" Foreground="{Binding PaymentStatusBrush}"/>
-                    </Grid>
-                </StackPanel>
-            </Border>
+            <Grid Grid.Row="8" ColumnDefinitions="128,12,257,12,40,12,256">
+                <TextBlock Grid.Column="0" Text="{x:Static lang:LanguageProvider.SelfService_Info_TrainingTime}" Classes="info-label"/>
+                <Border Grid.Column="2" Classes="field-box">
+                    <TextBlock Text="{Binding TrainingStartText}" Classes="info-value"/>
+                </Border>
+                <TextBlock Grid.Column="4" Text="{x:Static lang:LanguageProvider.SelfService_Info_RangeSeparator}" Classes="range-separator"/>
+                <Border Grid.Column="6" Classes="field-box">
+                    <TextBlock Text="{Binding TrainingEndText}" Classes="info-value"/>
+                </Border>
+            </Grid>
         </Grid>
     </Border>
 </UserControl>

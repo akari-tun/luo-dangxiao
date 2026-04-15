@@ -1,6 +1,7 @@
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using luo.dangxiao.interfaces.ViewModels;
 using luo.dangxiao.resources.Languages;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
@@ -10,7 +11,7 @@ namespace luo.dangxiao.selfservice.ViewModels;
 /// <summary>
 /// ViewModel for SMS verify module.
 /// </summary>
-public partial class SMSVerifyPageViewModel : ViewModelBase
+public partial class SMSVerifyPageViewModel : ViewModelBase, IPageViewModel
 {
     private readonly DispatcherTimer _countdownTimer;
 
