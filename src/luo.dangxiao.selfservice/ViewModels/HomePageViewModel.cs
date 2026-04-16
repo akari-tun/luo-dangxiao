@@ -68,6 +68,17 @@ public partial class HomePageViewModel : ViewModelBase, IPageViewModel
         });
     }
 
+    public void NavigateToTakeCard(UserInfoModel userInfo)
+    {
+        SelectedFunction = "TakeCard";
+        CurrentState = HomePageState.SubPageContainer;
+        SubPageContent = new TakeCardPageView(new TakeCardPageParameter
+        {
+            TargetFunction = "TakeCard",
+            Data = userInfo
+        });
+    }
+
     public void ReturnHome()
     {
         SelectedFunction = string.Empty;

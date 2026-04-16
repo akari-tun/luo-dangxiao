@@ -66,6 +66,13 @@ public partial class VerifyPageViewModel : ViewModelBase, IPageViewModel
 
     private void OnVerificationSucceeded(object? sender, IDCardVerificationSucceededEventArgs e)
     {
-        Ioc.Default.GetRequiredService<HomePageViewModel>().NavigateToUserInfo(e.UserInfo, TargetFunction);
+        var homePage = Ioc.Default.GetRequiredService<HomePageViewModel>();
+        if (TargetFunction == "TakeCard")
+        {
+            homePage.NavigateToTakeCard(e.UserInfo);
+            return;
+        }
+
+        homePage.NavigateToUserInfo(e.UserInfo, TargetFunction);
     }
 }

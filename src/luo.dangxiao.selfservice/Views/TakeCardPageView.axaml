@@ -1,0 +1,202 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:luo.dangxiao.selfservice.ViewModels"
+             xmlns:lang="clr-namespace:luo.dangxiao.resources.Languages;assembly=luo.dangxiao.resources"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignWidth="1100"
+             d:DesignHeight="700"
+             x:Class="luo.dangxiao.selfservice.Views.TakeCardPageView"
+             x:DataType="vm:TakeCardPageViewModel">
+
+    <Design.DataContext>
+        <vm:TakeCardPageViewModel/>
+    </Design.DataContext>
+
+    <UserControl.Styles>
+        <Style Selector="TextBlock.page-title">
+            <Setter Property="FontFamily" Value="SimHei"/>
+            <Setter Property="FontSize" Value="45"/>
+            <Setter Property="Foreground" Value="{StaticResource PrimaryRedBrush}"/>
+        </Style>
+        <Style Selector="TextBlock.panel-title">
+            <Setter Property="FontFamily" Value="SimHei"/>
+            <Setter Property="FontSize" Value="36"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        </Style>
+        <Style Selector="TextBlock.info-label">
+            <Setter Property="FontFamily" Value="SimHei"/>
+            <Setter Property="FontSize" Value="28"/>
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="TextBlock.info-value">
+            <Setter Property="FontFamily" Value="SimHei"/>
+            <Setter Property="FontSize" Value="28"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="Border.info-field">
+            <Setter Property="Background" Value="{StaticResource BackgroundWhiteBrush}"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="10,6"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="*,130">
+        <Grid>
+            <Image Source="avares://luo.dangxiao.resources/Images/bg.png" Stretch="Fill"/>
+
+            <Border Margin="45,30,45,30"
+                    CornerRadius="7">
+                <Grid RowDefinitions="48,Auto,*">
+                    <StackPanel Grid.Row="0" Margin="32,0,0,0" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Image Source="avares://luo.dangxiao.resources/Images/id_card_tip.png"
+                               Width="48"
+                               Height="48"
+                               Margin="0,0,20,0"/>
+                        <TextBlock Text="{Binding PageTitle}" Classes="page-title" VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <Border Grid.Row="1"
+                            Margin="0,8,0,0"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Top"
+                            Background="Transparent">
+                        <ContentControl HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Top"
+                                        Content="{Binding UserInfoModuleContent}"/>
+                    </Border>
+
+                    <Border Grid.Row="2"
+                            Margin="45,0,45,0"
+                            Padding="26,20"
+                            Background="#F4F4EE"
+                            CornerRadius="8">
+                        <Grid>
+
+                            <StackPanel IsVisible="{Binding CurrentState, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Processing, Mode=OneWay}"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Spacing="18">
+                                <TextBlock Text="制卡中" Classes="panel-title" HorizontalAlignment="Center"/>
+                                <Image Source="avares://luo.dangxiao.resources/Images/take_card.png" Width="96" Height="96"/>
+                                <TextBlock Text="{Binding StatusHint}" FontFamily="SimHei" FontSize="30" HorizontalAlignment="Center"/>
+                                <TextBlock Text="请勿离开，卡片正在制作中"
+                                           FontFamily="SimHei"
+                                           FontSize="28"
+                                           Foreground="{StaticResource PrimaryRedDarkBrush}"
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+
+                            <StackPanel IsVisible="{Binding CurrentState, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=CardReady, Mode=OneWay}"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Spacing="18">
+                                <TextBlock Text="卡片已制作完成" Classes="panel-title" HorizontalAlignment="Center"/>
+                                <TextBlock Text="↓↓↓↓↓↓" FontFamily="Arial" FontSize="56" Foreground="{StaticResource PrimaryRedDarkBrush}" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{Binding StatusHint}" FontFamily="SimHei" FontSize="34" HorizontalAlignment="Center"/>
+                            </StackPanel>
+
+                            <StackPanel IsVisible="{Binding CurrentState, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Completed, Mode=OneWay}"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Spacing="20">
+                                <TextBlock Text="取卡完成" Classes="panel-title" HorizontalAlignment="Center"/>
+
+                                <Grid RowDefinitions="Auto,12,Auto,12,Auto"
+                                      ColumnDefinitions="130,20,350">
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="姓名" Classes="info-label"/>
+                                    <Border Grid.Row="0" Grid.Column="2" Classes="info-field">
+                                        <TextBlock Text="{Binding UserInfo.Name}" Classes="info-value"/>
+                                    </Border>
+
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="卡号" Classes="info-label"/>
+                                    <Border Grid.Row="2" Grid.Column="2" Classes="info-field">
+                                        <TextBlock Text="{Binding CardNumber}" Classes="info-value"/>
+                                    </Border>
+
+                                    <TextBlock Grid.Row="4" Grid.Column="0" Text="取卡时间" Classes="info-label"/>
+                                    <Border Grid.Row="4" Grid.Column="2" Classes="info-field">
+                                        <TextBlock Text="{Binding TakeCardTime, StringFormat={}{0:yyyy/MM/dd HH:mm:ss}}" Classes="info-value"/>
+                                    </Border>
+                                </Grid>
+
+                                <TextBlock Text="{Binding StatusHint}" FontFamily="SimHei" FontSize="30" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.Styles>
+                <StyleInclude Source="avares://luo.dangxiao.resources/Styles/ButtonStyles.axaml"/>
+            </Grid.Styles>
+
+            <Button Command="{Binding BackCommand}"
+                    Width="322"
+                    Height="95"
+                    FontSize="40"
+                    HorizontalAlignment="Left"
+                    IsVisible="{Binding CanGoBack}">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Image Source="avares://luo.dangxiao.resources/Images/back_icon.png"
+                           Width="48"
+                           Height="48"
+                           Margin="0,0,20,0"/>
+                    <TextBlock Text="{x:Static lang:LanguageProvider.Button_Back}"/>
+                </StackPanel>
+            </Button>
+
+            <Button Width="322"
+                    Height="95"
+                    FontSize="40"
+                    HorizontalAlignment="Right"
+                    Command="{Binding StartTakeCardCommand}"
+                    IsVisible="{Binding ShowTakeCardConfirmButton}">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Image Source="avares://luo.dangxiao.resources/Images/take_card.png"
+                           Width="48"
+                           Height="48"
+                           Margin="0,0,20,0"/>
+                    <TextBlock Text="{x:Static lang:LanguageProvider.SelfService_TakeCard_Button_Confirm}"/>
+                </StackPanel>
+            </Button>
+
+            <Button Width="322"
+                    Height="95"
+                    FontSize="40"
+                    HorizontalAlignment="Right"
+                    Command="{Binding ConfirmPickupCommand}"
+                    IsVisible="{Binding IsCardReadyState}">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Image Source="avares://luo.dangxiao.resources/Images/check_in.png"
+                           Width="48"
+                           Height="48"
+                           Margin="0,0,20,0"/>
+                    <TextBlock Text="{x:Static lang:LanguageProvider.SelfService_TakeCard_Button_PickedUp}"/>
+                </StackPanel>
+            </Button>
+
+            <Button Width="322"
+                    Height="95"
+                    FontSize="40"
+                    HorizontalAlignment="Center"
+                    Command="{Binding CompleteCommand}"
+                    IsVisible="{Binding IsCompletedState}">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Image Source="avares://luo.dangxiao.resources/Images/next.png"
+                           Width="48"
+                           Height="48"
+                           Margin="0,0,20,0"/>
+                    <TextBlock Text="{x:Static lang:LanguageProvider.SelfService_TakeCard_Button_Complete}"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -52,4 +52,11 @@ public static class LanguageProvider
     public static string SelfService_Info_RangeSeparator => Get(nameof(SelfService_Info_RangeSeparator));
     public static string SelfService_Info_ClassName => Get(nameof(SelfService_Info_ClassName));
     public static string SelfService_Info_TrainingTime => Get(nameof(SelfService_Info_TrainingTime));
+    public static string SelfService_TakeCard_Title_PendingPickup => Get(nameof(SelfService_TakeCard_Title_PendingPickup));
+    public static string SelfService_TakeCard_Title_Lost => Get(nameof(SelfService_TakeCard_Title_Lost));
+    public static string SelfService_TakeCard_Title_Normal => Get(nameof(SelfService_TakeCard_Title_Normal));
+    public static string SelfService_TakeCard_Title_Other => Get(nameof(SelfService_TakeCard_Title_Other));
+    public static string SelfService_TakeCard_Button_Confirm => Get(nameof(SelfService_TakeCard_Button_Confirm));
+    public static string SelfService_TakeCard_Button_PickedUp => Get(nameof(SelfService_TakeCard_Button_PickedUp));
+    public static string SelfService_TakeCard_Button_Complete => Get(nameof(SelfService_TakeCard_Button_Complete));
 }

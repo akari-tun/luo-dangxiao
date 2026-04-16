@@ -32,6 +32,10 @@
     <File Path="../doc/Design/SelfService/PageDesign/UserInfoPage.md" />
     <File Path="../doc/Design/SelfService/PageDesign/VerifyPage.md" />
   </Folder>
+  <Folder Name="/doc/Design/SelfService/Sample/">
+    <File Path="../doc/Design/SelfService/Sample/take_card_sample.png" />
+    <File Path="../doc/Design/SelfService/Sample/user_page_sample.png" />
+  </Folder>
   <Folder Name="/doc/Design/SelfService/切图说明/">
     <File Path="../doc/Design/SelfService/切图说明/主界面切图说明.png" />
     <File Path="../doc/Design/SelfService/切图说明/刷身份证提示.png" />

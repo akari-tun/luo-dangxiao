@@ -294,6 +294,27 @@
   <data name="SelfService_Info_TrainingTime" xml:space="preserve">
     <value>Training Time</value>
   </data>
+  <data name="SelfService_TakeCard_Title_PendingPickup" xml:space="preserve">
+    <value>Please confirm your information before collecting the card</value>
+  </data>
+  <data name="SelfService_TakeCard_Title_Lost" xml:space="preserve">
+    <value>This card has been reported lost, please use self-service replacement</value>
+  </data>
+  <data name="SelfService_TakeCard_Title_Normal" xml:space="preserve">
+    <value>The current card status is normal, no replacement is needed</value>
+  </data>
+  <data name="SelfService_TakeCard_Title_Other" xml:space="preserve">
+    <value>No card collection is required for your account</value>
+  </data>
+  <data name="SelfService_TakeCard_Button_Confirm" xml:space="preserve">
+    <value>Confirm Card Pickup</value>
+  </data>
+  <data name="SelfService_TakeCard_Button_PickedUp" xml:space="preserve">
+    <value>Card Collected</value>
+  </data>
+  <data name="SelfService_TakeCard_Button_Complete" xml:space="preserve">
+    <value>Complete</value>
+  </data>
   <data name="Button_Back" xml:space="preserve">
     <value>Back</value>
   </data>

@@ -59,13 +59,13 @@
             </StackPanel>
 
             <Grid Grid.Row="2" ColumnDefinitions="Auto,64,*">
-                <Grid Grid.Column="0" ColumnDefinitions="128,12,256">
+                <Grid Grid.Column="0" ColumnDefinitions="128,12,320">
                     <TextBlock Grid.Column="0" Text="{x:Static lang:LanguageProvider.SelfService_Info_Name}" Classes="info-label"/>
                     <Border Grid.Column="2" Classes="field-box">
                         <TextBlock Text="{Binding StudentInfo.Name}" Classes="info-value"/>
                     </Border>
                 </Grid>
-                <Grid Grid.Column="2" ColumnDefinitions="128,12,256" >
+                <Grid Grid.Column="2" ColumnDefinitions="128,12,184" >
                     <TextBlock Grid.Column="0" Text="{x:Static lang:LanguageProvider.SelfService_Info_CheckInRoom}" Classes="info-label"/>
                     <Border Grid.Column="2" Classes="field-box">
                         <TextBlock Text="{Binding RoomDisplay}" Classes="info-value"/>
@@ -73,7 +73,7 @@
                 </Grid>
             </Grid>
 
-            <Grid Grid.Row="4" ColumnDefinitions="128,12,256,12,40,12,256">
+            <Grid Grid.Row="4" ColumnDefinitions="128,12,320,12,40,12,320">
                 <TextBlock Grid.Column="0" Text="{x:Static lang:LanguageProvider.SelfService_Info_CheckInTime}" Classes="info-label"/>
                 <Border Grid.Column="2" Classes="field-box">
                     <TextBlock Text="{Binding CheckInStartText}" Classes="info-value"/>
@@ -84,14 +84,14 @@
                 </Border>
             </Grid>
 
-            <Grid Grid.Row="6" ColumnDefinitions="128,12,256">
+            <Grid Grid.Row="6" ColumnDefinitions="128,12,320">
                 <TextBlock Grid.Column="0" Text="{x:Static lang:LanguageProvider.SelfService_Info_ClassName}" Classes="info-label"/>
                 <Border Grid.Column="2" Classes="field-box">
                     <TextBlock Text="{Binding StudentInfo.ClassName}" Classes="info-value"/>
                 </Border>
             </Grid>
 
-            <Grid Grid.Row="8" ColumnDefinitions="128,12,257,12,40,12,256">
+            <Grid Grid.Row="8" ColumnDefinitions="128,12,320,12,40,12,320">
                 <TextBlock Grid.Column="0" Text="{x:Static lang:LanguageProvider.SelfService_Info_TrainingTime}" Classes="info-label"/>
                 <Border Grid.Column="2" Classes="field-box">
                     <TextBlock Text="{Binding TrainingStartText}" Classes="info-value"/>

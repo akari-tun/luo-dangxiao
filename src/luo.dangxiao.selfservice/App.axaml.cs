@@ -26,6 +26,7 @@ namespace luo.dangxiao.selfservice
                 .AddTransient<IDCardVerifyPageViewModel>()
                 .AddTransient<SMSVerifyPageViewModel>()
                 .AddTransient<UserInfoPageViewModel>()
+                .AddTransient<TakeCardPageViewModel>()
                 .AddTransient<StudentInfoPageViewModel>()
                 .AddTransient<StaffInfoPageViewModel>();
 

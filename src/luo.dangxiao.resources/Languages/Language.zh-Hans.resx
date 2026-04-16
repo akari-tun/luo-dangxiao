@@ -297,4 +297,25 @@
   <data name="Button_Back" xml:space="preserve">
     <value>返回</value>
   </data>
+  <data name="SelfService_TakeCard_Title_PendingPickup" xml:space="preserve">
+    <value>请确认信息无误后取卡</value>
+  </data>
+  <data name="SelfService_TakeCard_Title_Lost" xml:space="preserve">
+    <value>卡片已挂失，请使用自助补卡</value>
+  </data>
+  <data name="SelfService_TakeCard_Title_Normal" xml:space="preserve">
+    <value>当前卡片状态正常，无需补卡</value>
+  </data>
+  <data name="SelfService_TakeCard_Title_Other" xml:space="preserve">
+    <value>您无需取卡</value>
+  </data>
+  <data name="SelfService_TakeCard_Button_Confirm" xml:space="preserve">
+    <value>确认取卡</value>
+  </data>
+  <data name="SelfService_TakeCard_Button_PickedUp" xml:space="preserve">
+    <value>已取卡</value>
+  </data>
+  <data name="SelfService_TakeCard_Button_Complete" xml:space="preserve">
+    <value>完成</value>
+  </data>
 </root>
