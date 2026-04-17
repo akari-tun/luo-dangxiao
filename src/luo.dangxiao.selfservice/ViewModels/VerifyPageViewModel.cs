@@ -92,6 +92,16 @@ public partial class VerifyPageViewModel : ViewModelBase, IPageViewModel
             return;
         }
 
+        if (TargetFunction == "Recharge")
+        {
+            homePage.SubPageContent = new RechargePageView(new RechargePageParameter
+            {
+                TargetFunction = "Recharge",
+                Data = e.UserInfo
+            });
+            return;
+        }
+
         homePage.NavigateToUserInfo(e.UserInfo, TargetFunction);
     }
 }

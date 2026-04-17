@@ -20,22 +20,72 @@ public sealed class ReplacementPageParameter
 /// <summary>
 /// ViewModel for ReplacementPage.
 /// </summary>
-public partial class ReplacementPageViewModel : ViewModelBase
+public class ReplacementPageViewModel : ViewModelBase
 {
-    [ObservableProperty]
     private UserInfoModel? _userInfo;
-
-    [ObservableProperty]
     private object? _userInfoModuleContent;
-
-    [ObservableProperty]
     private string _targetFunction = "Replacement";
-
-    [ObservableProperty]
     private bool _canReplacementByStatus;
-
-    [ObservableProperty]
     private bool _isBusy;
+
+    public ReplacementPageViewModel()
+    {
+        LoadDataCommand = new RelayCommand<ReplacementPageParameter>(LoadData);
+        ReplacementCommand = new AsyncRelayCommand(ReplacementAsync, () => CanReplacement);
+    }
+
+    public UserInfoModel? UserInfo
+    {
+        get => _userInfo;
+        set
+        {
+            if (SetProperty(ref _userInfo, value))
+            {
+                OnPropertyChanged(nameof(PageTitle));
+            }
+        }
+    }
+
+    public object? UserInfoModuleContent
+    {
+        get => _userInfoModuleContent;
+        set => SetProperty(ref _userInfoModuleContent, value);
+    }
+
+    public string TargetFunction
+    {
+        get => _targetFunction;
+        set => SetProperty(ref _targetFunction, value);
+    }
+
+    public bool CanReplacementByStatus
+    {
+        get => _canReplacementByStatus;
+        set
+        {
+            if (SetProperty(ref _canReplacementByStatus, value))
+            {
+                OnPropertyChanged(nameof(PageTitle));
+                OnPropertyChanged(nameof(ShowReplacementButton));
+                OnPropertyChanged(nameof(CanReplacement));
+                ReplacementCommand.NotifyCanExecuteChanged();
+            }
+        }
+    }
+
+    public bool IsBusy
+    {
+        get => _isBusy;
+        set
+        {
+            if (SetProperty(ref _isBusy, value))
+            {
+                OnPropertyChanged(nameof(ShowReplacementButton));
+                OnPropertyChanged(nameof(CanReplacement));
+                ReplacementCommand.NotifyCanExecuteChanged();
+            }
+        }
+    }
 
     public string PageTitle => UserInfo switch
     {
@@ -50,24 +100,17 @@ public partial class ReplacementPageViewModel : ViewModelBase
 
     public bool CanReplacement => CanReplacementByStatus && !IsBusy;
 
-    partial void OnCanReplacementByStatusChanged(bool value)
-    {
-        OnPropertyChanged(nameof(PageTitle));
-        OnPropertyChanged(nameof(ShowReplacementButton));
-        OnPropertyChanged(nameof(CanReplacement));
-        ReplacementCommand.NotifyCanExecuteChanged();
-    }
+    public IRelayCommand<ReplacementPageParameter> LoadDataCommand { get; }
 
-    partial void OnIsBusyChanged(bool value)
-    {
-        OnPropertyChanged(nameof(ShowReplacementButton));
-        OnPropertyChanged(nameof(CanReplacement));
-        ReplacementCommand.NotifyCanExecuteChanged();
-    }
+    public IAsyncRelayCommand ReplacementCommand { get; }
 
-    [RelayCommand]
-    private void LoadData(ReplacementPageParameter parameter)
+    private void LoadData(ReplacementPageParameter? parameter)
     {
+        if (parameter is null)
+        {
+            return;
+        }
+
         TargetFunction = parameter.TargetFunction;
         UserInfo = parameter.Data;
 
@@ -76,7 +119,6 @@ public partial class ReplacementPageViewModel : ViewModelBase
         OnPropertyChanged(nameof(PageTitle));
     }
 
-    [RelayCommand(CanExecute = nameof(CanReplacement))]
     private async Task ReplacementAsync()
     {
         if (UserInfo is null)
@@ -87,7 +129,6 @@ public partial class ReplacementPageViewModel : ViewModelBase
         IsBusy = true;
         await Task.Delay(1000);
 
-        // 模拟补卡成功后进入待领卡状态
         switch (UserInfo)
         {
             case StudentInfoModel student:

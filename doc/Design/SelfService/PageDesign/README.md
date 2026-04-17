@@ -1,218 +1,172 @@
-# 自助服务页面设计文档目录
+﻿# 鑷姪鏈嶅姟椤甸潰璁捐鏂囨。鐩綍
 
-> **文档说明**: 本目录包含自助服务系统所有页面的详细设计文档  
-> **系统**: 自助服务终端 (SelfService)  
-> **用户**: 学员、教职工  
-> **最后更新**: 2026-03-26
+> **鏂囨。璇存槑**: 鏈洰褰曞寘鍚嚜鍔╂湇鍔＄郴缁熸墍鏈夐〉闈㈢殑璇︾粏璁捐鏂囨。  
+> **绯荤粺**: 鑷姪鏈嶅姟缁堢 (SelfService)  
+> **鐢ㄦ埛**: 瀛﹀憳銆佹暀鑱屽伐  
+> **鏈€鍚庢洿鏂?*: 2026-03-26
 
 ---
 
-## 一、页面分类
+## 涓€銆侀〉闈㈠垎绫?
+绯荤粺椤甸潰鍒嗕负涓夌被锛?
+### 1.1 涓婚〉闈?(1涓?
 
-系统页面分为三类：
-
-### 1.1 主页面 (1个)
-
-| 文档 | 页面代码 | 说明 |
+| 鏂囨。 | 椤甸潰浠ｇ爜 | 璇存槑 |
 |------|----------|------|
-| [HomePage](./HomePage.md) | HomePage | 主界面容器，三种状态：教职工自助/学员自助/子页面容器 |
+| [HomePage](./HomePage.md) | HomePage | 涓荤晫闈㈠鍣紝涓夌鐘舵€侊細鏁欒亴宸ヨ嚜鍔?瀛﹀憳鑷姪/瀛愰〉闈㈠鍣?|
 
-### 1.2 功能子页面 (10个)
+### 1.2 鍔熻兘瀛愰〉闈?(10涓?
 
-| 文档 | 页面代码 | 说明 | 用户类型 |
+| 鏂囨。 | 椤甸潰浠ｇ爜 | 璇存槑 | 鐢ㄦ埛绫诲瀷 |
 |------|----------|------|----------|
-| VerifyPage.md | VerifyPage | 统一验证入口 | 全部 |
-| TakeCardPage.md | TakeCardPage | 自助取卡 | 全部 |
-| ReportLossPage.md | ReportLossPage | 自助挂失 | 全部 |
-| ReplacementPage.md | ReplacementPage | 自助补卡 | 全部 |
-| QueryPage.md | QueryPage | 自助查询 | 教职工 |
-| RechargePage.md | RechargePage | 自助充值 | 教职工 |
-| QRCodePage.md | QRCodePage | 二维码展示 | 教职工 |
-| CheckInPage.md | CheckInPage | 自助报到 | 学员 |
-| CardProcessPage.md | CardProcessPage | 卡片处理过程 | 全部 |
-| CompletionPage.md | CompletionPage | 操作完成 | 全部 |
+| VerifyPage.md | VerifyPage | 缁熶竴楠岃瘉鍏ュ彛 | 鍏ㄩ儴 |
+| TakeCardPage.md | TakeCardPage | 鑷姪鍙栧崱 | 鍏ㄩ儴 |
+| ReportLossPage.md | ReportLossPage | 鑷姪鎸傚け | 鍏ㄩ儴 |
+| ReplacementPage.md | ReplacementPage | 鑷姪琛ュ崱 | 鍏ㄩ儴 |
+| QueryPage.md | QueryPage | 鑷姪鏌ヨ | 鏁欒亴宸?|
+| RechargePage.md | RechargePage | 鑷姪鍏呭€?| 鏁欒亴宸?|
+| CheckInPage.md | CheckInPage | 鑷姪鎶ュ埌 | 瀛﹀憳 |
+| CardProcessPage.md | CardProcessPage | 鍗＄墖澶勭悊杩囩▼ | 鍏ㄩ儴 |
+| CompletionPage.md | CompletionPage | 鎿嶄綔瀹屾垚 | 鍏ㄩ儴 |
 
-### 1.3 模块页面 (4个)
+### 1.3 妯″潡椤甸潰 (4涓?
 
-| 文档 | 页面代码 | 说明 | 用途 |
+| 鏂囨。 | 椤甸潰浠ｇ爜 | 璇存槑 | 鐢ㄩ€?|
 |------|----------|------|------|
-| StudentInfoPage.md | StudentInfoPage | 学员信息模块 | 嵌入功能子页面展示学员信息 |
-| StaffInfoPage.md | StaffInfoPage | 教职工信息模块 | 嵌入功能子页面展示教职工信息 |
-| IDCardVerifyPage.md | IDCardVerifyPage | 身份证验证模块 | 嵌入VerifyPage |
-| SMSVerifyPage.md | SMSVerifyPage | 短信验证模块 | 嵌入VerifyPage |
+| StudentInfoPage.md | StudentInfoPage | 瀛﹀憳淇℃伅妯″潡 | 宓屽叆鍔熻兘瀛愰〉闈㈠睍绀哄鍛樹俊鎭?|
+| StaffInfoPage.md | StaffInfoPage | 鏁欒亴宸ヤ俊鎭ā鍧?| 宓屽叆鍔熻兘瀛愰〉闈㈠睍绀烘暀鑱屽伐淇℃伅 |
+| IDCardVerifyPage.md | IDCardVerifyPage | 韬唤璇侀獙璇佹ā鍧?| 宓屽叆VerifyPage |
+| SMSVerifyPage.md | SMSVerifyPage | 鐭俊楠岃瘉妯″潡 | 宓屽叆VerifyPage |
 
 ---
 
-## 二、页面架构
-
-### 2.1 HomePage 作为容器
-
-```
-┌─────────────────────────────────────┐
-│  HEADER (顶部栏)                    │
-│  [Logo] 标题 [倒计时]               │
-├─────────────────────────────────────┤
-│                                     │
-│     状态1: 教职工/学员自助          │
-│     ┌───────────────────────┐       │
-│     │ 功能按钮菜单          │       │
-│     │ [取卡][挂失][补卡]... │       │
-│     └───────────────────────┘       │
-│                                     │
-│     状态2: 子页面容器               │
-│     ┌───────────────────────┐       │
-│     │                       │       │
-│     │   功能子页面内容       │       │
-│     │   (嵌入显示)          │       │
-│     │                       │       │
-│     └───────────────────────┘       │
-│                                     │
-├─────────────────────────────────────┤
-│  [返回按钮]  [操作按钮]             │
-└─────────────────────────────────────┘
-```
-
-### 2.2 页面加载关系
+## 浜屻€侀〉闈㈡灦鏋?
+### 2.1 HomePage 浣滀负瀹瑰櫒
 
 ```
-HomePage (容器)
-    ├── 加载 VerifyPage
-    │       ├── 嵌入 IDCardVerifyPage (身份证验证)
-    │       └── 嵌入 SMSVerifyPage (短信验证)
-    │
-    ├── 加载 TakeCardPage
-    │       ├── 嵌入 StaffInfoPage (教职工)
-    │       └── 嵌入 StudentInfoPage (学员)
-    │
-    ├── 加载 ReportLossPage
-    │       ├── 嵌入 StaffInfoPage (教职工)
-    │       └── 嵌入 StudentInfoPage (学员)
-    │
-    ├── 加载 ReplacementPage
-    │       ├── 嵌入 StaffInfoPage (教职工)
-    │       └── 嵌入 StudentInfoPage (学员)
-    │
-    ├── 加载 QueryPage
-    │       └── 嵌入 StaffInfoPage (教职工)
-    │
-    ├── 加载 RechargePage
-    │       ├── 嵌入 StaffInfoPage (教职工)
-    │       └── 加载 QRCodePage (支付)
-    │
-    ├── 加载 CheckInPage
-    │       └── 嵌入 StudentInfoPage (学员)
-    │
-    ├── 加载 CardProcessPage
-    │
-    └── 加载 CompletionPage
+鈹屸攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?鈹? HEADER (椤堕儴鏍?                    鈹?鈹? [Logo] 鏍囬 [鍊掕鏃禲               鈹?鈹溾攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?鈹?                                    鈹?鈹?    鐘舵€?: 鏁欒亴宸?瀛﹀憳鑷姪          鈹?鈹?    鈹屸攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?      鈹?鈹?    鈹?鍔熻兘鎸夐挳鑿滃崟          鈹?      鈹?鈹?    鈹?[鍙栧崱][鎸傚け][琛ュ崱]... 鈹?      鈹?鈹?    鈹斺攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?      鈹?鈹?                                    鈹?鈹?    鐘舵€?: 瀛愰〉闈㈠鍣?              鈹?鈹?    鈹屸攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?      鈹?鈹?    鈹?                      鈹?      鈹?鈹?    鈹?  鍔熻兘瀛愰〉闈㈠唴瀹?      鈹?      鈹?鈹?    鈹?  (宓屽叆鏄剧ず)          鈹?      鈹?鈹?    鈹?                      鈹?      鈹?鈹?    鈹斺攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?      鈹?鈹?                                    鈹?鈹溾攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?鈹? [杩斿洖鎸夐挳]  [鎿嶄綔鎸夐挳]             鈹?鈹斺攢鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹?```
+
+### 2.2 椤甸潰鍔犺浇鍏崇郴
+
+```
+HomePage (瀹瑰櫒)
+    鈹溾攢鈹€ 鍔犺浇 VerifyPage
+    鈹?      鈹溾攢鈹€ 宓屽叆 IDCardVerifyPage (韬唤璇侀獙璇?
+    鈹?      鈹斺攢鈹€ 宓屽叆 SMSVerifyPage (鐭俊楠岃瘉)
+    鈹?    鈹溾攢鈹€ 鍔犺浇 TakeCardPage
+    鈹?      鈹溾攢鈹€ 宓屽叆 StaffInfoPage (鏁欒亴宸?
+    鈹?      鈹斺攢鈹€ 宓屽叆 StudentInfoPage (瀛﹀憳)
+    鈹?    鈹溾攢鈹€ 鍔犺浇 ReportLossPage
+    鈹?      鈹溾攢鈹€ 宓屽叆 StaffInfoPage (鏁欒亴宸?
+    鈹?      鈹斺攢鈹€ 宓屽叆 StudentInfoPage (瀛﹀憳)
+    鈹?    鈹溾攢鈹€ 鍔犺浇 ReplacementPage
+    鈹?      鈹溾攢鈹€ 宓屽叆 StaffInfoPage (鏁欒亴宸?
+    鈹?      鈹斺攢鈹€ 宓屽叆 StudentInfoPage (瀛﹀憳)
+    鈹?    鈹溾攢鈹€ 鍔犺浇 QueryPage
+    鈹?      鈹斺攢鈹€ 宓屽叆 StaffInfoPage (鏁欒亴宸?
+    鈹?    鈹溾攢鈹€ 鍔犺浇 RechargePage
+    鈹?      鈹溾攢鈹€ 宓屽叆 StaffInfoPage (鏁欒亴宸?
+    鈹?      鈹斺攢鈹€ 鍔犺浇 QRCodePage (鏀粯)
+    鈹?    鈹溾攢鈹€ 鍔犺浇 CheckInPage
+    鈹?      鈹斺攢鈹€ 宓屽叆 StudentInfoPage (瀛﹀憳)
+    鈹?    鈹溾攢鈹€ 鍔犺浇 CardProcessPage
+    鈹?    鈹斺攢鈹€ 鍔犺浇 CompletionPage
 ```
 
 ---
 
-## 三、功能流程
-
-### 3.1 教职工自助流程
-
-| 功能 | 页面流程 |
+## 涓夈€佸姛鑳芥祦绋?
+### 3.1 鏁欒亴宸ヨ嚜鍔╂祦绋?
+| 鍔熻兘 | 椤甸潰娴佺▼ |
 |------|----------|
-| **自助取卡** | HomePage → VerifyPage → TakeCardPage → CardProcessPage → CompletionPage |
-| **自助挂失** | HomePage → VerifyPage → ReportLossPage → CardProcessPage → CompletionPage |
-| **自助补卡** | HomePage → VerifyPage → ReplacementPage → CardProcessPage → CompletionPage |
-| **自助查询** | HomePage → VerifyPage → QueryPage |
-| **自助充值** | HomePage → VerifyPage → RechargePage → QRCodePage → CardProcessPage → CompletionPage |
+| **鑷姪鍙栧崱** | HomePage 鈫?VerifyPage 鈫?TakeCardPage 鈫?CardProcessPage 鈫?CompletionPage |
+| **鑷姪鎸傚け** | HomePage 鈫?VerifyPage 鈫?ReportLossPage 鈫?CardProcessPage 鈫?CompletionPage |
+| **鑷姪琛ュ崱** | HomePage 鈫?VerifyPage 鈫?ReplacementPage 鈫?CardProcessPage 鈫?CompletionPage |
+| **鑷姪鏌ヨ** | HomePage 鈫?VerifyPage 鈫?QueryPage |
+| **鑷姪鍏呭€?* | HomePage 鈫?VerifyPage 鈫?RechargePage 鈫?QRCodePage 鈫?CardProcessPage 鈫?CompletionPage |
 
-### 3.2 学员自助流程
+### 3.2 瀛﹀憳鑷姪娴佺▼
 
-| 功能 | 页面流程 |
+| 鍔熻兘 | 椤甸潰娴佺▼ |
 |------|----------|
-| **自助取卡** | HomePage → VerifyPage → TakeCardPage → CardProcessPage → CompletionPage |
-| **自助挂失** | HomePage → VerifyPage → ReportLossPage → CardProcessPage → CompletionPage |
-| **自助补卡** | HomePage → VerifyPage → ReplacementPage → CardProcessPage → CompletionPage |
-| **自助报到** | HomePage → VerifyPage → CheckInPage → CompletionPage |
+| **鑷姪鍙栧崱** | HomePage 鈫?VerifyPage 鈫?TakeCardPage 鈫?CardProcessPage 鈫?CompletionPage |
+| **鑷姪鎸傚け** | HomePage 鈫?VerifyPage 鈫?ReportLossPage 鈫?CardProcessPage 鈫?CompletionPage |
+| **鑷姪琛ュ崱** | HomePage 鈫?VerifyPage 鈫?ReplacementPage 鈫?CardProcessPage 鈫?CompletionPage |
+| **鑷姪鎶ュ埌** | HomePage 鈫?VerifyPage 鈫?CheckInPage 鈫?CompletionPage |
 
 ---
 
-## 四、文档阅读指南
+## 鍥涖€佹枃妗ｉ槄璇绘寚鍗?
+### 4.1 鏂囨。缁撴瀯
 
-### 4.1 文档结构
+姣忎釜椤甸潰璁捐鏂囨。鍖呭惈锛?1. **璁捐鍥惧紩鐢?* - 璁捐鍥炬簮鏂囦欢銆佸垏鍥捐祫婧?2. **椤甸潰甯冨眬缁撴瀯** - ASCII 甯冨眬鍥俱€佺姸鎬佸睍绀?3. **UI 鍏冪礌璇﹁В** - 椤堕儴鏍忋€佸唴瀹瑰尯銆佸簳閮ㄦ寜閽?4. **鍔熻兘鎻忚堪** - 椤甸潰鐢ㄩ€斻€佹牳蹇冨姛鑳?5. **浜や簰鎻忚堪** - 鐘舵€佽浆鎹€佷氦浜掓祦绋?6. **璁捐瑙勮寖** - 棰滆壊銆佸瓧浣撱€侀棿璺?7. **瀹炵幇娉ㄦ剰浜嬮」** - 鏁版嵁妯″瀷銆乂iewModel
+8. **鐩稿叧鏂囨。** - 鍏宠仈鏂囨。閾炬帴
 
-每个页面设计文档包含：
-1. **设计图引用** - 设计图源文件、切图资源
-2. **页面布局结构** - ASCII 布局图、状态展示
-3. **UI 元素详解** - 顶部栏、内容区、底部按钮
-4. **功能描述** - 页面用途、核心功能
-5. **交互描述** - 状态转换、交互流程
-6. **设计规范** - 颜色、字体、间距
-7. **实现注意事项** - 数据模型、ViewModel
-8. **相关文档** - 关联文档链接
+### 4.2 閫氱敤瑙勮寖
 
-### 4.2 通用规范
-
-| 规范项 | 值 |
+| 瑙勮寖椤?| 鍊?|
 |--------|-----|
-| 主色调 | 红色系 #C42828, #d9230b |
-| 辅助色 | 金黄色 #e6b84d, #ffe3a3 |
-| 内容区背景 | 米黄色 #faf9f3 |
-| 中文字体 | 黑体 (SimHei) |
-| 英文字体 | Arial |
-| 卡片圆角 | 7px |
-| 按钮圆角 | 8px |
-| 倒计时位置 | 左上角，#ff6000 |
+| 涓昏壊璋?| 绾㈣壊绯?#C42828, #d9230b |
+| 杈呭姪鑹?| 閲戦粍鑹?#e6b84d, #ffe3a3 |
+| 鍐呭鍖鸿儗鏅?| 绫抽粍鑹?#faf9f3 |
+| 涓枃瀛椾綋 | 榛戜綋 (SimHei) |
+| 鑻辨枃瀛椾綋 | Arial |
+| 鍗＄墖鍦嗚 | 7px |
+| 鎸夐挳鍦嗚 | 8px |
+| 鍊掕鏃朵綅缃?| 宸︿笂瑙掞紝#ff6000 |
 
 ---
 
-## 五、快速参考
+## 浜斻€佸揩閫熷弬鑰?
+### 5.1 椤甸潰绫诲瀷閫熸煡
 
-### 5.1 页面类型速查
-
-| 页面 | 类型 | 容器 | 嵌入模块 |
+| 椤甸潰 | 绫诲瀷 | 瀹瑰櫒 | 宓屽叆妯″潡 |
 |------|------|------|----------|
-| HomePage | 主页面 | - | - |
-| VerifyPage | 功能子页面 | HomePage | IDCardVerifyPage, SMSVerifyPage |
-| TakeCardPage | 功能子页面 | HomePage | StaffInfoPage/StudentInfoPage |
-| ReportLossPage | 功能子页面 | HomePage | StaffInfoPage/StudentInfoPage |
-| ReplacementPage | 功能子页面 | HomePage | StaffInfoPage/StudentInfoPage |
-| QueryPage | 功能子页面 | HomePage | StaffInfoPage |
-| RechargePage | 功能子页面 | HomePage | StaffInfoPage |
-| QRCodePage | 功能子页面 | HomePage | - |
-| CheckInPage | 功能子页面 | HomePage | StudentInfoPage |
-| CardProcessPage | 功能子页面 | HomePage | - |
-| CompletionPage | 功能子页面 | HomePage | - |
-| StudentInfoPage | 模块页面 | 嵌入功能子页面 | - |
-| StaffInfoPage | 模块页面 | 嵌入功能子页面 | - |
-| IDCardVerifyPage | 模块页面 | 嵌入VerifyPage | - |
-| SMSVerifyPage | 模块页面 | 嵌入VerifyPage | - |
+| HomePage | 涓婚〉闈?| - | - |
+| VerifyPage | 鍔熻兘瀛愰〉闈?| HomePage | IDCardVerifyPage, SMSVerifyPage |
+| TakeCardPage | 鍔熻兘瀛愰〉闈?| HomePage | StaffInfoPage/StudentInfoPage |
+| ReportLossPage | 鍔熻兘瀛愰〉闈?| HomePage | StaffInfoPage/StudentInfoPage |
+| ReplacementPage | 鍔熻兘瀛愰〉闈?| HomePage | StaffInfoPage/StudentInfoPage |
+| QueryPage | 鍔熻兘瀛愰〉闈?| HomePage | StaffInfoPage |
+| RechargePage | 鍔熻兘瀛愰〉闈?| HomePage | StaffInfoPage |
+| CheckInPage | 鍔熻兘瀛愰〉闈?| HomePage | StudentInfoPage |
+| CardProcessPage | 鍔熻兘瀛愰〉闈?| HomePage | - |
+| CompletionPage | 鍔熻兘瀛愰〉闈?| HomePage | - |
+| StudentInfoPage | 妯″潡椤甸潰 | 宓屽叆鍔熻兘瀛愰〉闈?| - |
+| StaffInfoPage | 妯″潡椤甸潰 | 宓屽叆鍔熻兘瀛愰〉闈?| - |
+| IDCardVerifyPage | 妯″潡椤甸潰 | 宓屽叆VerifyPage | - |
+| SMSVerifyPage | 妯″潡椤甸潰 | 宓屽叆VerifyPage | - |
 
-### 5.2 用户类型可用页面
+### 5.2 鐢ㄦ埛绫诲瀷鍙敤椤甸潰
 
-**学员可用**:
-- HomePage (学员自助状态)
-- VerifyPage → TakeCardPage, ReportLossPage, ReplacementPage, CheckInPage
+**瀛﹀憳鍙敤**:
+- HomePage (瀛﹀憳鑷姪鐘舵€?
+- VerifyPage 鈫?TakeCardPage, ReportLossPage, ReplacementPage, CheckInPage
 - CardProcessPage, CompletionPage
-- StudentInfoPage (模块)
+- StudentInfoPage (妯″潡)
 
-**教职工可用**:
-- HomePage (教职工自助状态)
-- VerifyPage → TakeCardPage, ReportLossPage, ReplacementPage, QueryPage, RechargePage, QRCodePage
+**鏁欒亴宸ュ彲鐢?*:
+- HomePage (鏁欒亴宸ヨ嚜鍔╃姸鎬?
+- VerifyPage 鈫?TakeCardPage, ReportLossPage, ReplacementPage, QueryPage, RechargePage
 - CardProcessPage, CompletionPage
-- StaffInfoPage (模块)
+- StaffInfoPage (妯″潡)
 
 ---
 
-## 六、相关文档
-
-- [自助服务设计规格说明书](../设计规格说明书.md)
-- [卡务中心设计](../../CardCenter/)
+## 鍏€佺浉鍏虫枃妗?
+- [鑷姪鏈嶅姟璁捐瑙勬牸璇存槑涔(../璁捐瑙勬牸璇存槑涔?md)
+- [鍗″姟涓績璁捐](../../CardCenter/)
 
 ---
 
-## 七、版本历史
-
-| 版本 | 日期 | 更新内容 | 作者 |
+## 涓冦€佺増鏈巻鍙?
+| 鐗堟湰 | 鏃ユ湡 | 鏇存柊鍐呭 | 浣滆€?|
 |------|------|----------|------|
-| 1.0 | 2026-03-26 | 创建页面设计文档目录 | OpenCode Agent |
-| 2.0 | 2026-03-26 | 更新页面分类：<br>• 明确三类页面（主页面/功能子页面/模块页面）<br>• 描述HomePage容器机制<br>• 完善功能流程<br>• 添加页面关系图 | OpenCode Agent |
+| 1.0 | 2026-03-26 | 鍒涘缓椤甸潰璁捐鏂囨。鐩綍 | OpenCode Agent |
+| 2.0 | 2026-03-26 | 鏇存柊椤甸潰鍒嗙被锛?br>鈥?鏄庣‘涓夌被椤甸潰锛堜富椤甸潰/鍔熻兘瀛愰〉闈?妯″潡椤甸潰锛?br>鈥?鎻忚堪HomePage瀹瑰櫒鏈哄埗<br>鈥?瀹屽杽鍔熻兘娴佺▼<br>鈥?娣诲姞椤甸潰鍏崇郴鍥?| OpenCode Agent |
 
 ---
 
-*文档结束*
+*鏂囨。缁撴潫*
+
+

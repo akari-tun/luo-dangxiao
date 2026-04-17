@@ -33,6 +33,8 @@
     <File Path="../doc/Design/SelfService/PageDesign/VerifyPage.md" />
   </Folder>
   <Folder Name="/doc/Design/SelfService/Sample/">
+    <File Path="../doc/Design/SelfService/Sample/recharge_page.png" />
+    <File Path="../doc/Design/SelfService/Sample/recharge_qr_code_page.png" />
     <File Path="../doc/Design/SelfService/Sample/replacement_page.png" />
     <File Path="../doc/Design/SelfService/Sample/report_loss_page.png" />
     <File Path="../doc/Design/SelfService/Sample/take_card_sample.png" />
