@@ -1,110 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
@@ -117,205 +12,87 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="App_Title" xml:space="preserve">
-    <value>Self Service</value>
-  </data>
-  <data name="Button_OK" xml:space="preserve">
-    <value>OK</value>
-  </data>
-  <data name="Button_Cancel" xml:space="preserve">
-    <value>Cancel</value>
-  </data>
-  <data name="Button_Save" xml:space="preserve">
-    <value>Save</value>
-  </data>
-  <data name="Button_Delete" xml:space="preserve">
-    <value>Delete</value>
-  </data>
-  <data name="Button_Edit" xml:space="preserve">
-    <value>Edit</value>
-  </data>
-  <data name="Button_Add" xml:space="preserve">
-    <value>Add</value>
-  </data>
-  <data name="Button_Close" xml:space="preserve">
-    <value>Close</value>
-  </data>
-  <data name="Button_Refresh" xml:space="preserve">
-    <value>Refresh</value>
-  </data>
-  <data name="Label_Name" xml:space="preserve">
-    <value>Name</value>
-  </data>
-  <data name="Label_Description" xml:space="preserve">
-    <value>Description</value>
-  </data>
-  <data name="Label_Status" xml:space="preserve">
-    <value>Status</value>
-  </data>
-  <data name="Label_Date" xml:space="preserve">
-    <value>Date</value>
-  </data>
-  <data name="Label_Time" xml:space="preserve">
-    <value>Time</value>
-  </data>
-  <data name="Msg_Success" xml:space="preserve">
-    <value>Operation completed successfully</value>
-  </data>
-  <data name="Msg_Error" xml:space="preserve">
-    <value>An error occurred</value>
-  </data>
-  <data name="Msg_ConfirmDelete" xml:space="preserve">
-    <value>Are you sure you want to delete this item?</value>
-  </data>
-  <data name="Msg_Loading" xml:space="preserve">
-    <value>Loading...</value>
-  </data>
-  <data name="Nav_Home" xml:space="preserve">
-    <value>Home</value>
-  </data>
-  <data name="Nav_Settings" xml:space="preserve">
-    <value>Settings</value>
-  </data>
-  <data name="Nav_About" xml:space="preserve">
-    <value>About</value>
-  </data>
-  <data name="SelfService_TakeCard" xml:space="preserve">
-    <value>Self-service Card Pickup</value>
-  </data>
-  <data name="SelfService_ReportLoss" xml:space="preserve">
-    <value>Self-service Loss Report</value>
-  </data>
-  <data name="SelfService_Replacement" xml:space="preserve">
-    <value>Self-service Card Replacement</value>
-  </data>
-  <data name="SelfService_Query" xml:space="preserve">
-    <value>Self-service Query</value>
-  </data>
-  <data name="SelfService_Recharge" xml:space="preserve">
-    <value>Self-service Recharge</value>
-  </data>
-  <data name="SelfService_CheckIn" xml:space="preserve">
-    <value>Self-service Check-in</value>
-  </data>
-  <data name="SelfService_Verify_SelectMethod" xml:space="preserve">
-    <value>Please select verification method</value>
-  </data>
-  <data name="SelfService_Verify_IDCard" xml:space="preserve">
-    <value>ID Card Verification</value>
-  </data>
-  <data name="SelfService_Verify_SMS" xml:space="preserve">
-    <value>SMS Verification</value>
-  </data>
-  <data name="SelfService_Verify_IDCardInstruction" xml:space="preserve">
-    <value>Please place your ID card on the sensing area</value>
-  </data>
-  <data name="SelfService_Verify_IDCardZoneTitle" xml:space="preserve">
-    <value>ID Card Sensing Area</value>
-  </data>
-  <data name="SelfService_Verify_IDCardWaiting" xml:space="preserve">
-    <value>Waiting for ID card reading...</value>
-  </data>
-  <data name="SelfService_Verify_IDCardProcessing" xml:space="preserve">
-    <value>Processing card information, please wait...</value>
-  </data>
-  <data name="SelfService_Verify_IDCardSuccess" xml:space="preserve">
-    <value>Verification succeeded</value>
-  </data>
-  <data name="SelfService_Verify_IDCardFailed" xml:space="preserve">
-    <value>Verification failed</value>
-  </data>
-  <data name="SelfService_Verify_SwitchToSMS" xml:space="preserve">
-    <value>Switch to SMS Verification →</value>
-  </data>
-  <data name="SelfService_Verify_SMS_Title" xml:space="preserve">
-    <value>SMS Verification</value>
-  </data>
-  <data name="SelfService_Verify_SMS_Phone" xml:space="preserve">
-    <value>Phone Number</value>
-  </data>
-  <data name="SelfService_Verify_SMS_Code" xml:space="preserve">
-    <value>Verification Code</value>
-  </data>
-  <data name="SelfService_Verify_SMS_PhonePlaceholder" xml:space="preserve">
-    <value>Please enter phone number</value>
-  </data>
-  <data name="SelfService_Verify_SMS_CodePlaceholder" xml:space="preserve">
-    <value>Please enter verification code</value>
-  </data>
-  <data name="SelfService_Verify_SMS_SendCode" xml:space="preserve">
-    <value>Get Verification Code</value>
-  </data>
-  <data name="SelfService_Verify_SMS_Resend" xml:space="preserve">
-    <value>Resend [0]s</value>
-  </data>
-  <data name="SelfService_Verify_SMS_Next" xml:space="preserve">
-    <value>Next</value>
-  </data>
-  <data name="SelfService_Verify_SwitchToIDCard" xml:space="preserve">
-    <value>Switch to ID Card Verification →</value>
-  </data>
-  <data name="SelfService_Info_BasicInfo" xml:space="preserve">
-    <value>Basic Information</value>
-  </data>
-  <data name="SelfService_Info_Name" xml:space="preserve">
-    <value>Name</value>
-  </data>
-  <data name="SelfService_Info_StaffNumber" xml:space="preserve">
-    <value>Staff Number</value>
-  </data>
-  <data name="SelfService_Info_CardType" xml:space="preserve">
-    <value>Card Type</value>
-  </data>
-  <data name="SelfService_Info_CardExpiryDate" xml:space="preserve">
-    <value>Card Expiry Date</value>
-  </data>
-  <data name="SelfService_Info_Department" xml:space="preserve">
-    <value>Department</value>
-  </data>
-  <data name="SelfService_Info_ConsumptionBalance" xml:space="preserve">
-    <value>Consumption Balance</value>
-  </data>
-  <data name="SelfService_Info_SubsidyBalance" xml:space="preserve">
-    <value>Subsidy Balance</value>
-  </data>
-  <data name="SelfService_Info_CheckInRoom" xml:space="preserve">
-    <value>Check-in Room</value>
-  </data>
-  <data name="SelfService_Info_CheckInTime" xml:space="preserve">
-    <value>Check-in Time</value>
-  </data>
-  <data name="SelfService_Info_RangeSeparator" xml:space="preserve">
-    <value>to</value>
-  </data>
-  <data name="SelfService_Info_ClassName" xml:space="preserve">
-    <value>Class Name</value>
-  </data>
-  <data name="SelfService_Info_TrainingTime" xml:space="preserve">
-    <value>Training Time</value>
-  </data>
-  <data name="SelfService_TakeCard_Title_PendingPickup" xml:space="preserve">
-    <value>Please confirm your information before collecting the card</value>
-  </data>
-  <data name="SelfService_TakeCard_Title_Lost" xml:space="preserve">
-    <value>This card has been reported lost, please use self-service replacement</value>
-  </data>
-  <data name="SelfService_TakeCard_Title_Normal" xml:space="preserve">
-    <value>The current card status is normal, no replacement is needed</value>
-  </data>
-  <data name="SelfService_TakeCard_Title_Other" xml:space="preserve">
-    <value>No card collection is required for your account</value>
-  </data>
-  <data name="SelfService_TakeCard_Button_Confirm" xml:space="preserve">
-    <value>Confirm Card Pickup</value>
-  </data>
-  <data name="SelfService_TakeCard_Button_PickedUp" xml:space="preserve">
-    <value>Card Collected</value>
-  </data>
-  <data name="SelfService_TakeCard_Button_Complete" xml:space="preserve">
-    <value>Complete</value>
-  </data>
-  <data name="Button_Back" xml:space="preserve">
-    <value>Back</value>
-  </data>
+
+  <data name="App_Title" xml:space="preserve"><value>Self Service</value></data>
+  <data name="Button_OK" xml:space="preserve"><value>OK</value></data>
+  <data name="Button_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Button_Save" xml:space="preserve"><value>Save</value></data>
+  <data name="Button_Delete" xml:space="preserve"><value>Delete</value></data>
+  <data name="Button_Edit" xml:space="preserve"><value>Edit</value></data>
+  <data name="Button_Add" xml:space="preserve"><value>Add</value></data>
+  <data name="Button_Close" xml:space="preserve"><value>Close</value></data>
+  <data name="Button_Refresh" xml:space="preserve"><value>Refresh</value></data>
+  <data name="Button_Back" xml:space="preserve"><value>Back</value></data>
+
+  <data name="Label_Name" xml:space="preserve"><value>Name</value></data>
+  <data name="Label_Description" xml:space="preserve"><value>Description</value></data>
+  <data name="Label_Status" xml:space="preserve"><value>Status</value></data>
+  <data name="Label_Date" xml:space="preserve"><value>Date</value></data>
+  <data name="Label_Time" xml:space="preserve"><value>Time</value></data>
+
+  <data name="Msg_Success" xml:space="preserve"><value>Operation completed successfully</value></data>
+  <data name="Msg_Error" xml:space="preserve"><value>An error occurred</value></data>
+  <data name="Msg_ConfirmDelete" xml:space="preserve"><value>Are you sure you want to delete this item?</value></data>
+  <data name="Msg_Loading" xml:space="preserve"><value>Loading...</value></data>
+
+  <data name="Nav_Home" xml:space="preserve"><value>Home</value></data>
+  <data name="Nav_Settings" xml:space="preserve"><value>Settings</value></data>
+  <data name="Nav_About" xml:space="preserve"><value>About</value></data>
+
+  <data name="SelfService_TakeCard" xml:space="preserve"><value>Self-service Card Pickup</value></data>
+  <data name="SelfService_ReportLoss" xml:space="preserve"><value>Self-service Loss Report</value></data>
+  <data name="SelfService_Replacement" xml:space="preserve"><value>Self-service Card Replacement</value></data>
+  <data name="SelfService_Query" xml:space="preserve"><value>Self-service Query</value></data>
+  <data name="SelfService_Recharge" xml:space="preserve"><value>Self-service Recharge</value></data>
+  <data name="SelfService_CheckIn" xml:space="preserve"><value>Self-service Check-in</value></data>
+
+  <data name="SelfService_CheckIn_Title_NotCheckedIn" xml:space="preserve"><value>Confirm your information, then click [Check-in] to complete check-in.</value></data>
+  <data name="SelfService_CheckIn_Title_CheckedIn" xml:space="preserve"><value>You have successfully checked in.</value></data>
+  <data name="SelfService_CheckIn_Button_Action" xml:space="preserve"><value>Check-in</value></data>
+
+  <data name="SelfService_Verify_SelectMethod" xml:space="preserve"><value>Please select verification method</value></data>
+  <data name="SelfService_Verify_IDCard" xml:space="preserve"><value>ID Card Verification</value></data>
+  <data name="SelfService_Verify_SMS" xml:space="preserve"><value>SMS Verification</value></data>
+  <data name="SelfService_Verify_IDCardInstruction" xml:space="preserve"><value>Please place your ID card on the sensing area</value></data>
+  <data name="SelfService_Verify_IDCardZoneTitle" xml:space="preserve"><value>ID Card Sensing Area</value></data>
+  <data name="SelfService_Verify_IDCardWaiting" xml:space="preserve"><value>Waiting for ID card reading...</value></data>
+  <data name="SelfService_Verify_IDCardProcessing" xml:space="preserve"><value>Processing card information, please wait...</value></data>
+  <data name="SelfService_Verify_IDCardSuccess" xml:space="preserve"><value>Verification succeeded</value></data>
+  <data name="SelfService_Verify_IDCardFailed" xml:space="preserve"><value>Verification failed</value></data>
+  <data name="SelfService_Verify_SwitchToSMS" xml:space="preserve"><value>Switch to SMS Verification →</value></data>
+  <data name="SelfService_Verify_SMS_Title" xml:space="preserve"><value>SMS Verification</value></data>
+  <data name="SelfService_Verify_SMS_Phone" xml:space="preserve"><value>Phone Number</value></data>
+  <data name="SelfService_Verify_SMS_Code" xml:space="preserve"><value>Verification Code</value></data>
+  <data name="SelfService_Verify_SMS_PhonePlaceholder" xml:space="preserve"><value>Please enter phone number</value></data>
+  <data name="SelfService_Verify_SMS_CodePlaceholder" xml:space="preserve"><value>Please enter verification code</value></data>
+  <data name="SelfService_Verify_SMS_SendCode" xml:space="preserve"><value>Get Verification Code</value></data>
+  <data name="SelfService_Verify_SMS_Resend" xml:space="preserve"><value>Resend [0]s</value></data>
+  <data name="SelfService_Verify_SMS_Next" xml:space="preserve"><value>Next</value></data>
+  <data name="SelfService_Verify_SwitchToIDCard" xml:space="preserve"><value>Switch to ID Card Verification →</value></data>
+
+  <data name="SelfService_Info_BasicInfo" xml:space="preserve"><value>Basic Information</value></data>
+  <data name="SelfService_Info_Name" xml:space="preserve"><value>Name</value></data>
+  <data name="SelfService_Info_StaffNumber" xml:space="preserve"><value>Staff Number</value></data>
+  <data name="SelfService_Info_CardType" xml:space="preserve"><value>Card Type</value></data>
+  <data name="SelfService_Info_CardExpiryDate" xml:space="preserve"><value>Card Expiry Date</value></data>
+  <data name="SelfService_Info_Department" xml:space="preserve"><value>Department</value></data>
+  <data name="SelfService_Info_ConsumptionBalance" xml:space="preserve"><value>Consumption Balance</value></data>
+  <data name="SelfService_Info_SubsidyBalance" xml:space="preserve"><value>Subsidy Balance</value></data>
+  <data name="SelfService_Info_CheckInRoom" xml:space="preserve"><value>Check-in Room</value></data>
+  <data name="SelfService_Info_CheckInTime" xml:space="preserve"><value>Check-in Time</value></data>
+  <data name="SelfService_Info_RangeSeparator" xml:space="preserve"><value>to</value></data>
+  <data name="SelfService_Info_ClassName" xml:space="preserve"><value>Class Name</value></data>
+  <data name="SelfService_Info_TrainingTime" xml:space="preserve"><value>Training Time</value></data>
+
+  <data name="SelfService_TakeCard_Title_PendingPickup" xml:space="preserve"><value>Please confirm your information before collecting the card</value></data>
+  <data name="SelfService_TakeCard_Title_Lost" xml:space="preserve"><value>This card has been reported lost, please use self-service replacement</value></data>
+  <data name="SelfService_TakeCard_Title_Normal" xml:space="preserve"><value>The current card status is normal, no replacement is needed</value></data>
+  <data name="SelfService_TakeCard_Title_Other" xml:space="preserve"><value>No card collection is required for your account</value></data>
+  <data name="SelfService_TakeCard_Button_Confirm" xml:space="preserve"><value>Confirm Card Pickup</value></data>
+  <data name="SelfService_TakeCard_Button_PickedUp" xml:space="preserve"><value>Card Collected</value></data>
+  <data name="SelfService_TakeCard_Button_Complete" xml:space="preserve"><value>Complete</value></data>
+
+  <data name="SelfService_ReportLoss_Title_Normal" xml:space="preserve"><value>After confirming your information, click [Report Loss] to proceed.</value></data>
+  <data name="SelfService_ReportLoss_Title_Invalid" xml:space="preserve"><value>You do not have a normal card, or your card is already reported lost and cannot be reported again.</value></data>
+  <data name="SelfService_ReportLoss_Button_Action" xml:space="preserve"><value>Report Loss</value></data>
 </root>

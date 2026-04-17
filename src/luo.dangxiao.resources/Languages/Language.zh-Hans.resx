@@ -318,4 +318,13 @@
   <data name="SelfService_TakeCard_Button_Complete" xml:space="preserve">
     <value>完成</value>
   </data>
+  <data name="SelfService_ReportLoss_Title_Normal" xml:space="preserve">
+    <value>确认信息后，点击[挂失]按钮进行挂失。</value>
+  </data>
+  <data name="SelfService_ReportLoss_Title_Invalid" xml:space="preserve">
+    <value>您没有正常卡片或卡片已挂失，无法再挂失。</value>
+  </data>
+  <data name="SelfService_ReportLoss_Button_Action" xml:space="preserve">
+    <value>挂失</value>
+  </data>
 </root>

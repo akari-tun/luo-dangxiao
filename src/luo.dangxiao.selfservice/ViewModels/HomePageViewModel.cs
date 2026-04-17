@@ -68,6 +68,17 @@ public partial class HomePageViewModel : ViewModelBase, IPageViewModel
         });
     }
 
+    public void NavigateToCheckIn(UserInfoModel userInfo)
+    {
+        SelectedFunction = "CheckIn";
+        CurrentState = HomePageState.SubPageContainer;
+        SubPageContent = new CheckInPageView(new CheckInPageParameter
+        {
+            TargetFunction = "CheckIn",
+            Data = userInfo
+        });
+    }
+
     public void NavigateToTakeCard(UserInfoModel userInfo)
     {
         SelectedFunction = "TakeCard";
@@ -75,6 +86,17 @@ public partial class HomePageViewModel : ViewModelBase, IPageViewModel
         SubPageContent = new TakeCardPageView(new TakeCardPageParameter
         {
             TargetFunction = "TakeCard",
+            Data = userInfo
+        });
+    }
+
+    public void NavigateToReportLoss(UserInfoModel userInfo)
+    {
+        SelectedFunction = "ReportLoss";
+        CurrentState = HomePageState.SubPageContainer;
+        SubPageContent = new ReportLossPageView(new ReportLossPageParameter
+        {
+            TargetFunction = "ReportLoss",
             Data = userInfo
         });
     }

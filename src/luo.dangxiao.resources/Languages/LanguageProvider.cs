@@ -18,6 +18,9 @@ public static class LanguageProvider
     public static string SelfService_Query => Get(nameof(SelfService_Query));
     public static string SelfService_Recharge => Get(nameof(SelfService_Recharge));
     public static string SelfService_CheckIn => Get(nameof(SelfService_CheckIn));
+    public static string SelfService_CheckIn_Title_NotCheckedIn => Get(nameof(SelfService_CheckIn_Title_NotCheckedIn));
+    public static string SelfService_CheckIn_Title_CheckedIn => Get(nameof(SelfService_CheckIn_Title_CheckedIn));
+    public static string SelfService_CheckIn_Button_Action => Get(nameof(SelfService_CheckIn_Button_Action));
 
     public static string SelfService_Verify_SelectMethod => Get(nameof(SelfService_Verify_SelectMethod));
     public static string SelfService_Verify_IDCard => Get(nameof(SelfService_Verify_IDCard));
@@ -59,4 +62,7 @@ public static class LanguageProvider
     public static string SelfService_TakeCard_Button_Confirm => Get(nameof(SelfService_TakeCard_Button_Confirm));
     public static string SelfService_TakeCard_Button_PickedUp => Get(nameof(SelfService_TakeCard_Button_PickedUp));
     public static string SelfService_TakeCard_Button_Complete => Get(nameof(SelfService_TakeCard_Button_Complete));
+    public static string SelfService_ReportLoss_Title_Normal => Get(nameof(SelfService_ReportLoss_Title_Normal));
+    public static string SelfService_ReportLoss_Title_Invalid => Get(nameof(SelfService_ReportLoss_Title_Invalid));
+    public static string SelfService_ReportLoss_Button_Action => Get(nameof(SelfService_ReportLoss_Button_Action));
 }
