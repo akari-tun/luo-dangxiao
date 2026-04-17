@@ -101,6 +101,17 @@ public partial class HomePageViewModel : ViewModelBase, IPageViewModel
         });
     }
 
+    public void NavigateToReplacement(UserInfoModel userInfo)
+    {
+        SelectedFunction = "Replacement";
+        CurrentState = HomePageState.SubPageContainer;
+        SubPageContent = new ReplacementPageView(new ReplacementPageParameter
+        {
+            TargetFunction = "Replacement",
+            Data = userInfo
+        });
+    }
+
     public void ReturnHome()
     {
         SelectedFunction = string.Empty;

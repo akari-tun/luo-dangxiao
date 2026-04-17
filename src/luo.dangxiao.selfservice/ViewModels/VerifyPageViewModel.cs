@@ -86,6 +86,12 @@ public partial class VerifyPageViewModel : ViewModelBase, IPageViewModel
             return;
         }
 
+        if (TargetFunction == "Replacement")
+        {
+            homePage.NavigateToReplacement(e.UserInfo);
+            return;
+        }
+
         homePage.NavigateToUserInfo(e.UserInfo, TargetFunction);
     }
 }

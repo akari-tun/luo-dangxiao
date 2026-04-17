@@ -30,7 +30,8 @@ namespace luo.dangxiao.selfservice
                 .AddTransient<TakeCardPageViewModel>()
                 .AddTransient<ReportLossPageViewModel>()
                 .AddTransient<StudentInfoPageViewModel>()
-                .AddTransient<StaffInfoPageViewModel>();
+                .AddTransient<StaffInfoPageViewModel>()
+                .AddTransient<ReplacementPageViewModel>();
 
             Ioc.Default.ConfigureServices(serviceCollection.BuildServiceProvider());
 
