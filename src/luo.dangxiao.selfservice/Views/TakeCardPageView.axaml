@@ -47,91 +47,90 @@
     </UserControl.Styles>
 
     <Grid RowDefinitions="*,130">
-        <Grid>
-            <Image Source="avares://luo.dangxiao.resources/Images/bg.png" Stretch="Fill"/>
+        <Image Grid.Row="0" Source="avares://luo.dangxiao.resources/Images/bg.png" Stretch="Fill"/>
 
-            <Border Margin="45,30,45,30"
-                    CornerRadius="7">
-                <Grid RowDefinitions="48,Auto,*">
-                    <StackPanel Grid.Row="0" Margin="32,0,0,0" Orientation="Horizontal" VerticalAlignment="Center">
-                        <Image Source="avares://luo.dangxiao.resources/Images/id_card_tip.png"
-                               Width="48"
-                               Height="48"
-                               Margin="0,0,20,0"/>
-                        <TextBlock Text="{Binding PageTitle}" Classes="page-title" VerticalAlignment="Center"/>
-                    </StackPanel>
+        <Border Grid.Row="0" 
+                Margin="45,30,45,30"
+                CornerRadius="7">
+            <Grid RowDefinitions="48,Auto,*">
+                <StackPanel Grid.Row="0" Margin="32,0,0,0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Image Source="avares://luo.dangxiao.resources/Images/id_card_tip.png"
+                           Width="48"
+                           Height="48"
+                           Margin="0,0,20,0"/>
+                    <TextBlock Text="{Binding PageTitle}" Classes="page-title" VerticalAlignment="Center"/>
+                </StackPanel>
 
-                    <Border Grid.Row="1"
-                            Margin="0,8,0,0"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Top"
-                            Background="Transparent">
-                        <ContentControl HorizontalAlignment="Stretch"
-                                        VerticalAlignment="Top"
-                                        Content="{Binding UserInfoModuleContent}"/>
-                    </Border>
+                <Border Grid.Row="1"
+                        Margin="0,8,0,0"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Top"
+                        Background="Transparent">
+                    <ContentControl HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Top"
+                                    Content="{Binding UserInfoModuleContent}"/>
+                </Border>
 
-                    <Border Grid.Row="2"
-                            Margin="45,0,45,0"
-                            Padding="26,20"
-                            Background="#F4F4EE"
-                            CornerRadius="8">
-                        <Grid>
+                <Border Grid.Row="2"
+                        Margin="45,0,45,0"
+                        Padding="26,20"
+                        Background="#F4F4EE"
+                        CornerRadius="8">
+                    <Grid>
 
-                            <StackPanel IsVisible="{Binding CurrentState, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Processing, Mode=OneWay}"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Spacing="18">
-                                <TextBlock Text="制卡中" Classes="panel-title" HorizontalAlignment="Center"/>
-                                <Image Source="avares://luo.dangxiao.resources/Images/take_card.png" Width="96" Height="96"/>
-                                <TextBlock Text="{Binding StatusHint}" FontFamily="SimHei" FontSize="30" HorizontalAlignment="Center"/>
-                                <TextBlock Text="请勿离开，卡片正在制作中"
-                                           FontFamily="SimHei"
-                                           FontSize="28"
-                                           Foreground="{StaticResource PrimaryRedDarkBrush}"
-                                           HorizontalAlignment="Center"/>
-                            </StackPanel>
+                        <StackPanel IsVisible="{Binding CurrentState, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Processing, Mode=OneWay}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Spacing="18">
+                            <TextBlock Text="制卡中" Classes="panel-title" HorizontalAlignment="Center"/>
+                            <Image Source="avares://luo.dangxiao.resources/Images/take_card.png" Width="96" Height="96"/>
+                            <TextBlock Text="{Binding StatusHint}" FontFamily="SimHei" FontSize="30" HorizontalAlignment="Center"/>
+                            <TextBlock Text="请勿离开，卡片正在制作中"
+                                       FontFamily="SimHei"
+                                       FontSize="28"
+                                       Foreground="{StaticResource PrimaryRedDarkBrush}"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
 
-                            <StackPanel IsVisible="{Binding CurrentState, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=CardReady, Mode=OneWay}"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Spacing="18">
-                                <TextBlock Text="卡片已制作完成" Classes="panel-title" HorizontalAlignment="Center"/>
-                                <TextBlock Text="↓↓↓↓↓↓" FontFamily="Arial" FontSize="56" Foreground="{StaticResource PrimaryRedDarkBrush}" HorizontalAlignment="Center"/>
-                                <TextBlock Text="{Binding StatusHint}" FontFamily="SimHei" FontSize="34" HorizontalAlignment="Center"/>
-                            </StackPanel>
+                        <StackPanel IsVisible="{Binding CurrentState, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=CardReady, Mode=OneWay}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Spacing="18">
+                            <TextBlock Text="卡片已制作完成" Classes="panel-title" HorizontalAlignment="Center"/>
+                            <TextBlock Text="↓↓↓↓↓↓" FontFamily="Arial" FontSize="56" Foreground="{StaticResource PrimaryRedDarkBrush}" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding StatusHint}" FontFamily="SimHei" FontSize="34" HorizontalAlignment="Center"/>
+                        </StackPanel>
 
-                            <StackPanel IsVisible="{Binding CurrentState, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Completed, Mode=OneWay}"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Spacing="20">
-                                <TextBlock Text="取卡完成" Classes="panel-title" HorizontalAlignment="Center"/>
+                        <StackPanel IsVisible="{Binding CurrentState, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Completed, Mode=OneWay}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Spacing="20">
+                            <TextBlock Text="取卡完成" Classes="panel-title" HorizontalAlignment="Center"/>
 
-                                <Grid RowDefinitions="Auto,12,Auto,12,Auto"
-                                      ColumnDefinitions="130,20,350">
-                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="姓名" Classes="info-label"/>
-                                    <Border Grid.Row="0" Grid.Column="2" Classes="info-field">
-                                        <TextBlock Text="{Binding UserInfo.Name}" Classes="info-value"/>
-                                    </Border>
+                            <Grid RowDefinitions="Auto,12,Auto,12,Auto"
+                                  ColumnDefinitions="130,20,350">
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="姓名" Classes="info-label"/>
+                                <Border Grid.Row="0" Grid.Column="2" Classes="info-field">
+                                    <TextBlock Text="{Binding UserInfo.Name}" Classes="info-value"/>
+                                </Border>
 
-                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="卡号" Classes="info-label"/>
-                                    <Border Grid.Row="2" Grid.Column="2" Classes="info-field">
-                                        <TextBlock Text="{Binding CardNumber}" Classes="info-value"/>
-                                    </Border>
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="卡号" Classes="info-label"/>
+                                <Border Grid.Row="2" Grid.Column="2" Classes="info-field">
+                                    <TextBlock Text="{Binding CardNumber}" Classes="info-value"/>
+                                </Border>
 
-                                    <TextBlock Grid.Row="4" Grid.Column="0" Text="取卡时间" Classes="info-label"/>
-                                    <Border Grid.Row="4" Grid.Column="2" Classes="info-field">
-                                        <TextBlock Text="{Binding TakeCardTime, StringFormat={}{0:yyyy/MM/dd HH:mm:ss}}" Classes="info-value"/>
-                                    </Border>
-                                </Grid>
+                                <TextBlock Grid.Row="4" Grid.Column="0" Text="取卡时间" Classes="info-label"/>
+                                <Border Grid.Row="4" Grid.Column="2" Classes="info-field">
+                                    <TextBlock Text="{Binding TakeCardTime, StringFormat={}{0:yyyy/MM/dd HH:mm:ss}}" Classes="info-value"/>
+                                </Border>
+                            </Grid>
 
-                                <TextBlock Text="{Binding StatusHint}" FontFamily="SimHei" FontSize="30" HorizontalAlignment="Center"/>
-                            </StackPanel>
-                        </Grid>
-                    </Border>
-                </Grid>
-            </Border>
-        </Grid>
+                            <TextBlock Text="{Binding StatusHint}" FontFamily="SimHei" FontSize="30" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
 
         <Grid Grid.Row="1">
             <Grid.Styles>

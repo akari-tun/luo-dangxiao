@@ -15,35 +15,34 @@
     </Design.DataContext>
 
     <Grid RowDefinitions="*,130">
-        <Grid>
-            <Image Source="avares://luo.dangxiao.resources/Images/bg.png" Stretch="Fill"/>
+        <Image Grid.Row="0" Source="avares://luo.dangxiao.resources/Images/bg.png" Stretch="Fill"/>
 
-            <Border Margin="45,30,45,30"
-                    CornerRadius="7">
-                <Grid RowDefinitions="48,430,*">
-                    <StackPanel Grid.Row="0" Margin="32,0,0,0" Orientation="Horizontal" VerticalAlignment="Center">
-                        <Image Source="avares://luo.dangxiao.resources/Images/lost_card.png"
-                               Width="48"
-                               Height="48"
-                               Margin="0,0,20,0"/>
-                        <TextBlock FontFamily="SimHei"
-                                   FontSize="45"
-                                   Foreground="{StaticResource PrimaryRedBrush}"
-                                   Text="{Binding PageTitle}"
-                                   VerticalAlignment="Center"/>
-                    </StackPanel>
-                    <Border Grid.Row="1"
-                            Margin="0,8,0,0"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Top"
-                            Background="Transparent">
-                        <ContentControl HorizontalAlignment="Stretch"
-                                        VerticalAlignment="Top"
-                                        Content="{Binding UserInfoModuleContent}"/>
-                    </Border>
-                </Grid>
-            </Border>
-        </Grid>
+        <Border Grid.Row="0" 
+                Margin="45,30,45,30"
+                CornerRadius="7">
+            <Grid RowDefinitions="48,430,*">
+                <StackPanel Grid.Row="0" Margin="32,0,0,0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Image Source="avares://luo.dangxiao.resources/Images/lost_card.png"
+                           Width="48"
+                           Height="48"
+                           Margin="0,0,20,0"/>
+                    <TextBlock FontFamily="SimHei"
+                               FontSize="45"
+                               Foreground="{StaticResource PrimaryRedBrush}"
+                               Text="{Binding PageTitle}"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+                <Border Grid.Row="1"
+                        Margin="0,8,0,0"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Top"
+                        Background="Transparent">
+                    <ContentControl HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Top"
+                                    Content="{Binding UserInfoModuleContent}"/>
+                </Border>
+            </Grid>
+        </Border>
 
         <Grid Grid.Row="1">
             <Grid.Styles>
