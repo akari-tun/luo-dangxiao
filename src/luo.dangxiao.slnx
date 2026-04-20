@@ -2,6 +2,8 @@
   <Folder Name="/doc/">
     <File Path="../doc/YC_Card.pdf" />
     <File Path="../doc/客户端程序界面.docx" />
+    <File Path="../doc/智联一卡通综合服务平台.postman.json" />
+    <File Path="../doc/自助终端服务接口.md" />
   </Folder>
   <Folder Name="/doc/Design/" />
   <Folder Name="/doc/Design/CardCenter/">
@@ -137,4 +139,5 @@
   <Project Path="luo.dangxiao.resources/luo.dangxiao.resources.csproj" />
   <Project Path="luo.dangxiao.selfservice.app/luo.dangxiao.selfservice.app.csproj" Id="60579826-dcff-4a93-ad62-e32e3bb4c558" />
   <Project Path="luo.dangxiao.selfservice/luo.dangxiao.selfservice.csproj" />
+  <Project Path="luo.dangxiao.wabapi/luo.dangxiao.wabapi.csproj" />
 </Solution>

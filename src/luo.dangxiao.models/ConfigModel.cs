@@ -18,6 +18,8 @@ namespace luo.dangxiao.models
 
         public string Theme { get; set; } = "Light";
 
+        public YktApiConfig YktApiConfig { get; set; } = new();
+
         public static T Load<T>(string? configFilePath = null) where T : ConfigModel, new()
         {
             var path = ResolveConfigFilePath(configFilePath);

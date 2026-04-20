@@ -1,0 +1,692 @@
+{
+    "info": {
+        "name": "智联一卡通综合服务平台",
+        "description": "",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "自助终端服务公共控制器",
+            "description": "",
+            "item": [
+                {
+                    "name": "发送手机短信",
+                    "description": "",
+                    "event": [],
+                    "auth": {},
+                    "request": {
+                        "auth": {},
+                        "method": "POST",
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/self/api/v1/sendSms",
+                            "path": [
+                                "self",
+                                "api",
+                                "v1",
+                                "sendSms"
+                            ],
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "query": [],
+                            "variable": []
+                        }
+                    },
+                    "response": [],
+                    "protocolProfileBehavior": {
+                        "strictSSL": false,
+                        "followRedirects": true
+                    }
+                }
+            ],
+            "event": [
+                {
+                    "listen": "prerequest",
+                    "script": {
+                        "exec": [],
+                        "type": "text/javascript",
+                        "packages": {}
+                    }
+                },
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [],
+                        "type": "text/javascript",
+                        "packages": {}
+                    }
+                }
+            ],
+            "auth": {}
+        },
+        {
+            "name": "自助终端-教职工服务控制器",
+            "description": "",
+            "item": [
+                {
+                    "name": "根据手机号获取教职工信息",
+                    "description": "",
+                    "event": [],
+                    "auth": {},
+                    "request": {
+                        "auth": {},
+                        "method": "GET",
+                        "body": {},
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/teacher/api/v1/account/mobile/:mobile",
+                            "path": [
+                                "teacher",
+                                "api",
+                                "v1",
+                                "account",
+                                "mobile",
+                                ":mobile"
+                            ],
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "query": [],
+                            "variable": [
+                                {
+                                    "key": "mobile",
+                                    "value": "MTc4MDczMTI4Nzc=",
+                                    "description": "手机号",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "protocolProfileBehavior": {
+                        "strictSSL": false,
+                        "followRedirects": true
+                    }
+                },
+                {
+                    "name": "根据身份证号获取教职工信息",
+                    "description": "",
+                    "event": [],
+                    "auth": {},
+                    "request": {
+                        "auth": {},
+                        "method": "GET",
+                        "body": {},
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/teacher/api/v1/account/identity/:identity",
+                            "path": [
+                                "teacher",
+                                "api",
+                                "v1",
+                                "account",
+                                "identity",
+                                ":identity"
+                            ],
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "query": [],
+                            "variable": [
+                                {
+                                    "key": "identity",
+                                    "value": "NDMwNDA3MTk3ODA5MjExNTE0",
+                                    "description": "身份证号",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "protocolProfileBehavior": {
+                        "strictSSL": false,
+                        "followRedirects": true
+                    }
+                },
+                {
+                    "name": "获取教职工微信充值二维码",
+                    "description": "",
+                    "event": [],
+                    "auth": {},
+                    "request": {
+                        "auth": {},
+                        "method": "POST",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"userId\": \"1624\",\r\n    \"dealValue\": 0.01,\r\n    \"workStationNumb\": \"71\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/teacher/api/v1/wechat/recharge/qrcode",
+                            "path": [
+                                "teacher",
+                                "api",
+                                "v1",
+                                "wechat",
+                                "recharge",
+                                "qrcode"
+                            ],
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "query": [],
+                            "variable": []
+                        }
+                    },
+                    "response": [],
+                    "protocolProfileBehavior": {
+                        "strictSSL": false,
+                        "followRedirects": true
+                    }
+                },
+                {
+                    "name": "微信充值入账",
+                    "description": "",
+                    "event": [],
+                    "auth": {},
+                    "request": {
+                        "auth": {},
+                        "method": "GET",
+                        "body": {},
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/teacher/recharge/:userId/:dealValue/:workStationNumb/:orderSn",
+                            "path": [
+                                "teacher",
+                                "recharge",
+                                ":userId",
+                                ":dealValue",
+                                ":workStationNumb",
+                                ":orderSn"
+                            ],
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "query": [],
+                            "variable": [
+                                {
+                                    "key": "userId",
+                                    "description": "人员Id",
+                                    "type": "string"
+                                },
+                                {
+                                    "key": "dealValue",
+                                    "description": "充值金额",
+                                    "type": "string"
+                                },
+                                {
+                                    "key": "workStationNumb",
+                                    "description": "工作站编号",
+                                    "type": "string"
+                                },
+                                {
+                                    "key": "orderSn",
+                                    "description": "微信订单号",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "protocolProfileBehavior": {
+                        "strictSSL": false,
+                        "followRedirects": true
+                    }
+                },
+                {
+                    "name": "查询微信充值入账结果",
+                    "description": "",
+                    "event": [],
+                    "auth": {},
+                    "request": {
+                        "auth": {},
+                        "method": "POST",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"orderSn\":\"1111111111111111111111111111\"}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/teacher/api/v1/wechat/recharge/result",
+                            "path": [
+                                "teacher",
+                                "api",
+                                "v1",
+                                "wechat",
+                                "recharge",
+                                "result"
+                            ],
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "query": [],
+                            "variable": []
+                        }
+                    },
+                    "response": [],
+                    "protocolProfileBehavior": {
+                        "strictSSL": false,
+                        "followRedirects": true
+                    }
+                }
+            ],
+            "event": [
+                {
+                    "listen": "prerequest",
+                    "script": {
+                        "exec": [],
+                        "type": "text/javascript",
+                        "packages": {}
+                    }
+                },
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [],
+                        "type": "text/javascript",
+                        "packages": {}
+                    }
+                }
+            ],
+            "auth": {}
+        },
+        {
+            "name": "自助终端-学员服务控制器",
+            "description": "",
+            "item": [
+                {
+                    "name": "根据手机号获取学员信息",
+                    "description": "",
+                    "event": [],
+                    "auth": {},
+                    "request": {
+                        "auth": {},
+                        "method": "GET",
+                        "body": {},
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/trainee/api/v1/mobile/:mobile/:checkInDate",
+                            "path": [
+                                "trainee",
+                                "api",
+                                "v1",
+                                "mobile",
+                                ":mobile",
+                                ":checkInDate"
+                            ],
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "query": [],
+                            "variable": [
+                                {
+                                    "key": "mobile",
+                                    "value": "MTg5MDAwMDEwMA==",
+                                    "description": "手机号",
+                                    "type": "string"
+                                },
+                                {
+                                    "key": "checkInDate",
+                                    "value": "2026-03-25 00:00:00",
+                                    "description": "",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "protocolProfileBehavior": {
+                        "strictSSL": false,
+                        "followRedirects": true
+                    }
+                },
+                {
+                    "name": "根据身份证号获取学员信息",
+                    "description": "",
+                    "event": [],
+                    "auth": {},
+                    "request": {
+                        "auth": {},
+                        "method": "GET",
+                        "body": {},
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/trainee/api/v1/identity/:identity/:checkInDate",
+                            "path": [
+                                "trainee",
+                                "api",
+                                "v1",
+                                "identity",
+                                ":identity",
+                                ":checkInDate"
+                            ],
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "query": [],
+                            "variable": [
+                                {
+                                    "key": "identity",
+                                    "value": "MTEwMTAxMjAwMDA3Mjg2MTA2",
+                                    "description": "身份证号",
+                                    "type": "string"
+                                },
+                                {
+                                    "key": "checkInDate",
+                                    "value": "2026-03-25 00:00:00",
+                                    "description": "",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    },
+                    "response": [],
+                    "protocolProfileBehavior": {
+                        "strictSSL": false,
+                        "followRedirects": true
+                    }
+                },
+                {
+                    "name": "学员报到",
+                    "description": "",
+                    "event": [],
+                    "auth": {},
+                    "request": {
+                        "auth": {},
+                        "method": "POST",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n  \"userId\": \"1891692263238475778\", //前面查询接口返回\r\n  \"checkinState\": 0, //前面接口查询返回\r\n  \"roomCode\": \"F201\",  //前面接口查询返回，可能为空\r\n  \"deptId\": \"789\"   //前面接口查询返回\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/trainee/api/v1/register",
+                            "path": [
+                                "trainee",
+                                "api",
+                                "v1",
+                                "register"
+                            ],
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "query": [],
+                            "variable": []
+                        }
+                    },
+                    "response": [],
+                    "protocolProfileBehavior": {
+                        "strictSSL": false,
+                        "followRedirects": true
+                    }
+                }
+            ],
+            "event": [
+                {
+                    "listen": "prerequest",
+                    "script": {
+                        "exec": [],
+                        "type": "text/javascript",
+                        "packages": {}
+                    }
+                },
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [],
+                        "type": "text/javascript",
+                        "packages": {}
+                    }
+                }
+            ],
+            "auth": {}
+        },
+        {
+            "name": "卡片操作控制器",
+            "description": "",
+            "item": [
+                {
+                    "name": "初始化卡片",
+                    "description": "",
+                    "event": [],
+                    "auth": {},
+                    "request": {
+                        "auth": {},
+                        "method": "POST",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n  \"cardId\": \"卡片Id\",\r\n  \"userId\": \"用户Id\",\r\n  \"cardTypeId\": \"卡片类型\",\r\n  \"expiryDate\": \"卡有效期\",\r\n  \"factoryFixId\": \"物理卡号\",\r\n  \"mainDeputyType\": \"是否主卡\",\r\n  \"cardNo\": \"卡流水号\",\r\n  \"cardOperate\": \"发卡方式，默认为新卡\",\r\n  \"workStationNumb\": \"工作站编号\",\r\n  \"tenantId\": \"租户Id\",\r\n  \"oldCardNo\": \"原卡卡流水号\",\r\n  \"oldFactoryFixId\": \"原卡物理卡号\",\r\n  \"oldCardId\": \"原卡卡Id\"\r\n}\r\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/card/api/v1/init",
+                            "path": [
+                                "card",
+                                "api",
+                                "v1",
+                                "init"
+                            ],
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "query": [],
+                            "variable": []
+                        }
+                    },
+                    "response": [],
+                    "protocolProfileBehavior": {
+                        "strictSSL": false,
+                        "followRedirects": true
+                    }
+                },
+                {
+                    "name": "写卡成功",
+                    "description": "",
+                    "event": [],
+                    "auth": {},
+                    "request": {
+                        "auth": {},
+                        "method": "POST",
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/card/api/v1/write/success",
+                            "path": [
+                                "card",
+                                "api",
+                                "v1",
+                                "write",
+                                "success"
+                            ],
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "query": [],
+                            "variable": []
+                        }
+                    },
+                    "response": [],
+                    "protocolProfileBehavior": {
+                        "strictSSL": false,
+                        "followRedirects": true
+                    }
+                },
+                {
+                    "name": "写卡失败",
+                    "description": "",
+                    "event": [],
+                    "auth": {},
+                    "request": {
+                        "auth": {},
+                        "method": "POST",
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/card/api/v1/write/failure",
+                            "path": [
+                                "card",
+                                "api",
+                                "v1",
+                                "write",
+                                "failure"
+                            ],
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "query": [],
+                            "variable": []
+                        }
+                    },
+                    "response": [],
+                    "protocolProfileBehavior": {
+                        "strictSSL": false,
+                        "followRedirects": true
+                    }
+                },
+                {
+                    "name": "挂失卡片",
+                    "description": "",
+                    "event": [],
+                    "auth": {},
+                    "request": {
+                        "auth": {},
+                        "method": "POST",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n  \"cardNo\": \"卡流水号\",\r\n  \"factoryFixId\": \"物理卡号\",\r\n  \"operatorId\": \"操作员Id,自助终端默认为持卡人Id\",\r\n  \"tenantId\": \"租户Id,配置\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/card/api/v1/lock",
+                            "path": [
+                                "card",
+                                "api",
+                                "v1",
+                                "lock"
+                            ],
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "query": [],
+                            "variable": []
+                        }
+                    },
+                    "response": [],
+                    "protocolProfileBehavior": {
+                        "strictSSL": false,
+                        "followRedirects": true
+                    }
+                },
+                {
+                    "name": "回收卡片",
+                    "description": "",
+                    "event": [],
+                    "auth": {},
+                    "request": {
+                        "auth": {},
+                        "method": "POST",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n  \"cardNo\": \"卡流水号\",\r\n  \"factoryFixId\": \"物理卡号\",\r\n  \"operatorId\": \"操作员Id,自助终端默认为持卡人Id\",\r\n  \"tenantId\": \"租户Id,配置\"\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/card/api/v1/recycle",
+                            "path": [
+                                "card",
+                                "api",
+                                "v1",
+                                "recycle"
+                            ],
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "query": [],
+                            "variable": []
+                        }
+                    },
+                    "response": [],
+                    "protocolProfileBehavior": {
+                        "strictSSL": false,
+                        "followRedirects": true
+                    }
+                }
+            ],
+            "event": [
+                {
+                    "listen": "prerequest",
+                    "script": {
+                        "exec": [],
+                        "type": "text/javascript",
+                        "packages": {}
+                    }
+                },
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [],
+                        "type": "text/javascript",
+                        "packages": {}
+                    }
+                }
+            ],
+            "auth": {}
+        }
+    ],
+    "variable": [],
+    "event": [],
+    "auth": {}
+}

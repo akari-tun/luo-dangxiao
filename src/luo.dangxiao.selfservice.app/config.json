@@ -1,4 +1,8 @@
 {
   "Theme": "Light",
+  "YktApiConfig": {
+    "BaseUrl": "http://gc45956b.natappfree.cc/dev-api/self",
+    "TimeoutSeconds": 30
+  },
   "ServiceType": "StaffSelfService"
 }
