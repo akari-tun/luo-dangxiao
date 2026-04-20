@@ -20,6 +20,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\luo.dangxiao.selfservice\luo.dangxiao.selfservice.csproj" />
   </ItemGroup>
 </Project>

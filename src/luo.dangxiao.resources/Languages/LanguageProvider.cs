@@ -65,4 +65,15 @@ public static class LanguageProvider
     public static string SelfService_ReportLoss_Title_Normal => Get(nameof(SelfService_ReportLoss_Title_Normal));
     public static string SelfService_ReportLoss_Title_Invalid => Get(nameof(SelfService_ReportLoss_Title_Invalid));
     public static string SelfService_ReportLoss_Button_Action => Get(nameof(SelfService_ReportLoss_Button_Action));
+    public static string SelfService_Recharge_Title_Confirm => Get(nameof(SelfService_Recharge_Title_Confirm));
+    public static string SelfService_Recharge_Title_QRCode => Get(nameof(SelfService_Recharge_Title_QRCode));
+    public static string SelfService_Recharge_AmountSelectionTitle => Get(nameof(SelfService_Recharge_AmountSelectionTitle));
+    public static string SelfService_Recharge_Amount_20 => Get(nameof(SelfService_Recharge_Amount_20));
+    public static string SelfService_Recharge_Amount_50 => Get(nameof(SelfService_Recharge_Amount_50));
+    public static string SelfService_Recharge_Amount_100 => Get(nameof(SelfService_Recharge_Amount_100));
+    public static string SelfService_Recharge_Amount_200 => Get(nameof(SelfService_Recharge_Amount_200));
+    public static string SelfService_Recharge_Amount_500 => Get(nameof(SelfService_Recharge_Amount_500));
+    public static string SelfService_Recharge_Status_PendingPayment => Get(nameof(SelfService_Recharge_Status_PendingPayment));
+    public static string SelfService_Recharge_QRCode_Instruction => Get(nameof(SelfService_Recharge_QRCode_Instruction));
+    public static string SelfService_Recharge_QRCode_ScanHint => Get(nameof(SelfService_Recharge_QRCode_ScanHint));
 }

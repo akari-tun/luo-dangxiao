@@ -20,7 +20,7 @@ public partial class HomePageView : UserControl, IPageView
         InitializeComponent();
 
         _viewModel = Ioc.Default.GetRequiredService<HomePageViewModel>();
-        var cfgData = Ioc.Default.GetRequiredService<CfgDataModel>();
+        var cfgData = Ioc.Default.GetRequiredService<SelfServiceConfig>();
 
         switch (cfgData.ServiceType)
         {

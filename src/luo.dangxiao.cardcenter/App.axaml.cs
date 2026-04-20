@@ -3,8 +3,10 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
+using Avalonia.Styling;
 using luo.dangxiao.cardcenter.ViewModels;
 using luo.dangxiao.cardcenter.Views;
+using luo.dangxiao.models;
 using System.Linq;
 
 namespace luo.dangxiao.cardcenter
@@ -14,6 +16,12 @@ namespace luo.dangxiao.cardcenter
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
+
+            var cfgData = ConfigModel.Load<CardCenterConfig>();
+            if (Current is { } app)
+            {
+                app.RequestedThemeVariant = ResolveThemeVariant(cfgData.Theme);
+            }
         }
 
         public override void OnFrameworkInitializationCompleted()
@@ -43,6 +51,16 @@ namespace luo.dangxiao.cardcenter
             {
                 BindingPlugins.DataValidators.Remove(plugin);
             }
+        }
+
+        private static ThemeVariant ResolveThemeVariant(string? theme)
+        {
+            return theme?.Trim().ToLowerInvariant() switch
+            {
+                "dark" => ThemeVariant.Dark,
+                "default" => ThemeVariant.Default,
+                _ => ThemeVariant.Light
+            };
         }
     }
 }

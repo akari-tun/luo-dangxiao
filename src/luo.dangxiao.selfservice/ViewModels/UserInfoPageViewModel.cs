@@ -67,7 +67,7 @@ public partial class UserInfoPageViewModel : ViewModelBase, IPageViewModel
 
     public UserInfoPageViewModel()
     {
-        var cfgData = Ioc.Default.GetRequiredService<CfgDataModel>();
+        var cfgData = Ioc.Default.GetRequiredService<SelfServiceConfig>();
         SelfServiceType = cfgData.ServiceType;
     }
 
@@ -91,7 +91,7 @@ public partial class UserInfoPageViewModel : ViewModelBase, IPageViewModel
         TargetFunction = parameter.TargetFunction;
         CurrentUserInfo = parameter.Data;
 
-        var cfgData = Ioc.Default.GetRequiredService<CfgDataModel>();
+        var cfgData = Ioc.Default.GetRequiredService<SelfServiceConfig>();
         SelfServiceType = cfgData.ServiceType;
 
         if (SelfServiceType == SelfServiceType.StaffSelfService)

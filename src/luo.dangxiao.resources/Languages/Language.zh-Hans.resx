@@ -327,4 +327,37 @@
   <data name="SelfService_ReportLoss_Button_Action" xml:space="preserve">
     <value>挂失</value>
   </data>
+  <data name="SelfService_Recharge_Title_Confirm" xml:space="preserve">
+    <value>请确认信息后，点击相应金额进行充值</value>
+  </data>
+  <data name="SelfService_Recharge_Title_QRCode" xml:space="preserve">
+    <value>确认支付金额后，扫描二维码进行支付</value>
+  </data>
+  <data name="SelfService_Recharge_AmountSelectionTitle" xml:space="preserve">
+    <value>请选择充值金额</value>
+  </data>
+  <data name="SelfService_Recharge_Amount_20" xml:space="preserve">
+    <value>￥20元</value>
+  </data>
+  <data name="SelfService_Recharge_Amount_50" xml:space="preserve">
+    <value>￥50元</value>
+  </data>
+  <data name="SelfService_Recharge_Amount_100" xml:space="preserve">
+    <value>￥100元</value>
+  </data>
+  <data name="SelfService_Recharge_Amount_200" xml:space="preserve">
+    <value>￥200元</value>
+  </data>
+  <data name="SelfService_Recharge_Amount_500" xml:space="preserve">
+    <value>￥500元</value>
+  </data>
+  <data name="SelfService_Recharge_Status_PendingPayment" xml:space="preserve">
+    <value>待支付金额：¥{0:0.##}</value>
+  </data>
+  <data name="SelfService_Recharge_QRCode_Instruction" xml:space="preserve">
+    <value>请在手机上完成支付并返回本机确认。</value>
+  </data>
+  <data name="SelfService_Recharge_QRCode_ScanHint" xml:space="preserve">
+    <value>请使用微信/支付宝扫描二维码</value>
+  </data>
 </root>

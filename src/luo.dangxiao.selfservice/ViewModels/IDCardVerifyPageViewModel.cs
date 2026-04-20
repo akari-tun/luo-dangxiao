@@ -86,7 +86,7 @@ public partial class IDCardVerifyPageViewModel : ViewModelBase, IPageViewModel
     {
         await Task.Delay(1200);
 
-        var cfgData = Ioc.Default.GetRequiredService<CfgDataModel>();
+        var cfgData = Ioc.Default.GetRequiredService<SelfServiceConfig>();
         if (cfgData.ServiceType == SelfServiceType.StaffSelfService)
         {
             return new StaffInfoModel

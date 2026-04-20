@@ -18,10 +18,13 @@ namespace luo.dangxiao.selfservice
         {
             AvaloniaXamlLoader.Load(this);
 
+            var cfgData = ConfigModel.Load<SelfServiceConfig>();
+
             IServiceCollection serviceCollection = new ServiceCollection()
+                .AddSingleton(cfgData)
+                .AddSingleton<ConfigModel>(cfgData)
                 .AddSingleton<MainWindowViewModel>()
                 .AddSingleton<HomePageViewModel>()
-                .AddSingleton<CfgDataModel>()
                 .AddTransient<VerifyPageViewModel>()
                 .AddTransient<IDCardVerifyPageViewModel>()
                 .AddTransient<SMSVerifyPageViewModel>()
@@ -31,14 +34,14 @@ namespace luo.dangxiao.selfservice
                 .AddTransient<ReportLossPageViewModel>()
                 .AddTransient<StudentInfoPageViewModel>()
                 .AddTransient<StaffInfoPageViewModel>()
-                .AddTransient<ReplacementPageViewModel>();
+                .AddTransient<ReplacementPageViewModel>()
+                .AddTransient<RechargePageViewModel>();
 
             Ioc.Default.ConfigureServices(serviceCollection.BuildServiceProvider());
 
-            var cfgData = Ioc.Default.GetRequiredService<CfgDataModel>();
             if (Current is { } app)
             {
-                app.RequestedThemeVariant = cfgData.Theme;
+                app.RequestedThemeVariant = ResolveThemeVariant(cfgData.Theme);
             }
         }
 
@@ -69,6 +72,16 @@ namespace luo.dangxiao.selfservice
             {
                 BindingPlugins.DataValidators.Remove(plugin);
             }
+        }
+
+        private static ThemeVariant ResolveThemeVariant(string? theme)
+        {
+            return theme?.Trim().ToLowerInvariant() switch
+            {
+                "dark" => ThemeVariant.Dark,
+                "default" => ThemeVariant.Default,
+                _ => ThemeVariant.Light
+            };
         }
     }
 }

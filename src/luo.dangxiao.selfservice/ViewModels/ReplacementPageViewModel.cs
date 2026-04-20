@@ -156,7 +156,7 @@ public class ReplacementPageViewModel : ViewModelBase
 
     private void LoadUserInfoModule(UserInfoModel? data)
     {
-        var cfgData = Ioc.Default.GetRequiredService<CfgDataModel>();
+        var cfgData = Ioc.Default.GetRequiredService<SelfServiceConfig>();
 
         if (cfgData.ServiceType == SelfServiceType.StaffSelfService)
         {

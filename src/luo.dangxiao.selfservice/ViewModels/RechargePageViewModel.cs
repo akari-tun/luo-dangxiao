@@ -4,6 +4,8 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using luo.dangxiao.models;
 using luo.dangxiao.selfservice.Views;
+using luo.dangxiao.resources.Languages;
+using System.Globalization;
 using System.Threading.Tasks;
 
 namespace luo.dangxiao.selfservice.ViewModels;
@@ -38,40 +40,25 @@ public partial class RechargePageViewModel : ViewModelBase
     private string _targetFunction = "Recharge";
 
     [ObservableProperty]
-    private string _pageTitle = "请确认信息后，点击相应金额进行充值";
+    private string _pageTitle = LanguageProvider.SelfService_Recharge_Title_Confirm;
 
     [ObservableProperty]
-    private string _amountSelectionTitle = "请选择充值金额";
+    private string _amountSelectionTitle = LanguageProvider.SelfService_Recharge_AmountSelectionTitle;
 
     [ObservableProperty]
-    private string _amount20Text = "￥20元";
+    private string _amount20Text = LanguageProvider.SelfService_Recharge_Amount_20;
 
     [ObservableProperty]
-    private string _amount50Text = "￥50元";
+    private string _amount50Text = LanguageProvider.SelfService_Recharge_Amount_50;
 
     [ObservableProperty]
-    private string _amount100Text = "￥100元";
+    private string _amount100Text = LanguageProvider.SelfService_Recharge_Amount_100;
 
     [ObservableProperty]
-    private string _amount200Text = "￥200元";
+    private string _amount200Text = LanguageProvider.SelfService_Recharge_Amount_200;
 
     [ObservableProperty]
-    private string _amount500Text = "￥500元";
-
-    [ObservableProperty]
-    private bool _isAmount20Selected;
-
-    [ObservableProperty]
-    private bool _isAmount50Selected;
-
-    [ObservableProperty]
-    private bool _isAmount100Selected;
-
-    [ObservableProperty]
-    private bool _isAmount200Selected;
-
-    [ObservableProperty]
-    private bool _isAmount500Selected;
+    private string _amount500Text = LanguageProvider.SelfService_Recharge_Amount_500;
 
     [ObservableProperty]
     private string _statusMessage = string.Empty;
@@ -94,12 +81,12 @@ public partial class RechargePageViewModel : ViewModelBase
     {
         if (value == RechargeFlowState.Confirm)
         {
-            PageTitle = "请确认信息后，点击相应金额进行充值";
+            PageTitle = LanguageProvider.SelfService_Recharge_Title_Confirm;
             StatusMessage = string.Empty;
         }
         else
         {
-            PageTitle = "确认支付金额后，扫描二维码进行支付";
+            PageTitle = LanguageProvider.SelfService_Recharge_Title_QRCode;
         }
 
         OnPropertyChanged(nameof(IsConfirmState));
@@ -119,11 +106,6 @@ public partial class RechargePageViewModel : ViewModelBase
         TargetFunction = parameter.TargetFunction;
         UserInfo = parameter.Data;
         CurrentState = RechargeFlowState.Confirm;
-        IsAmount20Selected = false;
-        IsAmount50Selected = false;
-        IsAmount100Selected = false;
-        IsAmount200Selected = false;
-        IsAmount500Selected = false;
 
         LoadUserInfoModule(parameter.Data);
     }
@@ -138,17 +120,11 @@ public partial class RechargePageViewModel : ViewModelBase
 
         SelectedAmount = amt;
 
-        IsAmount20Selected = amt == 20;
-        IsAmount50Selected = amt == 50;
-        IsAmount100Selected = amt == 100;
-        IsAmount200Selected = amt == 200;
-        IsAmount500Selected = amt == 500;
-
         // move to QR code state
         CurrentState = RechargeFlowState.QRCode;
         // placeholder qr code image (use resource)
         QrCodeImage = "avares://luo.dangxiao.resources/Images/qr_placeholder.png";
-        StatusMessage = $"待支付金额：¥{SelectedAmount:0.##}";
+        StatusMessage = string.Format(CultureInfo.CurrentCulture, LanguageProvider.SelfService_Recharge_Status_PendingPayment, SelectedAmount);
 
         // Simulate generating order and QR code
         IsBusy = true;
@@ -165,6 +141,8 @@ public partial class RechargePageViewModel : ViewModelBase
             CurrentState = RechargeFlowState.Confirm;
             QrCodeImage = string.Empty;
             StatusMessage = string.Empty;
+            IsBusy = false;
+
             return;
         }
 
