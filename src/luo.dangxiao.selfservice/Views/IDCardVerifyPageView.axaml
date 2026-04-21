@@ -10,7 +10,7 @@
              x:Class="luo.dangxiao.selfservice.Views.IDCardVerifyPageView"
              x:DataType="vm:IDCardVerifyPageViewModel">
 
-    <Grid RowDefinitions="80,Auto,40,*,80,">
+    <Grid RowDefinitions="80,Auto,40,*,128">
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="20">
             <Image Source="avares://luo.dangxiao.resources/Images/id_card_tip.png" Width="48" Height="48"/>
             <TextBlock Text="{x:Static lang:LanguageProvider.SelfService_Verify_IDCardInstruction}"
@@ -23,24 +23,31 @@
         <Image Grid.Row="3"
                Source="avares://luo.dangxiao.resources/Images/swipe_id_card.png" 
                Stretch="Uniform"/>
-        
-        <Border Grid.Row="3"
-                Padding="20,12"
-                Background="{DynamicResource AccentBlueLightBrush}"
-                CornerRadius="6"
-                IsVisible="{Binding IsProcessing}">
-            <TextBlock Text="{x:Static lang:LanguageProvider.SelfService_Verify_IDCardProcessing}"
-                       FontFamily="SimHei"
-                       FontSize="28"
-                       Foreground="{DynamicResource AccentBlueBrush}"
-                       HorizontalAlignment="Center"/>
-        </Border>
 
-        <Button Grid.Row="4" Content="Test Read ID Card"
-                HorizontalAlignment="Center"
-                Command="{Binding StartVerificationCommand}"
-                Background="{DynamicResource BackgroundDarkBrush}"
-                BorderThickness="0"
-                CornerRadius="4" />
+        <StackPanel Grid.Row="4"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Margin="0,10,0,0"
+                    Spacing="8">
+            <TextBlock Text="{Binding StatusMessage}"
+                       FontFamily="SimHei"
+                       FontSize="24"
+                       Foreground="{DynamicResource TextGrayBrush}"
+                       HorizontalAlignment="Center"/>
+
+            <TextBlock Text="{Binding ErrorMessage}"
+                       FontFamily="SimHei"
+                       FontSize="22"
+                       Foreground="{DynamicResource PrimaryRedDarkBrush}"
+                       HorizontalAlignment="Center"
+                       IsVisible="{Binding IsFailed}"/>
+
+            <Button Content="Test Read ID Card"
+                    HorizontalAlignment="Center"
+                    Command="{Binding StartVerificationCommand}"
+                    Background="{DynamicResource BackgroundDarkBrush}"
+                    BorderThickness="0"
+                    CornerRadius="4" />
+        </StackPanel>
     </Grid>
 </UserControl>

@@ -2,8 +2,13 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using luo.dangxiao.common.Enums;
+using luo.dangxiao.interfaces.Mappers;
 using luo.dangxiao.interfaces.ViewModels;
 using luo.dangxiao.models;
+using luo.dangxiao.wabapi.Clients;
+using Microsoft.Extensions.DependencyInjection;
+using System.Globalization;
+using System.Text;
 
 namespace luo.dangxiao.selfservice.ViewModels;
 
@@ -36,6 +41,8 @@ public enum IDCardVerifyState
 /// </summary>
 public partial class IDCardVerifyPageViewModel : ViewModelBase, IPageViewModel
 {
+    private const string SimulatedIdCardNumber = "430407197809211514";
+
     public event EventHandler<IDCardVerificationSucceededEventArgs>? VerificationSucceeded;
 
     [ObservableProperty]
@@ -72,61 +79,72 @@ public partial class IDCardVerifyPageViewModel : ViewModelBase, IPageViewModel
         ErrorMessage = string.Empty;
         UserName = string.Empty;
         CurrentState = IDCardVerifyState.Processing;
-        StatusMessage = "正在模拟调用身份证读卡器，请稍候...";
+        StatusMessage = "正在模拟操作身份证读卡器，请稍候...";
 
-        var userInfo = await ReadIdCardAsync();
+        try
+        {
+            var identity = await SimulateReadIdCardNumberAsync();
+            StatusMessage = $"读卡成功，身份证号 {identity}，正在查询信息...";
 
-        CurrentState = IDCardVerifyState.Success;
-        UserName = userInfo.Name;
-        StatusMessage = $"读卡成功，欢迎 {userInfo.Name}";
-        VerificationSucceeded?.Invoke(this, new IDCardVerificationSucceededEventArgs(userInfo));
+            var userInfo = await GetUserInfoByIdentityAsync(identity);
+
+            CurrentState = IDCardVerifyState.Success;
+            UserName = userInfo.Name;
+            StatusMessage = $"验证成功，欢迎 {userInfo.Name}";
+            VerificationSucceeded?.Invoke(this, new IDCardVerificationSucceededEventArgs(userInfo));
+        }
+        catch (Exception ex)
+        {
+            CurrentState = IDCardVerifyState.Failed;
+            ErrorMessage = ex.Message;
+            StatusMessage = "身份证验证失败";
+        }
     }
 
-    private static async Task<UserInfoModel> ReadIdCardAsync()
+    private static async Task<string> SimulateReadIdCardNumberAsync()
     {
-        await Task.Delay(1200);
+        await Task.Delay(1000);
+        return SimulatedIdCardNumber;
+    }
 
+    private static async Task<UserInfoModel> GetUserInfoByIdentityAsync(string identity)
+    {
         var cfgData = Ioc.Default.GetRequiredService<SelfServiceConfig>();
+        var yktApiClient = Ioc.Default.GetService<IYktApiClient>()
+            ?? throw new InvalidOperationException("未配置 YktApi 服务，请检查配置文件中的 YktApiConfig。");
+        var mapper = Ioc.Default.GetService<IYktUserInfoMapper>()
+            ?? throw new InvalidOperationException("未配置 Ykt 用户映射服务。");
+
+        var encodedIdentity = EncodeIdentityToBase64(identity);
+
         if (cfgData.ServiceType == SelfServiceType.StaffSelfService)
         {
-            return new StaffInfoModel
-            {
-                Id = "STF_TEST_001",
-                Name = "张明华",
-                UserType = UserType.Staff,
-                IdCardNumber = "430101198502031234",
-                Gender = "男",
-                Department = "教务处",
-                EmployeeNumber = "T2020001",
-                CardType = "教职工卡",
-                CardNumber = "2020001001",
-                CardStatus = StaffCardStatus.Normal,
-                ConsumptionBalance = 125.50m,
-                SubsidyBalance = 80.00m,
-                CardBalance = 205.50m,
-                CardIssueDate = new DateTime(2020, 1, 1),
-                CardExpiryDate = new DateTime(2027, 12, 31),
-                PhoneNumber = "13800138000"
-            };
+            var response = await yktApiClient.GetTeacherByIdentityAsync(encodedIdentity);
+            EnsureApiSuccess(response.Code, response.Message);
+            return mapper.MapStaff(response.Data, identity);
         }
 
-        return new StudentInfoModel
+        var checkInDate = DateTime.Today.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+        var traineeResponse = await yktApiClient.GetTraineeByIdentityAsync(encodedIdentity, checkInDate);
+        EnsureApiSuccess(traineeResponse.Code, traineeResponse.Message);
+        return mapper.MapStudent(traineeResponse.Data, identity);
+    }
+
+    private static string EncodeIdentityToBase64(string identity)
+    {
+        var bytes = Encoding.UTF8.GetBytes(identity);
+        return Convert.ToBase64String(bytes);
+    }
+
+    private static void EnsureApiSuccess(int? code, string? message)
+    {
+        if (code is null or 0 or 200)
         {
-            Id = "STU_TEST_001",
-            Name = "李天明",
-            UserType = UserType.Student,
-            IdCardNumber = "430101199001011234",
-            Gender = "男",
-            ClassName = "测试培训班一",
-            CheckInStartTime = new DateTime(2026, 4, 10, 14, 0, 0),
-            CheckInEndTime = new DateTime(2026, 4, 15, 12, 0, 0),
-            TrainingStartDate = new DateTime(2026, 4, 11),
-            TrainingEndDate = new DateTime(2026, 4, 15),
-            CardNumber = "20260410001",
-            CardStatus = StudentCardStatus.PendingPickup,
-            RoomName = "A312",
-            RoomNumber = "A312",
-            CheckInStatus = StudentCheckInStatus.NotCheckedIn
-        };
+            return;
+        }
+
+        throw new InvalidOperationException(string.IsNullOrWhiteSpace(message)
+            ? "接口调用失败。"
+            : message);
     }
 }

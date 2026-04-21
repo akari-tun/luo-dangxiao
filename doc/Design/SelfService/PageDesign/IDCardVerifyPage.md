@@ -3,8 +3,8 @@
 > **页面代码**: IDCardVerifyPage  
 > **适用用户**: 学员、教职工  
 > **页面类型**: 模块页面（嵌入 VerifyPage）  
-> **文档版本**: 2.0  
-> **最后更新**: 2026-03-26
+> **文档版本**: 2.1  
+> **最后更新**: 2026-04-20
 
 ---
 
@@ -166,17 +166,22 @@ IDCardVerifyPage 是一个嵌入在 VerifyPage 中的验证模块，提供身份
    - 检测身份证放置
    - 读取身份证芯片信息
    - 解析身份证号码和姓名
+   - `Test Read ID Card` 调试入口固定模拟读卡身份证号：`430407197809211514`
 
 2. **身份验证**
    - 与后台系统验证身份
    - 判断用户类型（学员/教职工）
    - 获取用户基本信息
+   - 按当前自助机类型调用 YktApi：
+     - 教职工：`GetTeacherByIdentityAsync(identity)`
+     - 学员：`GetTraineeByIdentityAsync(identity, checkInDate)`
 
 3. **状态反馈**
    - 等待状态：感应波纹动画
    - 处理状态：Loading 动画
    - 成功状态：成功提示
    - 失败状态：错误提示
+   - 处理过程中在 UI 显示阶段提示（模拟读卡中 / 读卡成功查询中 / 验证成功 / 验证失败）
 
 4. **验证切换**
    - 支持切换到短信验证模块
@@ -346,6 +351,11 @@ public partial class IDCardVerifyViewModel : ViewModelBase, IIDCardVerifyModule
     
     [ObservableProperty]
     private string _errorMessage;
+
+    [ObservableProperty]
+    private string _userName;
+
+    private const string SimulatedIdentity = "430407197809211514";
     
     public enum VerifyState
     {
@@ -354,140 +364,61 @@ public partial class IDCardVerifyViewModel : ViewModelBase, IIDCardVerifyModule
         Success,      // 验证成功
         Failed        // 验证失败
     }
-    
-    public async Task InitializeAsync()
-    {
-        CurrentState = VerifyState.Waiting;
-        StatusMessage = "等待读取身份证...";
-        
-        // 初始化读卡器并订阅事件
-        IDCardReader.CardDetected += OnCardDetected;
-        await IDCardReader.InitializeAsync();
-    }
-    
-    private async void OnCardDetected(object sender, IDCardEventArgs e)
+
+    [RelayCommand]
+    private async Task StartVerificationAsync()
     {
         CurrentState = VerifyState.Processing;
-        StatusMessage = "正在处理证件信息，请稍候...";
-        
-        try
+        StatusMessage = "正在模拟操作身份证读卡器，请稍候...";
+
+        var identity = await SimulateReadIdentityAsync();
+        StatusMessage = $"读卡成功，身份证号 {identity}，正在查询一卡通信息...";
+
+        var userInfo = await GetUserInfoByIdentityAsync(identity);
+        CurrentState = VerifyState.Success;
+        UserName = userInfo.Name;
+        StatusMessage = $"验证成功，欢迎 {userInfo.Name}";
+
+        OnVerificationSuccess?.Invoke(this, new VerificationSuccessEventArgs
         {
-            var cardInfo = await IDCardReader.ReadCardAsync();
-            var result = await VerifyService.VerifyByIDCardAsync(cardInfo.IDNumber);
-            
-            if (result.Success)
-            {
-                CurrentState = VerifyState.Success;
-                StatusMessage = $"验证成功 - {result.UserInfo.Name}";
-                
-                OnVerificationSuccess?.Invoke(this, new VerificationSuccessEventArgs
-                {
-                    UserInfo = result.UserInfo,
-                    UserType = result.UserType
-                });
-            }
-            else
-            {
-                CurrentState = VerifyState.Failed;
-                ErrorMessage = result.ErrorMessage;
-                
-                OnVerificationFailed?.Invoke(this, new VerificationFailedEventArgs
-                {
-                    ErrorMessage = result.ErrorMessage,
-                    ErrorType = result.ErrorType
-                });
-                
-                // 3秒后返回等待状态
-                await Task.Delay(3000);
-                CurrentState = VerifyState.Waiting;
-            }
-        }
-        catch (Exception ex)
-        {
-            CurrentState = VerifyState.Failed;
-            ErrorMessage = "读卡失败，请重试";
-        }
-    }
-    
-    [RelayCommand]
-    private void SwitchToSMS()
-    {
-        OnSwitchToSMSRequested?.Invoke(this, EventArgs.Empty);
-    }
-    
-    public void Cleanup()
-    {
-        IDCardReader.CardDetected -= OnCardDetected;
-    }
-}
-```
-
-### 7.2 身份证读卡器集成
-
-```csharp
-public interface IIDCardReader
-{
-    event EventHandler<IDCardEventArgs> CardDetected;
-    event EventHandler<IDCardEventArgs> CardRemoved;
-    Task<bool> InitializeAsync();
-    Task<IDCardInfo> ReadCardAsync();
-    bool IsReady { get; }
-}
-
-public class IDCardInfo
-{
-    public string IDNumber { get; set; }
-    public string Name { get; set; }
-    public string Gender { get; set; }
-    public DateTime BirthDate { get; set; }
-    public byte[] Photo { get; set; }
-}
-```
-
-### 7.3 父页面交互
-
-```csharp
-// VerifyPage 中使用模块
-public partial class VerifyViewModel : ViewModelBase
-{
-    [ObservableProperty]
-    private object _verifyModuleContent;
-    
-    public void LoadIDCardModule()
-    {
-        var module = new IDCardVerifyViewModel();
-        module.OnVerificationSuccess += OnIDCardVerificationSuccess;
-        module.OnVerificationFailed += OnIDCardVerificationFailed;
-        module.OnSwitchToSMSRequested += OnSwitchToSMS;
-        
-        VerifyModuleContent = module;
-    }
-    
-    private void OnIDCardVerificationSuccess(object sender, VerificationSuccessEventArgs e)
-    {
-        // 保存用户信息
-        SessionService.CurrentUser = e.UserInfo;
-        
-        // 延迟后跳转到功能页面
-        Dispatcher.UIThread.Post(async () =>
-        {
-            await Task.Delay(1500);
-            NavigationService.NavigateTo(TargetPage);
+            UserInfo = userInfo,
+            UserType = userInfo.UserType
         });
     }
+
+    private async Task<UserInfo> GetUserInfoByIdentityAsync(string identity)
+    {
+        if (ServiceType == SelfServiceType.StaffSelfService)
+        {
+            var staffResponse = await YktApi.GetTeacherByIdentityAsync(identity);
+            return MapToStaffInfo(staffResponse.Data);
+        }
+
+        var checkInDate = DateTime.Today.ToString("yyyy-MM-dd");
+        var studentResponse = await YktApi.GetTraineeByIdentityAsync(identity, checkInDate);
+        return MapToStudentInfo(studentResponse.Data);
+    }
 }
 ```
 
----
+### 7.2 数据映射规则
 
-## 八、相关文档
+- 教职工返回数据映射到 `StaffInfoModel`：
+  - `Id/Name/IdCardNumber/Gender/Department/EmployeeNumber`
+  - `CardType/CardNumber/CardStatus`
+  - `ConsumptionBalance/SubsidyBalance/CardBalance`
+  - `CardIssueDate/CardExpiryDate/PhoneNumber/PhotoUrl`
+- 学员返回数据映射到 `StudentInfoModel`：
+  - `Id/Name/IdCardNumber/Gender/ClassName`
+  - `CheckInStartTime/CheckInEndTime`
+  - `TrainingStartDate/TrainingEndDate`
+  - `CardNumber/CardStatus/RoomName/RoomNumber/CheckInStatus/PhotoUrl`
 
-- [设计规格说明书](../../设计规格说明书.md)
-- [主界面设计文档](./HomePage.md)
-- [验证页面](./VerifyPage.md) - 父页面
-- [短信验证模块](./SMSVerifyPage.md) - 切换目标
-- [学员信息模块](./StudentInfoPage.md)
-- [教职工信息模块](./StaffInfoPage.md)
+### 7.3 UI 提示要求
+
+- `StatusMessage` 绑定到页面提示文本，实时展示验证流程。
+- `ErrorMessage` 在失败状态显示（红色文本）。
+- 处理态继续显示“正在处理证件信息”提示层。
 
 ---
 
@@ -495,8 +426,9 @@ public partial class VerifyViewModel : ViewModelBase
 
 | 版本 | 日期 | 修改内容 | 作者 |
 |------|------|----------|------|
-| 1.0 | 2026-03-26 | 初始版本，作为独立页面设计 | OpenCode Agent |
+| 2.1 | 2026-04-20 | 调整 Test Read ID Card 模拟逻辑：<br>• 固定模拟身份证号 430407197809211514<br>• 按学员/教职工分别调用 YktApi 的 ByIdentity 接口<br>• 增加处理过程 UI 提示<br>• 增加接口返回到 Model 的字段映射说明 | OpenCode Agent |
 | 2.0 | 2026-03-26 | 更新为模块页面：<br>• 明确模块页面类型<br>• 描述嵌入 VerifyPage 的架构<br>• 更新布局为模块容器适配<br>• 添加模块事件接口<br>• 更新实现注意事项 | OpenCode Agent |
+| 1.0 | 2026-03-26 | 初始版本，作为独立页面设计 | OpenCode Agent |
 
 ---
 

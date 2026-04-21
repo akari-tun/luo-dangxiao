@@ -4,9 +4,12 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 using CommunityToolkit.Mvvm.DependencyInjection;
+using luo.dangxiao.interfaces.Mappers;
 using luo.dangxiao.models;
 using luo.dangxiao.selfservice.ViewModels;
 using luo.dangxiao.selfservice.Views;
+using luo.dangxiao.wabapi.Extensions;
+using luo.dangxiao.wabapi.Mappers;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 
@@ -23,6 +26,7 @@ namespace luo.dangxiao.selfservice
             IServiceCollection serviceCollection = new ServiceCollection()
                 .AddSingleton(cfgData)
                 .AddSingleton<ConfigModel>(cfgData)
+                .AddSingleton<IYktUserInfoMapper, YktUserInfoMapper>()
                 .AddSingleton<MainWindowViewModel>()
                 .AddSingleton<HomePageViewModel>()
                 .AddTransient<VerifyPageViewModel>()
@@ -36,6 +40,11 @@ namespace luo.dangxiao.selfservice
                 .AddTransient<StaffInfoPageViewModel>()
                 .AddTransient<ReplacementPageViewModel>()
                 .AddTransient<RechargePageViewModel>();
+
+            if (!string.IsNullOrWhiteSpace(cfgData.YktApiConfig.BaseUrl))
+            {
+                serviceCollection.AddYktWabApi(cfgData.YktApiConfig.BaseUrl, cfgData.YktApiConfig.TimeoutSeconds);
+            }
 
             Ioc.Default.ConfigureServices(serviceCollection.BuildServiceProvider());
 

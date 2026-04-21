@@ -81,9 +81,9 @@
                 </Grid>
             </Grid>
 
-            <Grid Grid.Row="6" ColumnDefinitions="128,12,256">
+            <Grid Grid.Row="6" ColumnDefinitions="128,12,256,*,128,12,256,40,*">
                 <TextBlock Grid.Column="0" Text="{x:Static lang:LanguageProvider.SelfService_Info_Department}" Classes="info-label"/>
-                <Border Grid.Column="2" Classes="field-box">
+                <Border Grid.Column="2" Grid.ColumnSpan="6" Classes="field-box">
                     <TextBlock Text="{Binding StaffInfo.Department}" Classes="info-value"/>
                 </Border>
             </Grid>
