@@ -1,0 +1,124 @@
+{
+    "success": true,
+    "code": 200,
+    "message": "请求成功",
+    "data": {
+        "userBase": {
+            "userId": "1624",
+            "userXm": "蔡佳君",
+            "userNumb": "17807312877",
+            "state": "1",
+            "stateName": "已开户",
+            "category": "1",
+            "categoryName": "教职工",
+            "deptId": "162",
+            "deptName": "进修培训部",
+            "userSex": "2",
+            "userSexName": "女",
+            "userCardTypeId": 1,
+            "userCardTypeName": "教职工卡",
+            "userExpiryDate": "2050-12-30 00:00:00",
+            "userNo": 22541,
+            "photoUrl": "TeaBaseinfo/20240828/1724838449995.jpg",
+            "hasCard": "已发卡",
+            "mobilePhone": "17807312877",
+            "idNumber": null,
+            "collegeName": null
+        },
+        "userBags": [
+            {
+                "cardBagId": 55428,
+                "bagCode": "4",
+                "bagName": null,
+                "bagStatus": 1,
+                "bagStatusName": "启用",
+                "cardValue": "0.00",
+                "userId": "1624",
+                "userNumb": null,
+                "czCount": null
+            },
+            {
+                "cardBagId": 55430,
+                "bagCode": "6",
+                "bagName": null,
+                "bagStatus": 1,
+                "bagStatusName": "启用",
+                "cardValue": "0.00",
+                "userId": "1624",
+                "userNumb": null,
+                "czCount": null
+            },
+            {
+                "cardBagId": 55429,
+                "bagCode": "5",
+                "bagName": null,
+                "bagStatus": 1,
+                "bagStatusName": "启用",
+                "cardValue": "0.00",
+                "userId": "1624",
+                "userNumb": null,
+                "czCount": null
+            },
+            {
+                "cardBagId": 55425,
+                "bagCode": "1",
+                "bagName": null,
+                "bagStatus": 1,
+                "bagStatusName": "启用",
+                "cardValue": "0.00",
+                "userId": "1624",
+                "userNumb": null,
+                "czCount": null
+            },
+            {
+                "cardBagId": 55427,
+                "bagCode": "3",
+                "bagName": null,
+                "bagStatus": 1,
+                "bagStatusName": "启用",
+                "cardValue": "3833.52",
+                "userId": "1624",
+                "userNumb": null,
+                "czCount": null
+            },
+            {
+                "cardBagId": 55426,
+                "bagCode": "2",
+                "bagName": null,
+                "bagStatus": 1,
+                "bagStatusName": "启用",
+                "cardValue": "0.00",
+                "userId": "1624",
+                "userNumb": null,
+                "czCount": null
+            }
+        ],
+        "userCards": [
+            {
+                "cardId": "1501",
+                "cardNo": 6089,
+                "factoryFixId": 1973794204,
+                "cardStatusId": 1,
+                "cardStatusName": "正常",
+                "cardTypeId": 1,
+                "userId": "1624",
+                "expiryDate": "2050-12-30 00:00:00",
+                "statusChangeTime": "2021-12-31 10:06:18",
+                "mainDeputyType": 1,
+                "mainDeputyTypeName": "主卡",
+                "version": 0,
+                "cardFuncType": 0,
+                "cardFuncTypeName": "用户卡",
+                "tenantId": "25",
+                "cardTypeName": "教职工卡",
+                "deposit": "0",
+                "issueFee": "0",
+                "commissionCharge": "0",
+                "zheJiuFee": "0",
+                "waterBalance": "0",
+                "creditBalance": "0"
+            }
+        ]
+    },
+    "currentTime": 1776740190184
+}

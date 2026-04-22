@@ -1,7 +1,7 @@
 {
   "Theme": "Light",
   "YktApiConfig": {
-    "BaseUrl": "http://e6293555.natappfree.cc/dev-api/self/",
+    "BaseUrl": "http://hnswdx-test.nat100.top/dev-api/self/",
     "TimeoutSeconds": 30
   },
   "ServiceType": "StaffSelfService"

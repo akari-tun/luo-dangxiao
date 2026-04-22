@@ -41,7 +41,7 @@
         </Style>
     </UserControl.Styles>
 
-    <Border MinWidth="500"
+    <Border MinWidth="512"
             Padding="30"
             CornerRadius="7"
             VerticalAlignment="Top">
@@ -81,9 +81,9 @@
                 </Grid>
             </Grid>
 
-            <Grid Grid.Row="6" ColumnDefinitions="128,12,256,*,128,12,256,40,*">
+            <Grid Grid.Row="6" ColumnDefinitions="128,12,256,40,128,12,256,6,*,*">
                 <TextBlock Grid.Column="0" Text="{x:Static lang:LanguageProvider.SelfService_Info_Department}" Classes="info-label"/>
-                <Border Grid.Column="2" Grid.ColumnSpan="6" Classes="field-box">
+                <Border Grid.Column="2" Grid.ColumnSpan="7" Classes="field-box">
                     <TextBlock Text="{Binding StaffInfo.Department}" Classes="info-value"/>
                 </Border>
             </Grid>

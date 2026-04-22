@@ -96,6 +96,7 @@ public partial class RechargePageViewModel : ViewModelBase
 
     partial void OnIsBusyChanged(bool value)
     {
+        IsBusy = value;
         OnPropertyChanged(nameof(CanRecharge));
         RechargeCommand.NotifyCanExecuteChanged();
     }
@@ -127,9 +128,9 @@ public partial class RechargePageViewModel : ViewModelBase
         StatusMessage = string.Format(CultureInfo.CurrentCulture, LanguageProvider.SelfService_Recharge_Status_PendingPayment, SelectedAmount);
 
         // Simulate generating order and QR code
-        IsBusy = true;
+        OnIsBusyChanged(true);
         await Task.Delay(300);
-        IsBusy = false;
+        OnIsBusyChanged(false);
 
         // TODO: start polling payment status and validity timer
     }
@@ -141,7 +142,7 @@ public partial class RechargePageViewModel : ViewModelBase
             CurrentState = RechargeFlowState.Confirm;
             QrCodeImage = string.Empty;
             StatusMessage = string.Empty;
-            IsBusy = false;
+            OnIsBusyChanged(false);
 
             return;
         }

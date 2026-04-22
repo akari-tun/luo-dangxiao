@@ -127,6 +127,9 @@
     <File Path="../doc/Resources/tip.png" />
     <File Path="../doc/Resources/upper_right_corner.png" />
   </Folder>
+  <Folder Name="/doc/WebApi/">
+    <File Path="../doc/WebApi/GetTeacherByIdentity.json" />
+  </Folder>
   <Folder Name="/解决方案项/">
     <File Path="AGENTS.md" />
   </Folder>

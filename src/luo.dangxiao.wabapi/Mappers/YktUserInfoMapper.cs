@@ -1,6 +1,7 @@
 using luo.dangxiao.common.Enums;
 using luo.dangxiao.interfaces.Mappers;
 using luo.dangxiao.models;
+using luo.dangxiao.wabapi.Dtos.Responses;
 using System.Globalization;
 using System.Text.Json;
 
@@ -11,29 +12,28 @@ public sealed class YktUserInfoMapper : IYktUserInfoMapper
     public StaffInfoModel MapStaff(JsonElement? data, string identity)
     {
         var root = GetApiDataObject(data);
+        var source = BuildStaffIntermediateDto(root, identity);
+        return MapStaffInfo(source);
+    }
+
+    public StudentInfoModel MapStudent(JsonElement? data, string identity)
+    {
+        var root = GetApiDataObject(data);
+        var source = BuildStudentIntermediateDto(root, identity);
+        return MapStudentInfo(source);
+    }
+
+    private static StaffUserInfoIntermediateDto BuildStaffIntermediateDto(JsonElement root, string identity)
+    {
         var userBase = GetNestedObjectOrDefault(root, "userBase");
-
-        var cardBalanceByBag = ReadUserBagBalance(root, "1");
-        var subsidyBalanceByBag = ReadUserBagBalance(root, "3");
-
-        var cardBalance = cardBalanceByBag == 0m ? ReadDecimal(root, "cardBalance", "totalBalance") : cardBalanceByBag;
-        var subsidyBalance = subsidyBalanceByBag == 0m ? ReadDecimal(userBase, "subsidyBalance", "subsidyAmt") : subsidyBalanceByBag;
-
-        var consumptionBalance = ReadDecimal(userBase, "consumptionBalance", "consumeBalance", "balance", "amount");
-        if (consumptionBalance == 0m && cardBalance > 0m)
-        {
-            consumptionBalance = cardBalance;
-        }
-
         var hasUserCard = TryGetUserCard(root, out var userCard);
 
-        return new StaffInfoModel
+        return new StaffUserInfoIntermediateDto
         {
             Id = ReadString(userBase, ReadString(root, identity, "userId", "id", "teacherId", "staffId"), "userId", "id"),
             Name = ReadString(userBase, ReadString(root, "测试职工", "name", "teacherName", "staffName", "xm"), "userXm", "name", "xm"),
-            UserType = UserType.Staff,
             IdCardNumber = ReadString(userBase, identity, "idNumber"),
-            Gender = ParseGender(ReadString(userBase, string.Empty, "userSexName", "userSex", "gender", "sex")),
+            GenderRaw = ReadString(userBase, string.Empty, "userSexName", "userSex", "gender", "sex"),
             Department = ReadString(userBase, ReadString(root, string.Empty, "department", "deptName", "orgName"), "deptName", "department"),
             EmployeeNumber = ReadString(userBase, ReadString(root, string.Empty, "employeeNumber", "workNo", "jobNo", "teacherNo"), "userNo", "userNumb", "employeeNumber"),
             CardType = hasUserCard
@@ -42,12 +42,12 @@ public sealed class YktUserInfoMapper : IYktUserInfoMapper
             CardNumber = hasUserCard
                 ? ReadString(userCard, ReadString(root, string.Empty, "cardNumber", "cardNo"), "cardNo", "cardNumber")
                 : ReadString(root, string.Empty, "cardNumber", "cardNo"),
-            CardStatus = ParseStaffCardStatus(hasUserCard
+            CardStatusRaw = hasUserCard
                 ? ReadString(userCard, ReadString(userBase, string.Empty, "stateName", "state"), "cardStatusName", "cardStatus", "cardStatusId", "status", "state")
-                : ReadString(userBase, string.Empty, "stateName", "state", "cardStatus", "status")),
-            ConsumptionBalance = consumptionBalance,
-            SubsidyBalance = subsidyBalance,
-            CardBalance = cardBalance,
+                : ReadString(userBase, string.Empty, "stateName", "state", "cardStatus", "status"),
+            ConsumptionBalance = ReadDecimal(userBase, "consumptionBalance", "consumeBalance", "balance", "amount"),
+            CardBalanceFallback = ReadDecimal(root, "cardBalance", "totalBalance"),
+            SubsidyBalanceFallback = ReadDecimal(userBase, "subsidyBalance", "subsidyAmt"),
             CardIssueDate = hasUserCard
                 ? ReadDateTime(userCard, "statusChangeTime", "cardIssueDate", "issueDate", "enableDate", "openDate")
                 : ReadDateTime(userBase, "cardIssueDate", "issueDate"),
@@ -55,39 +55,113 @@ public sealed class YktUserInfoMapper : IYktUserInfoMapper
                 ? ReadDateTime(userCard, "expiryDate", "cardExpiryDate", "expireDate") ?? ReadDateTime(userBase, "userExpiryDate", "expiryDate")
                 : ReadDateTime(userBase, "userExpiryDate", "expiryDate"),
             PhoneNumber = ReadString(userBase, ReadString(root, string.Empty, "phone", "mobile"), "mobilePhone", "mobile", "phone", "userNumb"),
+            PhotoUrl = ReadString(userBase, ReadString(root, string.Empty, "photoUrl", "avatar"), "photoUrl", "avatar"),
+            UserBags = ReadUserBags(root)
+        };
+    }
+
+    private static StudentUserInfoIntermediateDto BuildStudentIntermediateDto(JsonElement root, string identity)
+    {
+        var userBase = GetNestedObjectOrDefault(root, "userBase");
+        var hasUserCard = TryGetUserCard(root, out var userCard);
+
+        return new StudentUserInfoIntermediateDto
+        {
+            Id = ReadString(userBase, ReadString(root, identity, "userId", "id", "traineeId", "studentId"), "userId", "id"),
+            Name = ReadString(userBase, ReadString(root, "测试学员", "name", "traineeName", "studentName", "xm"), "userXm", "name", "xm"),
+            IdCardNumber = ReadString(userBase, identity, "idNumber"),
+            GenderRaw = ReadString(userBase, ReadString(root, string.Empty, "gender", "sex"), "userSexName", "userSex", "gender", "sex"),
+            ClassName = ReadString(userBase, ReadString(root, string.Empty, "className", "trainingClassName", "classNm"), "collegeName", "className", "trainingClassName"),
+            CheckInStartTime = ReadDateTime(root, "checkInStartTime", "checkinStartTime", "inStartTime"),
+            CheckInEndTime = ReadDateTime(root, "checkInEndTime", "checkinEndTime", "inEndTime"),
+            TrainingStartDate = ReadDateTime(root, "trainingStartDate", "startDate"),
+            TrainingEndDate = ReadDateTime(root, "trainingEndDate", "endDate"),
+            CardNumber = hasUserCard
+                ? ReadString(userCard, ReadString(root, string.Empty, "cardNumber", "cardNo"), "cardNo", "cardNumber")
+                : ReadString(root, string.Empty, "cardNumber", "cardNo"),
+            CardStatusRaw = hasUserCard
+                ? ReadString(userCard, ReadString(userBase, string.Empty, "stateName", "state"), "cardStatusName", "cardStatus", "cardStatusId", "status", "state")
+                : ReadString(userBase, ReadString(root, string.Empty, "cardStatus", "status"), "stateName", "state", "cardStatus", "status"),
+            RoomName = ReadString(root, string.Empty, "roomName", "roomNo", "roomNumber"),
+            RoomNumber = ReadString(root, string.Empty, "roomNumber", "roomNo"),
+            CheckInStatusRaw = ReadString(root, string.Empty, "checkInStatus", "checkinState"),
             PhotoUrl = ReadString(userBase, ReadString(root, string.Empty, "photoUrl", "avatar"), "photoUrl", "avatar")
         };
     }
 
-    public StudentInfoModel MapStudent(JsonElement? data, string identity)
+    private static List<StaffUserBagIntermediateDto> ReadUserBags(JsonElement element)
     {
-        var root = GetApiDataObject(data);
-        var userBase = GetNestedObjectOrDefault(root, "userBase");
-        var hasUserCard = TryGetUserCard(root, out var userCard);
+        var result = new List<StaffUserBagIntermediateDto>();
 
-        return new StudentInfoModel
+        if (!TryGetPropertyIgnoreCase(element, "userBags", out var userBags) || userBags.ValueKind != JsonValueKind.Array)
         {
-            Id = ReadString(userBase, ReadString(root, identity, "userId", "id", "traineeId", "studentId"), "userId", "id"),
-            Name = ReadString(userBase, ReadString(root, "测试学员", "name", "traineeName", "studentName", "xm"), "userXm", "name", "xm"),
-            UserType = UserType.Student,
-            IdCardNumber = ReadString(userBase, identity, "idNumber"),
-            Gender = ParseGender(ReadString(userBase, ReadString(root, string.Empty, "gender", "sex"), "userSexName", "userSex", "gender", "sex")),
-            ClassName = ReadString(userBase, ReadString(root, string.Empty, "className", "trainingClassName", "classNm"), "collegeName", "className", "trainingClassName"),
-            CheckInStartTime = ReadDateTime(root, "checkInStartTime", "checkinStartTime", "inStartTime"),
-            CheckInEndTime = ReadDateTime(root, "checkInEndTime", "checkinEndTime", "inEndTime"),
-            TrainingStartDate = ReadDateTime(root, "trainingStartDate", "startDate") ?? DateTime.Today,
-            TrainingEndDate = ReadDateTime(root, "trainingEndDate", "endDate") ?? DateTime.Today,
-            CardNumber = hasUserCard
-                ? ReadString(userCard, ReadString(root, string.Empty, "cardNumber", "cardNo"), "cardNo", "cardNumber")
-                : ReadString(root, string.Empty, "cardNumber", "cardNo"),
-            CardStatus = ParseStudentCardStatus(hasUserCard
-                ? ReadString(userCard, ReadString(userBase, string.Empty, "stateName", "state"), "cardStatusName", "cardStatus", "cardStatusId", "status", "state")
-                : ReadString(userBase, ReadString(root, string.Empty, "cardStatus", "status"), "stateName", "state", "cardStatus", "status")),
-            RoomName = ReadString(root, string.Empty, "roomName", "roomNo", "roomNumber"),
-            RoomNumber = ReadString(root, string.Empty, "roomNumber", "roomNo"),
-            CheckInStatus = ParseStudentCheckInStatus(ReadString(root, string.Empty, "checkInStatus", "checkinState")),
-            PhotoUrl = ReadString(userBase, ReadString(root, string.Empty, "photoUrl", "avatar"), "photoUrl", "avatar")
-        };
+            return result;
+        }
+
+        foreach (var bag in userBags.EnumerateArray())
+        {
+            if (bag.ValueKind != JsonValueKind.Object)
+            {
+                continue;
+            }
+
+            result.Add(new StaffUserBagIntermediateDto
+            {
+                BagCode = ReadString(bag, string.Empty, "bagCode", "code").Trim(),
+                CardValue = ReadDecimal(bag, "cardValue", "bagBalance", "balance", "amount", "money", "value", "bagAmount")
+            });
+        }
+
+        return result;
+    }
+
+    private static StaffInfoModel MapStaffInfo(StaffUserInfoIntermediateDto source)
+    {
+        var hasCardBalance = TryGetBagBalance(source.UserBags, "1", out var cardBalanceByBag);
+        var hasSubsidyBalance = TryGetBagBalance(source.UserBags, "3", out var subsidyBalanceByBag);
+
+        var cardBalance = hasCardBalance ? cardBalanceByBag : source.CardBalanceFallback;
+        var subsidyBalance = hasSubsidyBalance ? subsidyBalanceByBag : source.SubsidyBalanceFallback;
+
+        var consumptionBalance = source.ConsumptionBalance;
+        if (consumptionBalance == 0m && cardBalance > 0m)
+        {
+            consumptionBalance = cardBalance;
+        }
+
+        var model = YktIntermediateToModelMapper.ToStaffInfoModel(source);
+        model.UserType = UserType.Staff;
+        model.ConsumptionBalance = consumptionBalance;
+        model.SubsidyBalance = subsidyBalance;
+        model.CardBalance = cardBalance;
+
+        return model;
+    }
+
+    private static StudentInfoModel MapStudentInfo(StudentUserInfoIntermediateDto source)
+    {
+        var model = YktIntermediateToModelMapper.ToStudentInfoModel(source);
+        model.UserType = UserType.Student;
+        model.TrainingStartDate = source.TrainingStartDate ?? DateTime.Today;
+        model.TrainingEndDate = source.TrainingEndDate ?? DateTime.Today;
+        return model;
+    }
+
+    private static bool TryGetBagBalance(IEnumerable<StaffUserBagIntermediateDto> userBags, string targetBagCode, out decimal balance)
+    {
+        foreach (var bag in userBags)
+        {
+            if (!string.Equals(bag.BagCode, targetBagCode, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            balance = bag.CardValue;
+            return true;
+        }
+
+        balance = 0m;
+        return false;
     }
 
     private static JsonElement GetApiDataObject(JsonElement? data)
@@ -199,65 +273,6 @@ public sealed class YktUserInfoMapper : IYktUserInfoMapper
         return false;
     }
 
-    private static StaffCardStatus ParseStaffCardStatus(string status)
-    {
-        return status.Trim().ToLowerInvariant() switch
-        {
-            "normal" or "1" or "正常" => StaffCardStatus.Normal,
-            "pendingpickup" or "pending_pickup" or "2" or "待领取" => StaffCardStatus.PendingPickup,
-            "lost" or "3" or "已挂失" => StaffCardStatus.Lost,
-            "frozen" or "4" or "已冻结" => StaffCardStatus.Frozen,
-            _ => StaffCardStatus.Normal
-        };
-    }
-
-    private static StudentCardStatus ParseStudentCardStatus(string status)
-    {
-        return status.Trim().ToLowerInvariant() switch
-        {
-            "normal" or "1" or "正常" => StudentCardStatus.Normal,
-            "pendingpickup" or "pending_pickup" or "2" or "待领取" => StudentCardStatus.PendingPickup,
-            "lost" or "3" or "已挂失" => StudentCardStatus.Lost,
-            "unissued" or "0" or "未制卡" => StudentCardStatus.Unissued,
-            _ => StudentCardStatus.PendingPickup
-        };
-    }
-
-    private static StudentCheckInStatus ParseStudentCheckInStatus(string status)
-    {
-        return status.Trim().ToLowerInvariant() switch
-        {
-            "checkedin" or "checked_in" or "1" or "已报到" => StudentCheckInStatus.CheckedIn,
-            _ => StudentCheckInStatus.NotCheckedIn
-        };
-    }
-
-    private static decimal ReadUserBagBalance(JsonElement element, string targetBagCode)
-    {
-        if (!TryGetPropertyIgnoreCase(element, "userBags", out var userBags) || userBags.ValueKind != JsonValueKind.Array)
-        {
-            return 0m;
-        }
-
-        foreach (var bag in userBags.EnumerateArray())
-        {
-            if (bag.ValueKind != JsonValueKind.Object)
-            {
-                continue;
-            }
-
-            var bagCode = ReadString(bag, string.Empty, "bagCode", "code").Trim();
-            if (!string.Equals(bagCode, targetBagCode, StringComparison.OrdinalIgnoreCase))
-            {
-                continue;
-            }
-
-            return ReadDecimal(bag, "cardValue", "bagBalance", "balance", "amount", "money", "value", "bagAmount");
-        }
-
-        return 0m;
-    }
-
     private static bool TryGetUserCard(JsonElement element, out JsonElement userCard)
     {
         if (TryGetPropertyIgnoreCase(element, "userCards", out var userCards))
@@ -293,15 +308,5 @@ public sealed class YktUserInfoMapper : IYktUserInfoMapper
         }
 
         return element;
-    }
-
-    private static string ParseGender(string raw)
-    {
-        return raw.Trim().ToLowerInvariant() switch
-        {
-            "1" or "男" or "male" => "男",
-            "2" or "女" or "female" => "女",
-            _ => raw
-        };
     }
 }
