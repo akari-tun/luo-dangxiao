@@ -4,5 +4,9 @@
     "BaseUrl": "http://hnswdx-test.nat100.top/dev-api/self/",
     "TimeoutSeconds": 30
   },
+  "PrinterConfig": {
+    "Provider": "Virtual",
+    "DefaultPrinterId": "virtual-printer-001"
+  },
   "ServiceType": "StaffSelfService"
 }

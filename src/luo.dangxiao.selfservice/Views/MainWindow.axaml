@@ -16,6 +16,31 @@
         <Image Source="avares://luo.dangxiao.resources/Images/background.png" 
                Stretch="UniformToFill"/>
 		<v:HomePageView/>
+
+        <Border Background="{StaticResource WarningBrush}" 
+                IsVisible="{Binding IsStartupWarningVisible}"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Stretch"
+                Margin="24,18,24,0"
+                CornerRadius="6"
+                Padding="16,10">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                <TextBlock Text="{Binding StartupWarningMessage}" 
+                           Foreground="{StaticResource TextWhiteBrush}"
+                           VerticalAlignment="Center"
+                           TextWrapping="Wrap"/>
+                <Button Grid.Column="1"
+                        Command="{Binding DismissStartupWarningCommand}"
+                        Content="{x:Static lang:LanguageProvider.Button_Close}"
+                        MinWidth="92"
+                        Padding="16,6"
+                        VerticalAlignment="Center"
+                        Background="#33FFFFFF"
+                        Foreground="{StaticResource TextWhiteBrush}"
+                        BorderBrush="#66FFFFFF"
+                        BorderThickness="1"/>
+            </Grid>
+        </Border>
     </Grid>
 
 </Window>

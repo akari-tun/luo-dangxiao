@@ -165,6 +165,9 @@
   <data name="Msg_Error" xml:space="preserve">
     <value>发生错误</value>
   </data>
+  <data name="Msg_PrinterProviderFallback" xml:space="preserve">
+    <value>Provider "{0}" 无效，系统已自动回退为 {1}。</value>
+  </data>
   <data name="Msg_ConfirmDelete" xml:space="preserve">
     <value>确定要删除此项吗？</value>
   </data>

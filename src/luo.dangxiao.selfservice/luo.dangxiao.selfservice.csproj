@@ -38,6 +38,7 @@
     <ProjectReference Include="..\luo.dangxiao.controls\luo.dangxiao.controls.csproj" />
     <ProjectReference Include="..\luo.dangxiao.interfaces\luo.dangxiao.interfaces.csproj" />
     <ProjectReference Include="..\luo.dangxiao.models\luo.dangxiao.models.csproj" />
+    <ProjectReference Include="..\luo.dangxiao.printer\luo.dangxiao.printer.csproj" />
     <ProjectReference Include="..\luo.dangxiao.resources\luo.dangxiao.resources.csproj" />
     <ProjectReference Include="..\luo.dangxiao.wabapi\luo.dangxiao.wabapi.csproj" />
   </ItemGroup>

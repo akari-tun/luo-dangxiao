@@ -1,6 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:luo.dangxiao.cardcenter.ViewModels"
+        xmlns:lang="clr-namespace:luo.dangxiao.resources.Languages;assembly=luo.dangxiao.resources"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
@@ -14,6 +15,33 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <Grid>
+        <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+        <Border Background="{StaticResource WarningBrush}" 
+                IsVisible="{Binding IsStartupWarningVisible}"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Stretch"
+                Margin="20,20,20,0"
+                CornerRadius="6"
+                Padding="16,10">
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+                <TextBlock Text="{Binding StartupWarningMessage}" 
+                           Foreground="{StaticResource TextWhiteBrush}"
+                           VerticalAlignment="Center"
+                           TextWrapping="Wrap"/>
+                <Button Grid.Column="1"
+                        Command="{Binding DismissStartupWarningCommand}"
+                        Content="{x:Static lang:LanguageProvider.Button_Close}"
+                        MinWidth="92"
+                        Padding="16,6"
+                        VerticalAlignment="Center"
+                        Background="#33FFFFFF"
+                        Foreground="{StaticResource TextWhiteBrush}"
+                        BorderBrush="#66FFFFFF"
+                        BorderThickness="1"/>
+            </Grid>
+        </Border>
+    </Grid>
 
 </Window>

@@ -139,6 +139,7 @@
   <Project Path="luo.dangxiao.controls/luo.dangxiao.controls.csproj" Id="9d85b323-8fdd-47cd-8f4f-f43e6159244e" />
   <Project Path="luo.dangxiao.interfaces/luo.dangxiao.interfaces.csproj" Id="0ac2dd7f-9c87-4aad-b0c6-2c6edfb32292" />
   <Project Path="luo.dangxiao.models/luo.dangxiao.models.csproj" />
+  <Project Path="luo.dangxiao.printer/luo.dangxiao.printer.csproj" Id="0affbf04-d14d-4669-9ca8-440605d469c5" />
   <Project Path="luo.dangxiao.resources/luo.dangxiao.resources.csproj" />
   <Project Path="luo.dangxiao.selfservice.app/luo.dangxiao.selfservice.app.csproj" Id="60579826-dcff-4a93-ad62-e32e3bb4c558" />
   <Project Path="luo.dangxiao.selfservice/luo.dangxiao.selfservice.csproj" />

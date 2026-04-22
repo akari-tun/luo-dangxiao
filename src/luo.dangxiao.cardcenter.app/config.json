@@ -1,7 +1,11 @@
 {
   "Theme": "Light",
-  "YktApiOptions": {
+  "YktApiConfig": {
     "BaseUrl": "",
     "TimeoutSeconds": 30
+  },
+  "PrinterConfig": {
+    "Provider": "Virtual",
+    "DefaultPrinterId": "virtual-printer-001"
   }
 }

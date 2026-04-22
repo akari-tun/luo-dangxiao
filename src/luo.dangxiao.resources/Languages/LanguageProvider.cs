@@ -11,6 +11,8 @@ public static class LanguageProvider
 
     public static string App_Title => Get(nameof(App_Title));
     public static string Button_Back => Get(nameof(Button_Back));
+    public static string Button_Close => Get(nameof(Button_Close));
+    public static string Msg_PrinterProviderFallback => Get(nameof(Msg_PrinterProviderFallback));
 
     public static string SelfService_TakeCard => Get(nameof(SelfService_TakeCard));
     public static string SelfService_ReportLoss => Get(nameof(SelfService_ReportLoss));
