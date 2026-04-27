@@ -22,6 +22,10 @@ public sealed class StudentUserInfoIntermediateDto
 
     public string CardNumber { get; set; } = string.Empty;
 
+    public string FactoryFixId { get; set; } = string.Empty;
+
+    public string UserId { get; set; } = string.Empty;
+
     public string CardStatusRaw { get; set; } = string.Empty;
 
     public string RoomName { get; set; } = string.Empty;

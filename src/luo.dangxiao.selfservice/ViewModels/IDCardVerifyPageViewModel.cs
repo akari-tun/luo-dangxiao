@@ -41,7 +41,7 @@ public enum IDCardVerifyState
 /// </summary>
 public partial class IDCardVerifyPageViewModel : ViewModelBase, IPageViewModel
 {
-    private const string SimulatedIdCardNumber = "430407197809211514";
+    private const string SimulatedIdCardNumber = "110101200007286106";
 
     public event EventHandler<IDCardVerificationSucceededEventArgs>? VerificationSucceeded;
 

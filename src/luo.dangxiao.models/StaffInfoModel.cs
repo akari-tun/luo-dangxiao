@@ -28,6 +28,10 @@ public sealed class StaffInfoModel : UserInfoModel
 
     public string CardNumber { get; set; } = string.Empty;
 
+    public string FactoryFixId { get; set; } = string.Empty;
+
+    public string UserId { get; set; } = string.Empty;
+
     public StaffCardStatus CardStatus { get; set; }
 
     public decimal ConsumptionBalance { get; set; }

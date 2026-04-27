@@ -31,6 +31,9 @@ public sealed class YktUserInfoMapper : IYktUserInfoMapper
         return new StaffUserInfoIntermediateDto
         {
             Id = ReadString(userBase, ReadString(root, identity, "userId", "id", "teacherId", "staffId"), "userId", "id"),
+            UserId = hasUserCard
+                ? ReadString(userCard, ReadString(userBase, ReadString(root, identity, "userId", "id", "teacherId", "staffId"), "userId", "id"), "userId")
+                : ReadString(userBase, ReadString(root, identity, "userId", "id", "teacherId", "staffId"), "userId", "id"),
             Name = ReadString(userBase, ReadString(root, "测试职工", "name", "teacherName", "staffName", "xm"), "userXm", "name", "xm"),
             IdCardNumber = ReadString(userBase, identity, "idNumber"),
             GenderRaw = ReadString(userBase, string.Empty, "userSexName", "userSex", "gender", "sex"),
@@ -42,6 +45,9 @@ public sealed class YktUserInfoMapper : IYktUserInfoMapper
             CardNumber = hasUserCard
                 ? ReadString(userCard, ReadString(root, string.Empty, "cardNumber", "cardNo"), "cardNo", "cardNumber")
                 : ReadString(root, string.Empty, "cardNumber", "cardNo"),
+            FactoryFixId = hasUserCard
+                ? ReadString(userCard, ReadString(root, string.Empty, "factoryFixId"), "factoryFixId")
+                : ReadString(root, string.Empty, "factoryFixId"),
             CardStatusRaw = hasUserCard
                 ? ReadString(userCard, ReadString(userBase, string.Empty, "stateName", "state"), "cardStatusName", "cardStatus", "cardStatusId", "status", "state")
                 : ReadString(userBase, string.Empty, "stateName", "state", "cardStatus", "status"),
@@ -68,6 +74,9 @@ public sealed class YktUserInfoMapper : IYktUserInfoMapper
         return new StudentUserInfoIntermediateDto
         {
             Id = ReadString(userBase, ReadString(root, identity, "userId", "id", "traineeId", "studentId"), "userId", "id"),
+            UserId = hasUserCard
+                ? ReadString(userCard, ReadString(userBase, ReadString(root, identity, "userId", "id", "traineeId", "studentId"), "userId", "id"), "userId")
+                : ReadString(userBase, ReadString(root, identity, "userId", "id", "traineeId", "studentId"), "userId", "id"),
             Name = ReadString(userBase, ReadString(root, "测试学员", "name", "traineeName", "studentName", "xm"), "userXm", "name", "xm"),
             IdCardNumber = ReadString(userBase, identity, "idNumber"),
             GenderRaw = ReadString(userBase, ReadString(root, string.Empty, "gender", "sex"), "userSexName", "userSex", "gender", "sex"),
@@ -79,6 +88,9 @@ public sealed class YktUserInfoMapper : IYktUserInfoMapper
             CardNumber = hasUserCard
                 ? ReadString(userCard, ReadString(root, string.Empty, "cardNumber", "cardNo"), "cardNo", "cardNumber")
                 : ReadString(root, string.Empty, "cardNumber", "cardNo"),
+            FactoryFixId = hasUserCard
+                ? ReadString(userCard, ReadString(root, string.Empty, "factoryFixId"), "factoryFixId")
+                : ReadString(root, string.Empty, "factoryFixId"),
             CardStatusRaw = hasUserCard
                 ? ReadString(userCard, ReadString(userBase, string.Empty, "stateName", "state"), "cardStatusName", "cardStatus", "cardStatusId", "status", "state")
                 : ReadString(userBase, ReadString(root, string.Empty, "cardStatus", "status"), "stateName", "state", "cardStatus", "status"),

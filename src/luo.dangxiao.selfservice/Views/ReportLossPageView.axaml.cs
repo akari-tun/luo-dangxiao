@@ -25,5 +25,6 @@ public partial class ReportLossPageView : UserControl, IPageView
         _viewModel = Ioc.Default.GetRequiredService<ReportLossPageViewModel>();
         _viewModel.LoadDataCommand.Execute(parameter);
         DataContext = _viewModel;
+        DetachedFromVisualTree += (_, _) => _viewModel.Cleanup();
     }
 }

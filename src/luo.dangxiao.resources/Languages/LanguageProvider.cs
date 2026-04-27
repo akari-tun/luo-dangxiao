@@ -67,6 +67,16 @@ public static class LanguageProvider
     public static string SelfService_ReportLoss_Title_Normal => Get(nameof(SelfService_ReportLoss_Title_Normal));
     public static string SelfService_ReportLoss_Title_Invalid => Get(nameof(SelfService_ReportLoss_Title_Invalid));
     public static string SelfService_ReportLoss_Button_Action => Get(nameof(SelfService_ReportLoss_Button_Action));
+    public static string SelfService_ReportLoss_Countdown_Format => Get(nameof(SelfService_ReportLoss_Countdown_Format));
+    public static string SelfService_ReportLoss_Status_Processing => Get(nameof(SelfService_ReportLoss_Status_Processing));
+    public static string SelfService_ReportLoss_Status_Success => Get(nameof(SelfService_ReportLoss_Status_Success));
+    public static string SelfService_ReportLoss_Status_Failed => Get(nameof(SelfService_ReportLoss_Status_Failed));
+    public static string SelfService_ReportLoss_Status_Failed_WithReason => Get(nameof(SelfService_ReportLoss_Status_Failed_WithReason));
+    public static string SelfService_ReportLoss_Status_Failed_Timeout => Get(nameof(SelfService_ReportLoss_Status_Failed_Timeout));
+    public static string SelfService_ReportLoss_Status_Failed_CountdownCancelled => Get(nameof(SelfService_ReportLoss_Status_Failed_CountdownCancelled));
+    public static string SelfService_ReportLoss_Status_Failed_NoCardNumber => Get(nameof(SelfService_ReportLoss_Status_Failed_NoCardNumber));
+    public static string SelfService_ReportLoss_Status_Failed_ApiUnavailable => Get(nameof(SelfService_ReportLoss_Status_Failed_ApiUnavailable));
+    public static string SelfService_ReportLoss_Status_Failed_InvalidConfig => Get(nameof(SelfService_ReportLoss_Status_Failed_InvalidConfig));
     public static string SelfService_Recharge_Title_Confirm => Get(nameof(SelfService_Recharge_Title_Confirm));
     public static string SelfService_Recharge_Title_QRCode => Get(nameof(SelfService_Recharge_Title_QRCode));
     public static string SelfService_Recharge_AmountSelectionTitle => Get(nameof(SelfService_Recharge_AmountSelectionTitle));

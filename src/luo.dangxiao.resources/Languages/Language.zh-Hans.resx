@@ -330,6 +330,36 @@
   <data name="SelfService_ReportLoss_Button_Action" xml:space="preserve">
     <value>挂失</value>
   </data>
+  <data name="SelfService_ReportLoss_Countdown_Format" xml:space="preserve">
+    <value>{0}秒</value>
+  </data>
+  <data name="SelfService_ReportLoss_Status_Processing" xml:space="preserve">
+    <value>正在提交挂失请求，请稍候...</value>
+  </data>
+  <data name="SelfService_ReportLoss_Status_Success" xml:space="preserve">
+    <value>挂失成功。</value>
+  </data>
+  <data name="SelfService_ReportLoss_Status_Failed" xml:space="preserve">
+    <value>挂失失败。</value>
+  </data>
+  <data name="SelfService_ReportLoss_Status_Failed_WithReason" xml:space="preserve">
+    <value>挂失失败：{0}</value>
+  </data>
+  <data name="SelfService_ReportLoss_Status_Failed_Timeout" xml:space="preserve">
+    <value>挂失请求超时，请重试。</value>
+  </data>
+  <data name="SelfService_ReportLoss_Status_Failed_CountdownCancelled" xml:space="preserve">
+    <value>页面倒计时已结束，挂失操作已取消。</value>
+  </data>
+  <data name="SelfService_ReportLoss_Status_Failed_NoCardNumber" xml:space="preserve">
+    <value>未找到卡号，无法执行挂失。</value>
+  </data>
+  <data name="SelfService_ReportLoss_Status_Failed_ApiUnavailable" xml:space="preserve">
+    <value>未配置 YktApi 服务，请检查 YktApiConfig 配置。</value>
+  </data>
+  <data name="SelfService_ReportLoss_Status_Failed_InvalidConfig" xml:space="preserve">
+    <value>挂失所需参数不完整：{0}。</value>
+  </data>
   <data name="SelfService_Recharge_Title_Confirm" xml:space="preserve">
     <value>请确认信息后，点击相应金额进行充值</value>
   </data>

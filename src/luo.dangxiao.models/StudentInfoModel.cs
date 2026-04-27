@@ -50,6 +50,10 @@ public sealed class StudentInfoModel : UserInfoModel
 
     public string CardNumber { get; set; } = string.Empty;
 
+    public string FactoryFixId { get; set; } = string.Empty;
+
+    public string UserId { get; set; } = string.Empty;
+
     public StudentCardStatus CardStatus { get; set; }
 
     public string RoomName { get; set; } = string.Empty;
