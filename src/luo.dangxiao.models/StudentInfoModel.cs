@@ -3,17 +3,6 @@ using luo.dangxiao.common.Enums;
 namespace luo.dangxiao.models;
 
 /// <summary>
-/// Student card status.
-/// </summary>
-public enum StudentCardStatus
-{
-    Normal,
-    PendingPickup,
-    Lost,
-    Unissued
-}
-
-/// <summary>
 /// Check-in status.
 /// </summary>
 public enum StudentCheckInStatus
@@ -53,8 +42,6 @@ public sealed class StudentInfoModel : UserInfoModel
     public string FactoryFixId { get; set; } = string.Empty;
 
     public string UserId { get; set; } = string.Empty;
-
-    public StudentCardStatus CardStatus { get; set; }
 
     public string RoomName { get; set; } = string.Empty;
 

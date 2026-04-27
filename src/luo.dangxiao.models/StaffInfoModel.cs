@@ -3,17 +3,6 @@ using luo.dangxiao.common.Enums;
 namespace luo.dangxiao.models;
 
 /// <summary>
-/// Staff card status.
-/// </summary>
-public enum StaffCardStatus
-{
-    Normal,
-    PendingPickup,
-    Lost,
-    Frozen
-}
-
-/// <summary>
 /// Staff basic data.
 /// </summary>
 public sealed class StaffInfoModel : UserInfoModel
@@ -31,8 +20,6 @@ public sealed class StaffInfoModel : UserInfoModel
     public string FactoryFixId { get; set; } = string.Empty;
 
     public string UserId { get; set; } = string.Empty;
-
-    public StaffCardStatus CardStatus { get; set; }
 
     public decimal ConsumptionBalance { get; set; }
 

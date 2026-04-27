@@ -41,9 +41,15 @@ public enum IDCardVerifyState
 /// </summary>
 public partial class IDCardVerifyPageViewModel : ViewModelBase, IPageViewModel
 {
-    private const string SimulatedIdCardNumber = "110101200007286106";
-
     public event EventHandler<IDCardVerificationSucceededEventArgs>? VerificationSucceeded;
+
+    public Func<Task<string?>>? RequestTestIdCardNumberAsync { get; set; }
+
+#if DEBUG
+    public bool ShowTestReadIdCardButton => true;
+#else
+    public bool ShowTestReadIdCardButton => false;
+#endif
 
     [ObservableProperty]
     private IDCardVerifyState _currentState = IDCardVerifyState.Waiting;
@@ -73,6 +79,7 @@ public partial class IDCardVerifyPageViewModel : ViewModelBase, IPageViewModel
         OnPropertyChanged(nameof(IsFailed));
     }
 
+#if DEBUG
     [RelayCommand]
     private async Task StartVerificationAsync()
     {
@@ -101,11 +108,23 @@ public partial class IDCardVerifyPageViewModel : ViewModelBase, IPageViewModel
         }
     }
 
-    private static async Task<string> SimulateReadIdCardNumberAsync()
+    private async Task<string> SimulateReadIdCardNumberAsync()
     {
         await Task.Delay(1000);
-        return SimulatedIdCardNumber;
+
+        if (RequestTestIdCardNumberAsync is not null)
+        {
+            var inputIdCardNumber = await RequestTestIdCardNumberAsync();
+            if (!string.IsNullOrWhiteSpace(inputIdCardNumber))
+            {
+                return inputIdCardNumber.Trim().ToUpperInvariant();
+            }
+        }
+
+        var cfgData = Ioc.Default.GetRequiredService<SelfServiceConfig>();
+        return cfgData.ServiceType == SelfServiceType.StaffSelfService ? "430407197809211514" : "110101200007286106";
     }
+#endif
 
     private static async Task<UserInfoModel> GetUserInfoByIdentityAsync(string identity)
     {
@@ -124,7 +143,7 @@ public partial class IDCardVerifyPageViewModel : ViewModelBase, IPageViewModel
             return mapper.MapStaff(response.Data, identity);
         }
 
-        var checkInDate = DateTime.Today.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+        var checkInDate = DateTime.Today.AddDays(-1).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
         var traineeResponse = await yktApiClient.GetTraineeByIdentityAsync(encodedIdentity, checkInDate);
         EnsureApiSuccess(traineeResponse.Code, traineeResponse.Message);
         return mapper.MapStudent(traineeResponse.Data, identity);

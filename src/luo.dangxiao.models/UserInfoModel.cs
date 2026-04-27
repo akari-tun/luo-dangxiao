@@ -3,6 +3,18 @@ using luo.dangxiao.common.Enums;
 namespace luo.dangxiao.models;
 
 /// <summary>
+/// User card status.
+/// </summary>
+public enum UserCardStatus
+{
+    Normal,
+    PendingPickup,
+    Lost,
+    Unissued,
+    Frozen
+}
+
+/// <summary>
 /// Base model for user information.
 /// </summary>
 public class UserInfoModel
@@ -14,4 +26,6 @@ public class UserInfoModel
     public UserType UserType { get; set; }
 
     public string IdCardNumber { get; set; } = string.Empty;
+
+    public UserCardStatus CardStatus { get; set; }
 }

@@ -144,6 +144,9 @@
   <data name="Button_Refresh" xml:space="preserve">
     <value>刷新</value>
   </data>
+  <data name="Button_Back" xml:space="preserve">
+    <value>返回</value>
+  </data>
   <data name="Label_Name" xml:space="preserve">
     <value>名称</value>
   </data>
@@ -200,6 +203,15 @@
   </data>
   <data name="SelfService_CheckIn" xml:space="preserve">
     <value>自助报到</value>
+  </data>
+  <data name="SelfService_CheckIn_Title_NotCheckedIn" xml:space="preserve">
+    <value>确认信息后，点击[报到]按钮进行报到。</value>
+  </data>
+  <data name="SelfService_CheckIn_Title_CheckedIn" xml:space="preserve">
+    <value>您已成功报到。</value>
+  </data>
+  <data name="SelfService_CheckIn_Button_Action" xml:space="preserve">
+    <value>报到</value>
   </data>
   <data name="SelfService_Verify_SelectMethod" xml:space="preserve">
     <value>请选择验证方式</value>
@@ -296,9 +308,6 @@
   </data>
   <data name="SelfService_Info_TrainingTime" xml:space="preserve">
     <value>培训时间</value>
-  </data>
-  <data name="Button_Back" xml:space="preserve">
-    <value>返回</value>
   </data>
   <data name="SelfService_TakeCard_Title_PendingPickup" xml:space="preserve">
     <value>请确认信息无误后取卡</value>

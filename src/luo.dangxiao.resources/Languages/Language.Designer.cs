@@ -223,6 +223,15 @@ namespace luo.dangxiao.resources.Languages {
         }
         
         /// <summary>
+        ///   查找类似 Provider &quot;{0}&quot; in config.json is invalid. The application has fallen back to {1}. 的本地化字符串。
+        /// </summary>
+        public static string Msg_PrinterProviderFallback {
+            get {
+                return ResourceManager.GetString("Msg_PrinterProviderFallback", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Operation completed successfully 的本地化字符串。
         /// </summary>
         public static string Msg_Success {
@@ -268,6 +277,150 @@ namespace luo.dangxiao.resources.Languages {
         }
         
         /// <summary>
+        ///   查找类似 Check-in 的本地化字符串。
+        /// </summary>
+        public static string SelfService_CheckIn_Button_Action {
+            get {
+                return ResourceManager.GetString("SelfService_CheckIn_Button_Action", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 You have successfully checked in. 的本地化字符串。
+        /// </summary>
+        public static string SelfService_CheckIn_Title_CheckedIn {
+            get {
+                return ResourceManager.GetString("SelfService_CheckIn_Title_CheckedIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Confirm your information, then click [Check-in] to complete check-in. 的本地化字符串。
+        /// </summary>
+        public static string SelfService_CheckIn_Title_NotCheckedIn {
+            get {
+                return ResourceManager.GetString("SelfService_CheckIn_Title_NotCheckedIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Basic Information 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Info_BasicInfo {
+            get {
+                return ResourceManager.GetString("SelfService_Info_BasicInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Card Expiry Date 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Info_CardExpiryDate {
+            get {
+                return ResourceManager.GetString("SelfService_Info_CardExpiryDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Card Type 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Info_CardType {
+            get {
+                return ResourceManager.GetString("SelfService_Info_CardType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Check-in Room 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Info_CheckInRoom {
+            get {
+                return ResourceManager.GetString("SelfService_Info_CheckInRoom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Check-in Time 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Info_CheckInTime {
+            get {
+                return ResourceManager.GetString("SelfService_Info_CheckInTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Class Name 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Info_ClassName {
+            get {
+                return ResourceManager.GetString("SelfService_Info_ClassName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Consumption Balance 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Info_ConsumptionBalance {
+            get {
+                return ResourceManager.GetString("SelfService_Info_ConsumptionBalance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Department 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Info_Department {
+            get {
+                return ResourceManager.GetString("SelfService_Info_Department", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Name 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Info_Name {
+            get {
+                return ResourceManager.GetString("SelfService_Info_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 to 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Info_RangeSeparator {
+            get {
+                return ResourceManager.GetString("SelfService_Info_RangeSeparator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Staff Number 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Info_StaffNumber {
+            get {
+                return ResourceManager.GetString("SelfService_Info_StaffNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Subsidy Balance 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Info_SubsidyBalance {
+            get {
+                return ResourceManager.GetString("SelfService_Info_SubsidyBalance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Training Time 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Info_TrainingTime {
+            get {
+                return ResourceManager.GetString("SelfService_Info_TrainingTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Self-service Query 的本地化字符串。
         /// </summary>
         public static string SelfService_Query {
@@ -282,6 +435,105 @@ namespace luo.dangxiao.resources.Languages {
         public static string SelfService_Recharge {
             get {
                 return ResourceManager.GetString("SelfService_Recharge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 ￥100 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Recharge_Amount_100 {
+            get {
+                return ResourceManager.GetString("SelfService_Recharge_Amount_100", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 ￥20 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Recharge_Amount_20 {
+            get {
+                return ResourceManager.GetString("SelfService_Recharge_Amount_20", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 ￥200 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Recharge_Amount_200 {
+            get {
+                return ResourceManager.GetString("SelfService_Recharge_Amount_200", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 ￥50 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Recharge_Amount_50 {
+            get {
+                return ResourceManager.GetString("SelfService_Recharge_Amount_50", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 ￥500 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Recharge_Amount_500 {
+            get {
+                return ResourceManager.GetString("SelfService_Recharge_Amount_500", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Please select recharge amount 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Recharge_AmountSelectionTitle {
+            get {
+                return ResourceManager.GetString("SelfService_Recharge_AmountSelectionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Please complete the payment on your phone and return to this device to confirm. 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Recharge_QRCode_Instruction {
+            get {
+                return ResourceManager.GetString("SelfService_Recharge_QRCode_Instruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Please use WeChat/Alipay to scan the QR code 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Recharge_QRCode_ScanHint {
+            get {
+                return ResourceManager.GetString("SelfService_Recharge_QRCode_ScanHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Amount pending payment: ¥{0:0.##} 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Recharge_Status_PendingPayment {
+            get {
+                return ResourceManager.GetString("SelfService_Recharge_Status_PendingPayment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Please confirm your information, then select an amount to recharge. 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Recharge_Title_Confirm {
+            get {
+                return ResourceManager.GetString("SelfService_Recharge_Title_Confirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Confirm the amount, then scan the QR code to complete payment. 的本地化字符串。
+        /// </summary>
+        public static string SelfService_Recharge_Title_QRCode {
+            get {
+                return ResourceManager.GetString("SelfService_Recharge_Title_QRCode", resourceCulture);
             }
         }
         
@@ -304,11 +556,191 @@ namespace luo.dangxiao.resources.Languages {
         }
         
         /// <summary>
+        ///   查找类似 Report Loss 的本地化字符串。
+        /// </summary>
+        public static string SelfService_ReportLoss_Button_Action {
+            get {
+                return ResourceManager.GetString("SelfService_ReportLoss_Button_Action", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 {0}s 的本地化字符串。
+        /// </summary>
+        public static string SelfService_ReportLoss_Countdown_Format {
+            get {
+                return ResourceManager.GetString("SelfService_ReportLoss_Countdown_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Failed to report the card loss. 的本地化字符串。
+        /// </summary>
+        public static string SelfService_ReportLoss_Status_Failed {
+            get {
+                return ResourceManager.GetString("SelfService_ReportLoss_Status_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 The YktApi service is not configured. Please check the YktApiConfig settings. 的本地化字符串。
+        /// </summary>
+        public static string SelfService_ReportLoss_Status_Failed_ApiUnavailable {
+            get {
+                return ResourceManager.GetString("SelfService_ReportLoss_Status_Failed_ApiUnavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 The loss report was cancelled because the page countdown expired. 的本地化字符串。
+        /// </summary>
+        public static string SelfService_ReportLoss_Status_Failed_CountdownCancelled {
+            get {
+                return ResourceManager.GetString("SelfService_ReportLoss_Status_Failed_CountdownCancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Required report loss parameters are incomplete: {0}. 的本地化字符串。
+        /// </summary>
+        public static string SelfService_ReportLoss_Status_Failed_InvalidConfig {
+            get {
+                return ResourceManager.GetString("SelfService_ReportLoss_Status_Failed_InvalidConfig", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 No card number was found, so the card cannot be reported lost. 的本地化字符串。
+        /// </summary>
+        public static string SelfService_ReportLoss_Status_Failed_NoCardNumber {
+            get {
+                return ResourceManager.GetString("SelfService_ReportLoss_Status_Failed_NoCardNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 The loss report request timed out. Please try again. 的本地化字符串。
+        /// </summary>
+        public static string SelfService_ReportLoss_Status_Failed_Timeout {
+            get {
+                return ResourceManager.GetString("SelfService_ReportLoss_Status_Failed_Timeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Failed to report the card loss: {0} 的本地化字符串。
+        /// </summary>
+        public static string SelfService_ReportLoss_Status_Failed_WithReason {
+            get {
+                return ResourceManager.GetString("SelfService_ReportLoss_Status_Failed_WithReason", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Submitting the loss report, please wait... 的本地化字符串。
+        /// </summary>
+        public static string SelfService_ReportLoss_Status_Processing {
+            get {
+                return ResourceManager.GetString("SelfService_ReportLoss_Status_Processing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 The card has been reported lost successfully. 的本地化字符串。
+        /// </summary>
+        public static string SelfService_ReportLoss_Status_Success {
+            get {
+                return ResourceManager.GetString("SelfService_ReportLoss_Status_Success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 You do not have a normal card, or your card is already reported lost and cannot be reported again. 的本地化字符串。
+        /// </summary>
+        public static string SelfService_ReportLoss_Title_Invalid {
+            get {
+                return ResourceManager.GetString("SelfService_ReportLoss_Title_Invalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 After confirming your information, click [Report Loss] to proceed. 的本地化字符串。
+        /// </summary>
+        public static string SelfService_ReportLoss_Title_Normal {
+            get {
+                return ResourceManager.GetString("SelfService_ReportLoss_Title_Normal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Self-service Card Pickup 的本地化字符串。
         /// </summary>
         public static string SelfService_TakeCard {
             get {
                 return ResourceManager.GetString("SelfService_TakeCard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Complete 的本地化字符串。
+        /// </summary>
+        public static string SelfService_TakeCard_Button_Complete {
+            get {
+                return ResourceManager.GetString("SelfService_TakeCard_Button_Complete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Confirm Card Pickup 的本地化字符串。
+        /// </summary>
+        public static string SelfService_TakeCard_Button_Confirm {
+            get {
+                return ResourceManager.GetString("SelfService_TakeCard_Button_Confirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Card Collected 的本地化字符串。
+        /// </summary>
+        public static string SelfService_TakeCard_Button_PickedUp {
+            get {
+                return ResourceManager.GetString("SelfService_TakeCard_Button_PickedUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 This card has been reported lost, please use self-service replacement 的本地化字符串。
+        /// </summary>
+        public static string SelfService_TakeCard_Title_Lost {
+            get {
+                return ResourceManager.GetString("SelfService_TakeCard_Title_Lost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 The current card status is normal, no replacement is needed 的本地化字符串。
+        /// </summary>
+        public static string SelfService_TakeCard_Title_Normal {
+            get {
+                return ResourceManager.GetString("SelfService_TakeCard_Title_Normal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 No card collection is required for your account 的本地化字符串。
+        /// </summary>
+        public static string SelfService_TakeCard_Title_Other {
+            get {
+                return ResourceManager.GetString("SelfService_TakeCard_Title_Other", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Please confirm your information before collecting the card 的本地化字符串。
+        /// </summary>
+        public static string SelfService_TakeCard_Title_PendingPickup {
+            get {
+                return ResourceManager.GetString("SelfService_TakeCard_Title_PendingPickup", resourceCulture);
             }
         }
         

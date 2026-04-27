@@ -45,6 +45,7 @@
             <Button Content="Test Read ID Card"
                     HorizontalAlignment="Center"
                     Command="{Binding StartVerificationCommand}"
+                    IsVisible="{Binding ShowTestReadIdCardButton}"
                     Background="{DynamicResource BackgroundDarkBrush}"
                     BorderThickness="0"
                     CornerRadius="4" />
