@@ -29,7 +29,7 @@ namespace luo.dangxiao.wabapi.Dtos.Requests
 
         public int CheckinState { get; set; }
 
-        public string? RoomCode { get; set; }
+        public string RoomCode { get; set; } = string.Empty;
 
         public string DeptId { get; set; } = string.Empty;
     }

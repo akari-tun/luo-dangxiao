@@ -213,6 +213,24 @@
   <data name="SelfService_CheckIn_Button_Action" xml:space="preserve">
     <value>报到</value>
   </data>
+  <data name="SelfService_CheckIn_Countdown_Format" xml:space="preserve">
+    <value>{0}秒</value>
+  </data>
+  <data name="SelfService_CheckIn_Status_Processing" xml:space="preserve">
+    <value>正在提交报到信息，请稍候...</value>
+  </data>
+  <data name="SelfService_CheckIn_Status_Success" xml:space="preserve">
+    <value>报到成功。</value>
+  </data>
+  <data name="SelfService_CheckIn_Status_Failed" xml:space="preserve">
+    <value>报到失败。</value>
+  </data>
+  <data name="SelfService_CheckIn_Status_Failed_WithReason" xml:space="preserve">
+    <value>报到失败：{0}</value>
+  </data>
+  <data name="SelfService_CheckIn_Status_Failed_ApiUnavailable" xml:space="preserve">
+    <value>未配置 YktApi 服务，请检查 YktApiConfig 配置。</value>
+  </data>
   <data name="SelfService_Verify_SelectMethod" xml:space="preserve">
     <value>请选择验证方式</value>
   </data>
@@ -329,6 +347,39 @@
   </data>
   <data name="SelfService_TakeCard_Button_Complete" xml:space="preserve">
     <value>完成</value>
+  </data>
+  <data name="SelfService_TakeCard_Countdown" xml:space="preserve">
+    <value>{0}秒</value>
+  </data>
+  <data name="SelfService_TakeCard_Status_MovingCard" xml:space="preserve">
+    <value>正在移动卡片，请稍候...</value>
+  </data>
+  <data name="SelfService_TakeCard_Status_ReadingCard" xml:space="preserve">
+    <value>正在读取卡片信息...</value>
+  </data>
+  <data name="SelfService_TakeCard_Status_InitializingCard" xml:space="preserve">
+    <value>正在初始化卡片，请稍候...</value>
+  </data>
+  <data name="SelfService_TakeCard_Status_WritingCard" xml:space="preserve">
+    <value>正在写入卡片数据...</value>
+  </data>
+  <data name="SelfService_TakeCard_Status_PrintingCard" xml:space="preserve">
+    <value>正在打印卡片，请稍候...</value>
+  </data>
+  <data name="SelfService_TakeCard_Status_PickupInstruction" xml:space="preserve">
+    <value>请从取卡口取走卡片</value>
+  </data>
+  <data name="SelfService_TakeCard_Status_Timeout" xml:space="preserve">
+    <value>操作超时，请重试</value>
+  </data>
+  <data name="SelfService_TakeCard_Status_OperationFailed" xml:space="preserve">
+    <value>制卡失败：{0}</value>
+  </data>
+  <data name="SelfService_TakeCard_Status_CardReturned" xml:space="preserve">
+    <value>卡片已退回，请重试</value>
+  </data>
+  <data name="SelfService_TakeCard_Status_Timeout_Discard" xml:space="preserve">
+    <value>您未在规定时间内取卡，卡片已移至废卡槽</value>
   </data>
   <data name="SelfService_ReportLoss_Title_Normal" xml:space="preserve">
     <value>确认信息后，点击[挂失]按钮进行挂失。</value>

@@ -21,17 +21,27 @@
                 Margin="45,30,45,30"
                 CornerRadius="7">
             <Grid RowDefinitions="48,430,*">
-                <StackPanel Grid.Row="0" Margin="32,0,0,0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Image Source="avares://luo.dangxiao.resources/Images/id_card_tip.png"
-                           Width="48"
-                           Height="48"
-                           Margin="0,0,20,0"/>
-                    <TextBlock FontFamily="SimHei"
+                <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                    <StackPanel Grid.Column="0" Margin="32,0,0,0" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Image Source="avares://luo.dangxiao.resources/Images/id_card_tip.png"
+                               Width="48"
+                               Height="48"
+                               Margin="0,0,20,0"/>
+                        <TextBlock FontFamily="SimHei"
+                                   FontSize="45"
+                                   Foreground="{StaticResource PrimaryRedBrush}"
+                                   Text="{Binding PageTitle}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <TextBlock Grid.Column="1"
+                               Margin="0,0,32,0"
+                               FontFamily="SimHei"
                                FontSize="45"
                                Foreground="{StaticResource PrimaryRedBrush}"
-                               Text="{Binding PageTitle}"
-                               VerticalAlignment="Center"/>
-                </StackPanel>
+                               Text="{Binding CountdownDisplay}"
+                               VerticalAlignment="Center"
+                               IsVisible="{Binding IsCountdownVisible}"/>
+                </Grid>
                 <Border Grid.Row="1"
                         Margin="0,8,0,0"
                         HorizontalAlignment="Stretch"
@@ -40,6 +50,18 @@
                     <ContentControl HorizontalAlignment="Stretch"
                                     VerticalAlignment="Top"
                                     Content="{Binding UserInfoModuleContent}"/>
+                </Border>
+                <Border Grid.Row="2"
+                        Margin="32,20,32,20"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Top"
+                        IsVisible="{ReflectionBinding IsOperationStatusVisible}">
+                    <TextBlock FontFamily="SimHei"
+                               FontSize="36"
+                               Foreground="{StaticResource PrimaryRedBrush}"
+                               Text="{ReflectionBinding OperationStatusText}"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"/>
                 </Border>
             </Grid>
         </Border>

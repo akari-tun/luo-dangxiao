@@ -50,7 +50,15 @@ public partial class StudentInfoPageViewModel : ViewModelBase, IPageViewModel
         TrainingStartDate = new DateTime(2020, 09, 01),
         TrainingEndDate = new DateTime(2020, 09, 05),
         CardNumber = "20200901001",
-        CardStatus = StudentCardStatus.PendingPickup,
+        UserCards =
+        [
+            new CardInfoModel
+            {
+                CardNo = "20200901001",
+                CardStatusId = (int)UserCardStatus.Normal,
+                CardStatusName = "正常"
+            }
+        ],
         RoomName = "301房",
         RoomNumber = "301房",
         CheckInStatus = StudentCheckInStatus.NotCheckedIn
@@ -95,23 +103,45 @@ public partial class StudentInfoPageViewModel : ViewModelBase, IPageViewModel
 
     public string TrainingDateRange => $"{TrainingStartText} 至 {TrainingEndText}";
 
-    public string CardStatusText => StudentInfo.CardStatus switch
+    public string CardStatusText
     {
-        StudentCardStatus.Normal => "正常",
-        StudentCardStatus.PendingPickup => "待领取",
-        StudentCardStatus.Lost => "已挂失",
-        StudentCardStatus.Unissued => "未制卡",
-        _ => "未知"
-    };
+        get
+        {
+            var currentCard = StudentInfo.CurrentCard;
+            if (currentCard is null)
+            {
+                return "待领取";
+            }
 
-    public IBrush CardStatusBrush => StudentInfo.CardStatus switch
+            return currentCard.CardStatusId switch
+            {
+                (int)UserCardStatus.Normal => "正常",
+                (int)UserCardStatus.Lost => "已挂失",
+                (int)UserCardStatus.Unissued => "未制卡",
+                _ => "未知"
+            };
+        }
+    }
+
+    public IBrush CardStatusBrush
     {
-        StudentCardStatus.Normal => Brush.Parse("#4CAF50"),
-        StudentCardStatus.PendingPickup => Brush.Parse("#ff6000"),
-        StudentCardStatus.Lost => Brush.Parse("#d9230b"),
-        StudentCardStatus.Unissued => Brush.Parse("#70706d"),
-        _ => Brush.Parse("#70706d")
-    };
+        get
+        {
+            var currentCard = StudentInfo.CurrentCard;
+            if (currentCard is null)
+            {
+                return Brush.Parse("#ff6000");
+            }
+
+            return currentCard.CardStatusId switch
+            {
+                (int)UserCardStatus.Normal => Brush.Parse("#4CAF50"),
+                (int)UserCardStatus.Lost => Brush.Parse("#d9230b"),
+                (int)UserCardStatus.Unissued => Brush.Parse("#70706d"),
+                _ => Brush.Parse("#70706d")
+            };
+        }
+    }
 
     public string CheckInStatusText => StudentInfo.CheckInStatus switch
     {

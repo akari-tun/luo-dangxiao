@@ -47,6 +47,16 @@ public sealed class StudentInfoModel : UserInfoModel
 
     public string RoomNumber { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Room code for check-in registration (maps to API field roomCode).
+    /// </summary>
+    public string RoomCode { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Department/training class ID for check-in registration (maps to API field deptId).
+    /// </summary>
+    public string DeptId { get; set; } = string.Empty;
+
     public StudentCheckInStatus CheckInStatus { get; set; }
 
     public string PhotoUrl { get; set; } = string.Empty;

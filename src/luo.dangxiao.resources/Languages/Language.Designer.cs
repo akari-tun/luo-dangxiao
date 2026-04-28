@@ -304,6 +304,60 @@ namespace luo.dangxiao.resources.Languages {
         }
         
         /// <summary>
+        ///   查找类似 {0}s 的本地化字符串（报到页面倒计时格式）。
+        /// </summary>
+        public static string SelfService_CheckIn_Countdown_Format {
+            get {
+                return ResourceManager.GetString("SelfService_CheckIn_Countdown_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Check-in failed. 的本地化字符串。
+        /// </summary>
+        public static string SelfService_CheckIn_Status_Failed {
+            get {
+                return ResourceManager.GetString("SelfService_CheckIn_Status_Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 The YktApi service is not configured. Please check the YktApiConfig settings. 的本地化字符串。
+        /// </summary>
+        public static string SelfService_CheckIn_Status_Failed_ApiUnavailable {
+            get {
+                return ResourceManager.GetString("SelfService_CheckIn_Status_Failed_ApiUnavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Check-in failed: {0} 的本地化字符串。
+        /// </summary>
+        public static string SelfService_CheckIn_Status_Failed_WithReason {
+            get {
+                return ResourceManager.GetString("SelfService_CheckIn_Status_Failed_WithReason", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Submitting check-in, please wait... 的本地化字符串。
+        /// </summary>
+        public static string SelfService_CheckIn_Status_Processing {
+            get {
+                return ResourceManager.GetString("SelfService_CheckIn_Status_Processing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Check-in completed successfully. 的本地化字符串。
+        /// </summary>
+        public static string SelfService_CheckIn_Status_Success {
+            get {
+                return ResourceManager.GetString("SelfService_CheckIn_Status_Success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Basic Information 的本地化字符串。
         /// </summary>
         public static string SelfService_Info_BasicInfo {

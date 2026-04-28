@@ -23,6 +23,12 @@ public static class LanguageProvider
     public static string SelfService_CheckIn_Title_NotCheckedIn => Get(nameof(SelfService_CheckIn_Title_NotCheckedIn));
     public static string SelfService_CheckIn_Title_CheckedIn => Get(nameof(SelfService_CheckIn_Title_CheckedIn));
     public static string SelfService_CheckIn_Button_Action => Get(nameof(SelfService_CheckIn_Button_Action));
+    public static string SelfService_CheckIn_Countdown_Format => Get(nameof(SelfService_CheckIn_Countdown_Format));
+    public static string SelfService_CheckIn_Status_Processing => Get(nameof(SelfService_CheckIn_Status_Processing));
+    public static string SelfService_CheckIn_Status_Success => Get(nameof(SelfService_CheckIn_Status_Success));
+    public static string SelfService_CheckIn_Status_Failed => Get(nameof(SelfService_CheckIn_Status_Failed));
+    public static string SelfService_CheckIn_Status_Failed_WithReason => Get(nameof(SelfService_CheckIn_Status_Failed_WithReason));
+    public static string SelfService_CheckIn_Status_Failed_ApiUnavailable => Get(nameof(SelfService_CheckIn_Status_Failed_ApiUnavailable));
 
     public static string SelfService_Verify_SelectMethod => Get(nameof(SelfService_Verify_SelectMethod));
     public static string SelfService_Verify_IDCard => Get(nameof(SelfService_Verify_IDCard));
@@ -64,6 +70,17 @@ public static class LanguageProvider
     public static string SelfService_TakeCard_Button_Confirm => Get(nameof(SelfService_TakeCard_Button_Confirm));
     public static string SelfService_TakeCard_Button_PickedUp => Get(nameof(SelfService_TakeCard_Button_PickedUp));
     public static string SelfService_TakeCard_Button_Complete => Get(nameof(SelfService_TakeCard_Button_Complete));
+    public static string SelfService_TakeCard_Countdown => Get(nameof(SelfService_TakeCard_Countdown));
+    public static string SelfService_TakeCard_Status_MovingCard => Get(nameof(SelfService_TakeCard_Status_MovingCard));
+    public static string SelfService_TakeCard_Status_ReadingCard => Get(nameof(SelfService_TakeCard_Status_ReadingCard));
+    public static string SelfService_TakeCard_Status_InitializingCard => Get(nameof(SelfService_TakeCard_Status_InitializingCard));
+    public static string SelfService_TakeCard_Status_WritingCard => Get(nameof(SelfService_TakeCard_Status_WritingCard));
+    public static string SelfService_TakeCard_Status_PrintingCard => Get(nameof(SelfService_TakeCard_Status_PrintingCard));
+    public static string SelfService_TakeCard_Status_PickupInstruction => Get(nameof(SelfService_TakeCard_Status_PickupInstruction));
+    public static string SelfService_TakeCard_Status_Timeout => Get(nameof(SelfService_TakeCard_Status_Timeout));
+    public static string SelfService_TakeCard_Status_OperationFailed => Get(nameof(SelfService_TakeCard_Status_OperationFailed));
+    public static string SelfService_TakeCard_Status_CardReturned => Get(nameof(SelfService_TakeCard_Status_CardReturned));
+    public static string SelfService_TakeCard_Status_Timeout_Discard => Get(nameof(SelfService_TakeCard_Status_Timeout_Discard));
     public static string SelfService_ReportLoss_Title_Normal => Get(nameof(SelfService_ReportLoss_Title_Normal));
     public static string SelfService_ReportLoss_Title_Invalid => Get(nameof(SelfService_ReportLoss_Title_Invalid));
     public static string SelfService_ReportLoss_Button_Action => Get(nameof(SelfService_ReportLoss_Button_Action));

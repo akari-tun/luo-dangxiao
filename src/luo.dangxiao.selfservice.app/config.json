@@ -9,6 +9,6 @@
     "DefaultPrinterId": "virtual-printer-001"
   },
   "CountdownSeconds": 60,
-  "TenantId": "",
+  "TenantId": "25",
   "ServiceType": "StudentSelfService"
 }

@@ -62,7 +62,8 @@ public sealed class YktUserInfoMapper : IYktUserInfoMapper
                 : ReadDateTime(userBase, "userExpiryDate", "expiryDate"),
             PhoneNumber = ReadString(userBase, ReadString(root, string.Empty, "phone", "mobile"), "mobilePhone", "mobile", "phone", "userNumb"),
             PhotoUrl = ReadString(userBase, ReadString(root, string.Empty, "photoUrl", "avatar"), "photoUrl", "avatar"),
-            UserBags = ReadUserBags(root)
+            UserBags = ReadUserBags(root),
+            UserCards = ReadUserCards(root)
         };
     }
 
@@ -70,6 +71,7 @@ public sealed class YktUserInfoMapper : IYktUserInfoMapper
     {
         var userBase = GetNestedObjectOrDefault(root, "userBase");
         var hasUserCard = TryGetUserCard(root, out var userCard);
+        var userClass = GetNestedObjectOrDefault(root, "userClass");
 
         return new StudentUserInfoIntermediateDto
         {
@@ -80,11 +82,11 @@ public sealed class YktUserInfoMapper : IYktUserInfoMapper
             Name = ReadString(userBase, ReadString(root, "测试学员", "name", "traineeName", "studentName", "xm"), "userXm", "name", "xm"),
             IdCardNumber = ReadString(userBase, identity, "idNumber"),
             GenderRaw = ReadString(userBase, ReadString(root, string.Empty, "gender", "sex"), "userSexName", "userSex", "gender", "sex"),
-            ClassName = ReadString(userBase, ReadString(root, string.Empty, "className", "trainingClassName", "classNm"), "collegeName", "className", "trainingClassName"),
-            CheckInStartTime = ReadDateTime(root, "checkInStartTime", "checkinStartTime", "inStartTime"),
-            CheckInEndTime = ReadDateTime(root, "checkInEndTime", "checkinEndTime", "inEndTime"),
-            TrainingStartDate = ReadDateTime(root, "trainingStartDate", "startDate"),
-            TrainingEndDate = ReadDateTime(root, "trainingEndDate", "endDate"),
+            ClassName = ReadString(userBase, ReadString(root, string.Empty, "className", "trainingClassName", "classNm", "department", "deptName", "orgName"), "collegeName", "className", "trainingClassName"),
+            CheckInStartTime = ReadDateTime(root, "checkinDate", "checkInStartTime", "checkinStartTime", "inStartTime"),
+            CheckInEndTime = ReadDateTime(root, "checkoutDate", "checkInEndTime", "checkinEndTime", "inEndTime"),
+            TrainingStartDate = ReadDateTime(userClass, "beginDate", "startDate"),
+            TrainingEndDate = ReadDateTime(userClass, "endDate"),
             CardNumber = hasUserCard
                 ? ReadString(userCard, ReadString(root, string.Empty, "cardNumber", "cardNo"), "cardNo", "cardNumber")
                 : ReadString(root, string.Empty, "cardNumber", "cardNo"),
@@ -96,9 +98,49 @@ public sealed class YktUserInfoMapper : IYktUserInfoMapper
                 : ReadString(userBase, ReadString(root, string.Empty, "cardStatus", "status"), "stateName", "state", "cardStatus", "status"),
             RoomName = ReadString(root, string.Empty, "roomName", "roomNo", "roomNumber"),
             RoomNumber = ReadString(root, string.Empty, "roomNumber", "roomNo"),
+            RoomCode = ReadString(root, string.Empty, "roomCode"),
+            DeptId = ReadString(root, string.Empty, "deptId"),
             CheckInStatusRaw = ReadString(root, string.Empty, "checkInStatus", "checkinState"),
-            PhotoUrl = ReadString(userBase, ReadString(root, string.Empty, "photoUrl", "avatar"), "photoUrl", "avatar")
+            PhotoUrl = ReadString(userBase, ReadString(root, string.Empty, "photoUrl", "avatar"), "photoUrl", "avatar"),
+            UserCards = ReadUserCards(root)
         };
+    }
+
+    private static List<UserCardIntermediateDto> ReadUserCards(JsonElement element)
+    {
+        var result = new List<UserCardIntermediateDto>();
+
+        if (!TryGetPropertyIgnoreCase(element, "userCards", out var userCards) || userCards.ValueKind != JsonValueKind.Array)
+        {
+            return result;
+        }
+
+        foreach (var card in userCards.EnumerateArray())
+        {
+            if (card.ValueKind != JsonValueKind.Object)
+            {
+                continue;
+            }
+
+            result.Add(new UserCardIntermediateDto
+            {
+                CardId = ReadString(card, string.Empty, "cardId"),
+                CardNo = ReadString(card, string.Empty, "cardNo"),
+                FactoryFixId = ReadString(card, string.Empty, "factoryFixId"),
+                CardStatusName = ReadString(card, string.Empty, "cardStatusName"),
+                CardStatusId = ReadInt(card, 0, "cardStatusId"),
+                CardTypeName = ReadString(card, string.Empty, "cardTypeName"),
+                ExpiryDate = ReadDateTime(card, "expiryDate"),
+                StatusChangeTime = ReadDateTime(card, "statusChangeTime"),
+                MainDeputyType = ReadInt(card, 0, "mainDeputyType"),
+                MainDeputyTypeName = ReadString(card, string.Empty, "mainDeputyTypeName"),
+                TenantId = ReadString(card, string.Empty, "tenantId"),
+                Deposit = ReadDecimal(card, "deposit"),
+                IssueFee = ReadDecimal(card, "issueFee")
+            });
+        }
+
+        return result;
     }
 
     private static List<StaffUserBagIntermediateDto> ReadUserBags(JsonElement element)
@@ -268,6 +310,30 @@ public sealed class YktUserInfoMapper : IYktUserInfoMapper
         }
 
         return null;
+    }
+
+    private static int ReadInt(JsonElement element, int defaultValue, params string[] propertyNames)
+    {
+        foreach (var propertyName in propertyNames)
+        {
+            if (!TryGetPropertyIgnoreCase(element, propertyName, out var property))
+            {
+                continue;
+            }
+
+            if (property.ValueKind == JsonValueKind.Number && property.TryGetInt32(out var number))
+            {
+                return number;
+            }
+
+            if (property.ValueKind == JsonValueKind.String
+                && int.TryParse(property.GetString(), NumberStyles.Any, CultureInfo.InvariantCulture, out var parsed))
+            {
+                return parsed;
+            }
+        }
+
+        return defaultValue;
     }
 
     private static bool TryGetPropertyIgnoreCase(JsonElement element, string propertyName, out JsonElement value)

@@ -89,10 +89,10 @@ public class ReplacementPageViewModel : ViewModelBase
 
     public string PageTitle => UserInfo switch
     {
-        StudentInfoModel { CardStatus: StudentCardStatus.Normal } => "您当前的卡片为正常状态，请挂失后再补卡。",
-        StaffInfoModel { CardStatus: StaffCardStatus.Normal } => "您当前的卡片为正常状态，请挂失后再补卡。",
-        StudentInfoModel { CardStatus: StudentCardStatus.Lost } => "确认信息后，点击[补卡]按钮进行补卡。",
-        StaffInfoModel { CardStatus: StaffCardStatus.Lost } => "确认信息后，点击[补卡]按钮进行补卡。",
+        StudentInfoModel student when student.CurrentCard?.CardStatusId == (int)UserCardStatus.Normal => "您当前的卡片为正常状态，请挂失后再补卡。",
+        StaffInfoModel staff when staff.CurrentCard?.CardStatusId == (int)UserCardStatus.Normal => "您当前的卡片为正常状态，请挂失后再补卡。",
+        StudentInfoModel student when student.CurrentCard?.CardStatusId == (int)UserCardStatus.Lost => "确认信息后，点击[补卡]按钮进行补卡。",
+        StaffInfoModel staff when staff.CurrentCard?.CardStatusId == (int)UserCardStatus.Lost => "确认信息后，点击[补卡]按钮进行补卡。",
         _ => "您没有已挂失的卡片，无法进行补卡。"
     };
 
@@ -132,10 +132,10 @@ public class ReplacementPageViewModel : ViewModelBase
         switch (UserInfo)
         {
             case StudentInfoModel student:
-                student.CardStatus = StudentCardStatus.PendingPickup;
+                student.UserCards = [];
                 break;
             case StaffInfoModel staff:
-                staff.CardStatus = StaffCardStatus.PendingPickup;
+                staff.UserCards = [];
                 break;
         }
 
@@ -148,8 +148,8 @@ public class ReplacementPageViewModel : ViewModelBase
     {
         CanReplacementByStatus = data switch
         {
-            StudentInfoModel { CardStatus: StudentCardStatus.Lost } => true,
-            StaffInfoModel { CardStatus: StaffCardStatus.Lost } => true,
+            StudentInfoModel student when student.CurrentCard?.CardStatusId == (int)UserCardStatus.Lost => true,
+            StaffInfoModel staff when staff.CurrentCard?.CardStatusId == (int)UserCardStatus.Lost => true,
             _ => false
         };
     }
@@ -186,7 +186,15 @@ public class ReplacementPageViewModel : ViewModelBase
                     CardExpiryDate = DateTime.Today.AddYears(1),
                     ConsumptionBalance = 125.50m,
                     SubsidyBalance = 80m,
-                    CardStatus = StaffCardStatus.Normal
+                    UserCards =
+                    [
+                        new CardInfoModel
+                        {
+                            CardNo = "2020001001",
+                            CardStatusId = (int)UserCardStatus.Normal,
+                            CardStatusName = "正常"
+                        }
+                    ]
                 },
                 Mode = StaffInfoDisplayMode.Standard
             });
@@ -215,7 +223,15 @@ public class ReplacementPageViewModel : ViewModelBase
                     CheckInEndTime = DateTime.Today.AddDays(5),
                     TrainingStartDate = DateTime.Today,
                     TrainingEndDate = DateTime.Today.AddDays(5),
-                    CardStatus = StudentCardStatus.Normal
+                    UserCards =
+                    [
+                        new CardInfoModel
+                        {
+                            CardNo = "20200901001",
+                            CardStatusId = (int)UserCardStatus.Normal,
+                            CardStatusName = "正常"
+                        }
+                    ]
                 },
                 Mode = StudentInfoDisplayMode.Standard
             });

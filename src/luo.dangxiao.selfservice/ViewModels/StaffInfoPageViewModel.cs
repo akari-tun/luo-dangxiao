@@ -49,7 +49,15 @@ public partial class StaffInfoPageViewModel : ViewModelBase, IPageViewModel
         EmployeeNumber = "T2020001",
         CardType = "教职工卡",
         CardNumber = "2020001001",
-        CardStatus = StaffCardStatus.Normal,
+        UserCards =
+        [
+            new CardInfoModel
+            {
+                CardNo = "2020001001",
+                CardStatusId = (int)UserCardStatus.Normal,
+                CardStatusName = "正常"
+            }
+        ],
         ConsumptionBalance = 125.50m,
         SubsidyBalance = 80.00m,
         CardBalance = 125.50m,
@@ -83,23 +91,45 @@ public partial class StaffInfoPageViewModel : ViewModelBase, IPageViewModel
 
     public bool ShowCardInfo => !string.IsNullOrWhiteSpace(StaffInfo.CardNumber);
 
-    public string CardStatusText => StaffInfo.CardStatus switch
+    public string CardStatusText
     {
-        StaffCardStatus.Normal => "正常",
-        StaffCardStatus.PendingPickup => "待领取",
-        StaffCardStatus.Lost => "已挂失",
-        StaffCardStatus.Frozen => "已冻结",
-        _ => "未知"
-    };
+        get
+        {
+            var currentCard = StaffInfo.CurrentCard;
+            if (currentCard is null)
+            {
+                return "待领取";
+            }
 
-    public IBrush CardStatusBrush => StaffInfo.CardStatus switch
+            return currentCard.CardStatusId switch
+            {
+                (int)UserCardStatus.Normal => "正常",
+                (int)UserCardStatus.Lost => "已挂失",
+                (int)UserCardStatus.Unissued => "未制卡",
+                _ => "未知"
+            };
+        }
+    }
+
+    public IBrush CardStatusBrush
     {
-        StaffCardStatus.Normal => Brush.Parse("#4CAF50"),
-        StaffCardStatus.PendingPickup => Brush.Parse("#ff6000"),
-        StaffCardStatus.Lost => Brush.Parse("#d9230b"),
-        StaffCardStatus.Frozen => Brush.Parse("#d9230b"),
-        _ => Brush.Parse("#70706d")
-    };
+        get
+        {
+            var currentCard = StaffInfo.CurrentCard;
+            if (currentCard is null)
+            {
+                return Brush.Parse("#ff6000");
+            }
+
+            return currentCard.CardStatusId switch
+            {
+                (int)UserCardStatus.Normal => Brush.Parse("#4CAF50"),
+                (int)UserCardStatus.Lost => Brush.Parse("#d9230b"),
+                (int)UserCardStatus.Unissued => Brush.Parse("#70706d"),
+                _ => Brush.Parse("#70706d")
+            };
+        }
+    }
 
     public string CardIssueDateText => StaffInfo.CardIssueDate?.ToString("yyyy-MM-dd") ?? "-";
 

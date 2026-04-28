@@ -32,7 +32,13 @@ public sealed class StudentUserInfoIntermediateDto
 
     public string RoomNumber { get; set; } = string.Empty;
 
+    public string RoomCode { get; set; } = string.Empty;
+
+    public string DeptId { get; set; } = string.Empty;
+
     public string CheckInStatusRaw { get; set; } = string.Empty;
 
     public string PhotoUrl { get; set; } = string.Empty;
+
+    public List<UserCardIntermediateDto> UserCards { get; set; } = [];
 }

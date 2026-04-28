@@ -39,6 +39,8 @@ public sealed class StaffUserInfoIntermediateDto
     public string PhotoUrl { get; set; } = string.Empty;
 
     public List<StaffUserBagIntermediateDto> UserBags { get; set; } = [];
+
+    public List<UserCardIntermediateDto> UserCards { get; set; } = [];
 }
 
 public sealed class StaffUserBagIntermediateDto
@@ -46,4 +48,33 @@ public sealed class StaffUserBagIntermediateDto
     public string BagCode { get; set; } = string.Empty;
 
     public decimal CardValue { get; set; }
+}
+
+public sealed class UserCardIntermediateDto
+{
+    public string CardId { get; set; } = string.Empty;
+
+    public string CardNo { get; set; } = string.Empty;
+
+    public string FactoryFixId { get; set; } = string.Empty;
+
+    public string CardStatusName { get; set; } = string.Empty;
+
+    public int CardStatusId { get; set; }
+
+    public string CardTypeName { get; set; } = string.Empty;
+
+    public DateTime? ExpiryDate { get; set; }
+
+    public DateTime? StatusChangeTime { get; set; }
+
+    public int MainDeputyType { get; set; }
+
+    public string MainDeputyTypeName { get; set; } = string.Empty;
+
+    public string TenantId { get; set; } = string.Empty;
+
+    public decimal Deposit { get; set; }
+
+    public decimal IssueFee { get; set; }
 }

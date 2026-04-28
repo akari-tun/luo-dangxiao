@@ -130,6 +130,7 @@
   </Folder>
   <Folder Name="/doc/WebApi/">
     <File Path="../doc/WebApi/GetTeacherByIdentity.json" />
+    <File Path="../doc/WebApi/GetTraineeByIdentity.json" />
   </Folder>
   <Folder Name="/解决方案项/">
     <File Path="AGENTS.md" />

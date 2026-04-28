@@ -1,6 +1,6 @@
 using luo.dangxiao.wabapi.Dtos.Requests;
 using luo.dangxiao.wabapi.Dtos.Responses;
-using System.Net.Http.Json;
+using System.Text;
 using System.Text.Json;
 
 namespace luo.dangxiao.wabapi.Clients
@@ -9,6 +9,7 @@ namespace luo.dangxiao.wabapi.Clients
     {
         private static readonly JsonSerializerOptions s_jsonOptions = new()
         {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             PropertyNameCaseInsensitive = true
         };
 
@@ -98,7 +99,11 @@ namespace luo.dangxiao.wabapi.Clients
         private async Task<TResponse> PostAsync<TRequest, TResponse>(string path, TRequest request, CancellationToken cancellationToken)
             where TResponse : class, new()
         {
-            using HttpResponseMessage response = await _httpClient.PostAsJsonAsync(path, request, s_jsonOptions, cancellationToken);
+            string requestJson = JsonSerializer.Serialize(request, s_jsonOptions);
+            System.Diagnostics.Debug.WriteLine($"[YktApiClient] POST {path} => {requestJson}");
+
+            using StringContent content = new(requestJson, System.Text.Encoding.UTF8, "application/json");
+            using HttpResponseMessage response = await _httpClient.PostAsync(path, content, cancellationToken);
             return await DeserializeResponseAsync<TResponse>(response, cancellationToken);
         }
 

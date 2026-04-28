@@ -25,5 +25,6 @@ public partial class CheckInPageView : UserControl, IPageView
         _viewModel = Ioc.Default.GetRequiredService<CheckInPageViewModel>();
         _viewModel.LoadDataCommand.Execute(parameter);
         DataContext = _viewModel;
+        DetachedFromVisualTree += (_, _) => _viewModel.Cleanup();
     }
 }

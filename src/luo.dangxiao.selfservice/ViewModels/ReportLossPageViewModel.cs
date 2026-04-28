@@ -247,12 +247,8 @@ public partial class ReportLossPageViewModel : ViewModelBase
 
     private void ResolveReportLossState(UserInfoModel? data)
     {
-        CanReportLossByStatus = data switch
-        {
-            StudentInfoModel { CardStatus: StudentCardStatus.Normal } => true,
-            StaffInfoModel { CardStatus: StaffCardStatus.Normal } => true,
-            _ => false
-        };
+        var currentCard = data?.CurrentCard;
+        CanReportLossByStatus = currentCard is not null && currentCard.CardStatusId == (int)UserCardStatus.Normal;
     }
 
     private void LoadUserInfoModule(UserInfoModel? data)
@@ -290,7 +286,22 @@ public partial class ReportLossPageViewModel : ViewModelBase
                     CardExpiryDate = DateTime.Today.AddYears(1),
                     ConsumptionBalance = 125.50m,
                     SubsidyBalance = 80m,
-                    CardStatus = StaffCardStatus.Normal
+                    CardNumber = "60001",
+                    FactoryFixId = "1348446620",
+                    UserId = "1624",
+                    UserCards =
+                    [
+                        new CardInfoModel
+                        {
+                            CardId = "1501",
+                            CardNo = "60001",
+                            FactoryFixId = "1348446620",
+                            CardStatusName = "正常",
+                            CardStatusId = (int)UserCardStatus.Normal,
+                            CardTypeName = "教职工卡",
+                            TenantId = "25"
+                        }
+                    ]
                 },
                 Mode = StaffInfoDisplayMode.Standard
             });
@@ -321,7 +332,22 @@ public partial class ReportLossPageViewModel : ViewModelBase
                     CheckInEndTime = DateTime.Today.AddDays(5),
                     TrainingStartDate = DateTime.Today,
                     TrainingEndDate = DateTime.Today.AddDays(5),
-                    CardStatus = StudentCardStatus.Normal
+                    CardNumber = "40001",
+                    FactoryFixId = "1348446620",
+                    UserId = "1955939983117803521",
+                    UserCards =
+                    [
+                        new CardInfoModel
+                        {
+                            CardId = "1955939986590687233",
+                            CardNo = "40001",
+                            FactoryFixId = "1348446620",
+                            CardStatusName = "正常",
+                            CardStatusId = (int)UserCardStatus.Normal,
+                            CardTypeName = "主体班学员卡",
+                            TenantId = "25"
+                        }
+                    ]
                 },
                 Mode = StudentInfoDisplayMode.Standard
             });
@@ -447,14 +473,11 @@ public partial class ReportLossPageViewModel : ViewModelBase
 
     private void UpdateCardStatusToLost(UserInfoModel userInfo)
     {
-        switch (userInfo)
+        var currentCard = userInfo.CurrentCard;
+        if (currentCard is not null)
         {
-            case StudentInfoModel student:
-                student.CardStatus = StudentCardStatus.Lost;
-                break;
-            case StaffInfoModel staff:
-                staff.CardStatus = StaffCardStatus.Lost;
-                break;
+            currentCard.CardStatusId = (int)UserCardStatus.Lost;
+            currentCard.CardStatusName = "挂失";
         }
     }
 

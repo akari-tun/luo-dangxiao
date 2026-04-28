@@ -34,7 +34,7 @@
                                    VerticalAlignment="Center"/>
                     </StackPanel>
                     <TextBlock FontFamily="SimHei"
-                               FontSize="40"
+                               FontSize="45"
                                Foreground="{StaticResource PrimaryRedBrush}"
                                Text="{ReflectionBinding CountdownDisplay}"
                                IsVisible="{ReflectionBinding IsCountdownVisible}"
