@@ -18,18 +18,21 @@
         <Image Grid.Row="0" Source="avares://luo.dangxiao.resources/Images/bg.png" Stretch="Fill"/>
 
         <Border Grid.Row="0" Margin="45,30,45,30" CornerRadius="7">
-            <Grid RowDefinitions="48,430,*">
-                <StackPanel Grid.Row="0" Margin="32,0,0,0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Image Source="avares://luo.dangxiao.resources/Images/replacement.png"
-                           Width="48"
-                           Height="48"
-                           Margin="0,0,20,0"/>
-                    <TextBlock FontFamily="SimHei"
+            <Grid RowDefinitions="48,Auto,*">
+                <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Margin="32,0,32,0" VerticalAlignment="Center">
+                    <Image Grid.Column="0" Source="avares://luo.dangxiao.resources/Images/replacement.png"
+                           Width="48" Height="48" Margin="0,0,20,0"/>
+                    <TextBlock Grid.Column="1" FontFamily="SimHei" FontSize="45" Foreground="{StaticResource PrimaryRedBrush}"
+                               Text="{Binding PageTitle}" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="2"
+                               Margin="0,0,32,0"
+                               FontFamily="SimHei"
                                FontSize="45"
                                Foreground="{StaticResource PrimaryRedBrush}"
-                               Text="{Binding PageTitle}"
-                               VerticalAlignment="Center"/>
-                </StackPanel>
+                               Text="{Binding CountdownText}"
+                               VerticalAlignment="Center"
+                               IsVisible="{Binding IsCountdownVisible}"/>
+                </Grid>
 
                 <Border Grid.Row="1"
                         Margin="0,8,0,0"
@@ -39,6 +42,59 @@
                     <ContentControl HorizontalAlignment="Stretch"
                                     VerticalAlignment="Top"
                                     Content="{Binding UserInfoModuleContent}"/>
+                </Border>
+
+                <Border Grid.Row="2"
+                        Margin="45,0,45,0"
+                        Padding="26,20"
+                        Background="#F4F4EE"
+                        CornerRadius="8">
+                    <Grid>
+                        <StackPanel IsVisible="{Binding IsConfirmState}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Spacing="18">
+                            <TextBlock Text="{Binding PageTitle}" FontFamily="SimHei" FontSize="34" Foreground="{StaticResource PrimaryRedBrush}" HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel IsVisible="{Binding IsCardProcessingState}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Spacing="18">
+                            <TextBlock Text="补卡制卡中" FontFamily="SimHei" FontSize="36" FontWeight="Bold" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding OperationStepText}" FontFamily="SimHei" FontSize="30" HorizontalAlignment="Center"/>
+                            <TextBlock Text="请勿离开，补卡正在处理中"
+                                       FontFamily="SimHei"
+                                       FontSize="28"
+                                       Foreground="{StaticResource PrimaryRedDarkBrush}"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel IsVisible="{Binding IsCardReadyToPickupState}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Spacing="18">
+                            <TextBlock Text="补卡制作完成" FontFamily="SimHei" FontSize="36" FontWeight="Bold" HorizontalAlignment="Center"/>
+                            <TextBlock Text="↓↓↓↓↓↓" FontFamily="Arial" FontSize="56" Foreground="{StaticResource PrimaryRedDarkBrush}" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding PickupInstructionText}" FontFamily="SimHei" FontSize="34" HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel IsVisible="{Binding IsCompletedState}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Spacing="18">
+                            <TextBlock Text="补卡完成" FontFamily="SimHei" FontSize="36" FontWeight="Bold" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding PageTitle}" FontFamily="SimHei" FontSize="30" HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel IsVisible="{Binding IsOperationFailedState}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Spacing="18">
+                            <TextBlock Text="补卡失败" FontFamily="SimHei" FontSize="36" FontWeight="Bold" Foreground="{StaticResource PrimaryRedDarkBrush}" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding OperationStepText}" FontFamily="SimHei" FontSize="30" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
                 </Border>
             </Grid>
         </Border>
@@ -52,7 +108,8 @@
                     Width="322"
                     Height="95"
                     FontSize="40"
-                    HorizontalAlignment="Left">
+                    HorizontalAlignment="Left"
+                    IsVisible="{Binding IsConfirmState}">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Image Source="avares://luo.dangxiao.resources/Images/back_icon.png"
                            Width="48"
@@ -62,7 +119,7 @@
                 </StackPanel>
             </Button>
 
-            <Button Command="{Binding ReplacementCommand}"
+            <Button Command="{Binding ExecuteReplacementCommand}"
                     Width="322"
                     Height="95"
                     FontSize="40"
@@ -74,6 +131,36 @@
                            Height="48"
                            Margin="0,0,20,0"/>
                     <TextBlock Text="补卡"/>
+                </StackPanel>
+            </Button>
+
+            <Button Command="{Binding ConfirmPickupCommand}"
+                    Width="322"
+                    Height="95"
+                    FontSize="40"
+                    HorizontalAlignment="Right"
+                    IsVisible="{Binding IsCardReadyToPickupState}">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Image Source="avares://luo.dangxiao.resources/Images/check_in.png"
+                           Width="48"
+                           Height="48"
+                           Margin="0,0,20,0"/>
+                    <TextBlock Text="{x:Static lang:LanguageProvider.SelfService_TakeCard_Button_PickedUp}"/>
+                </StackPanel>
+            </Button>
+
+            <Button Command="{Binding CompleteCommand}"
+                    Width="322"
+                    Height="95"
+                    FontSize="40"
+                    HorizontalAlignment="Center"
+                    IsVisible="{Binding IsCompletedState}">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Image Source="avares://luo.dangxiao.resources/Images/next.png"
+                           Width="48"
+                           Height="48"
+                           Margin="0,0,20,0"/>
+                    <TextBlock Text="{x:Static lang:LanguageProvider.SelfService_TakeCard_Button_Complete}"/>
                 </StackPanel>
             </Button>
         </Grid>

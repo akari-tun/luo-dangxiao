@@ -84,15 +84,15 @@ namespace luo.dangxiao.printer.Virtual
             job.StartedAt = DateTime.Now;
 
             await MoveCardAsync(printerId, CardMoveCommand.MoveToPrepare);
-            await Task.Delay(50);
+            await Task.Delay(1000);
             await MoveCardAsync(printerId, CardMoveCommand.MoveToFront);
-            await Task.Delay(50);
+            await Task.Delay(1000);
 
             printer.Status = PrinterStatus.Printing;
             job.Status = JobStatus.Printing;
             _positions[printerId] = CardPositionState.PrintStation;
 
-            await Task.Delay(100);
+            await Task.Delay(2000);
 
             printer.Status = PrinterStatus.Ready;
             job.Status = JobStatus.Completed;
@@ -162,7 +162,7 @@ namespace luo.dangxiao.printer.Virtual
                 _ => CardPositionState.Unknown
             };
 
-            return Task.FromResult(true);
+            return Task.Delay(1000).ContinueWith(p => true);
         }
 
         /// <inheritdoc />
@@ -173,7 +173,7 @@ namespace luo.dangxiao.printer.Virtual
 
             printer.Status = PrinterStatus.Ready;
             _positions[printerId] = CardPositionState.OutOfPrinter;
-            return Task.FromResult(true);
+            return Task.Delay(1000).ContinueWith(p => true);
         }
 
         /// <inheritdoc />

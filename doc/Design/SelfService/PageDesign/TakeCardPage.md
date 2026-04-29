@@ -134,16 +134,16 @@ HomePage 点击"自助取卡"
 | `IYktApiClient?` | YKT API 客户端（可选，未配置时使用模拟数据） |
 
 ## 八、代码落地
-- `TakeCardPageViewModel.cs`：新增状态驱动标题文案与按钮控制逻辑。
-- `TakeCardPageViewModel.cs`：按用户类型加载 `StaffInfoPageView` / `StudentInfoPageView`。
-- `TakeCardPageViewModel.cs`：**新增**倒计时管理（自动返回/操作超时/取卡监控）。
-- `TakeCardPageViewModel.cs`：**新增**完整制卡流程（移动卡片→读卡→初始化→写卡→打印→出卡）。
+- `CardOperationViewModelBase.cs`：抽象基类，抽取取卡与补卡共享的倒计时管理、卡片处理管线、取卡监控等逻辑。
+- `TakeCardPageViewModel.cs`：继承 `CardOperationViewModelBase`，实现取卡特有逻辑（状态驱动标题文案、按钮控制、用户信息模块加载）。
 - `TakeCardPageView.axaml`：确认信息区改为模块化展示，并保留当前领卡状态区域。
 - `TakeCardPageView.axaml`：**新增**右上角倒计时显示（橙红色加粗文字）。
 - `TakeCardPageView.axaml`：**新增**制卡进度文字显示（`OperationStepText`）。
 - `TakeCardPageView.axaml`：**新增**`CardReadyToPickup` 状态 UI。
 
 ## 九、相关文档
+- [`ReplacementPage` 设计文档](./ReplacementPage.md)（共享同一卡片操作管线）
+- [`CardOperationViewModelBase` 抽象基类](../../../SelfService/card-operation.md)
 - [`config.json` 配置说明](../../../SelfService/config-readme.md)
 - [打印机模块设计文档](../../../SelfService/printer-design.md)
 - [YktApi 接口文档](../../Api/YktApi.md)

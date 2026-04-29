@@ -94,7 +94,6 @@
                                     VerticalAlignment="Center"
                                     Spacing="18">
                             <TextBlock Text="{Binding ProcessingTitleText}" Classes="panel-title" HorizontalAlignment="Center"/>
-                            <Image Source="avares://luo.dangxiao.resources/Images/take_card.png" Width="96" Height="96"/>
                             <TextBlock Text="{Binding OperationStepText}" FontFamily="SimHei" FontSize="30" HorizontalAlignment="Center"/>
                             <TextBlock Text="请勿离开，卡片正在制作中"
                                        FontFamily="SimHei"

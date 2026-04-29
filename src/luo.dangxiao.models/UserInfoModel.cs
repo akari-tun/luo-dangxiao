@@ -3,17 +3,6 @@ using luo.dangxiao.common.Enums;
 namespace luo.dangxiao.models;
 
 /// <summary>
-/// User card status.
-/// 1: Normal, 2: Lost, 3: Unissued.
-/// </summary>
-public enum UserCardStatus
-{
-    Normal = 1,
-    Lost = 2,
-    Unissued = 3
-}
-
-/// <summary>
 /// Base model for user information.
 /// </summary>
 public class UserInfoModel

@@ -58,6 +58,8 @@ public sealed class UserCardIntermediateDto
 
     public string FactoryFixId { get; set; } = string.Empty;
 
+    public string CardTypeId { get; set; } = string.Empty;
+
     public string CardStatusName { get; set; } = string.Empty;
 
     public int CardStatusId { get; set; }

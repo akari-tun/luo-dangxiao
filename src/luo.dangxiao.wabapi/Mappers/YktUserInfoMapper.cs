@@ -1,4 +1,4 @@
-using luo.dangxiao.common.Enums;
+﻿using luo.dangxiao.common.Enums;
 using luo.dangxiao.interfaces.Mappers;
 using luo.dangxiao.models;
 using luo.dangxiao.wabapi.Dtos.Responses;
@@ -127,6 +127,7 @@ public sealed class YktUserInfoMapper : IYktUserInfoMapper
                 CardId = ReadString(card, string.Empty, "cardId"),
                 CardNo = ReadString(card, string.Empty, "cardNo"),
                 FactoryFixId = ReadString(card, string.Empty, "factoryFixId"),
+                CardTypeId = ReadString(card, string.Empty, "cardTypeId"),
                 CardStatusName = ReadString(card, string.Empty, "cardStatusName"),
                 CardStatusId = ReadInt(card, 0, "cardStatusId"),
                 CardTypeName = ReadString(card, string.Empty, "cardTypeName"),
@@ -388,3 +389,5 @@ public sealed class YktUserInfoMapper : IYktUserInfoMapper
         return element;
     }
 }
+
+
