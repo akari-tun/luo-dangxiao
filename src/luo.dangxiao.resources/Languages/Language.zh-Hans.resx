@@ -453,4 +453,16 @@
   <data name="SelfService_Recharge_QRCode_ScanHint" xml:space="preserve">
     <value>请使用微信/支付宝扫描二维码</value>
   </data>
+  <data name="SelfService_Recharge_Countdown_Format" xml:space="preserve">
+    <value>{0}秒</value>
+  </data>
+  <data name="SelfService_Recharge_Status_GeneratingQrCode" xml:space="preserve">
+    <value>正在生成支付二维码，请稍候...</value>
+  </data>
+  <data name="SelfService_Recharge_Status_QrCodeGenerationFailed" xml:space="preserve">
+    <value>生成二维码失败：{0}</value>
+  </data>
+  <data name="SelfService_Recharge_Status_QrCodeGenerationFailed_Default" xml:space="preserve">
+    <value>生成二维码失败，请重试。</value>
+  </data>
 </root>

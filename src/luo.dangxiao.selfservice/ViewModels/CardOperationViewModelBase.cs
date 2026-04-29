@@ -214,7 +214,7 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
     #region Card Processing Pipeline
 
     /// <summary>
-    /// Orchestrates the full card lifecycle: move â†?read â†?init â†?write â†?print â†?output.
+    /// Orchestrates the full card lifecycle: move ï¿½?read ï¿½?init ï¿½?write ï¿½?print ï¿½?output.
     /// Subclasses call this from their start/replace button command.
     /// </summary>
     /// <param name="cardOperate">
@@ -362,32 +362,31 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
 
         if (YktApiClient == null)
         {
+            System.Diagnostics.Debug.WriteLine("[CardOperation] YktApiClient is not configured. Card initialization aborted.");
             result.Success = false;
-            result.ErrorMessage = "YktApiClient is not configured.";
-            System.Diagnostics.Debug.WriteLine($"[CardOperation] {result.ErrorMessage}");
+            result.ErrorMessage = "YKT API service is not available.";
             return result;
         }
 
-        var currentCard = UserInfoData?.CurrentCard;
-        var userId = ResolveUserId(UserInfoData);
-        var expiryDate = currentCard?.ExpiryDate?.ToString("yyyy-MM-dd HH:mm:ss")
-            ?? DateTime.Today.AddYears(1).ToString("yyyy-MM-dd HH:mm:ss");
+        var userInfo = UserInfoData ?? throw new InvalidOperationException("UserInfo is not set.");
+        var currentCard = userInfo.CurrentCard;
+        var tenantId = string.IsNullOrWhiteSpace(currentCard?.TenantId) ? Config.TenantId : currentCard.TenantId;
 
         var request = new CardInitRequestDto
         {
-            CardId = Guid.NewGuid().ToString("N"),
-            UserId = userId,
-            CardTypeId = ResolveCardTypeId(currentCard),
-            ExpiryDate = expiryDate,
+            CardId = string.Empty,
+            UserId = userInfo.Id,
+            CardTypeId = GetCardTypeId(currentCard),
+            ExpiryDate = GetExpiryDate(currentCard, userInfo),
             FactoryFixId = physicalCardId,
-            MainDeputyType = (currentCard?.MainDeputyType ?? 1).ToString(),
-            CardNo = ResolveCardNo(currentCard),
+            MainDeputyType = GetMainDeputyType(currentCard),
+            CardNo = string.Empty,
             CardOperate = cardOperate,
             WorkStationNumb = PrinterId,
-            TenantId = string.IsNullOrWhiteSpace(currentCard?.TenantId) ? Config.TenantId : currentCard.TenantId,
-            OldCardNo = currentCard?.CardNo,
-            OldFactoryFixId = currentCard?.FactoryFixId,
-            OldCardId = currentCard?.CardId
+            TenantId = tenantId,
+            OldCardNo = cardOperate == "æ¢å¡" ? currentCard?.CardNo : null,
+            OldFactoryFixId = cardOperate == "æ¢å¡" ? currentCard?.FactoryFixId : null,
+            OldCardId = cardOperate == "æ¢å¡" ? currentCard?.CardId : null
         };
 
         try
@@ -396,16 +395,23 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
             result.Success = response.Code == 200 || response.Code == null;
             result.ErrorMessage = response.Message;
 
-            result.CardId = request.CardId;
-            result.CardNo = request.CardNo;
-            result.UserId = request.UserId;
-            result.ExpiryDate = request.ExpiryDate;
-            result.FactoryFixId = request.FactoryFixId;
-            result.MainDeputyType = request.MainDeputyType;
-            result.CardTypeId = request.CardTypeId;
+            if (response.Data.HasValue)
+            {
+                var data = response.Data.Value;
+                if (data.TryGetProperty("cardId", out var cardIdEl)) result.CardId = cardIdEl.GetString() ?? string.Empty;
+                if (data.TryGetProperty("cardNo", out var cardNoEl)) result.CardNo = cardNoEl.GetString() ?? string.Empty;
+                if (data.TryGetProperty("userId", out var userIdEl)) result.UserId = userIdEl.GetString() ?? string.Empty;
+                if (data.TryGetProperty("cardTypeId", out var cTypeId)) result.CardTypeId = cTypeId.GetString() ?? string.Empty;
+                if (data.TryGetProperty("expiryDate", out var expEl)) result.ExpiryDate = expEl.GetString() ?? string.Empty;
+                if (data.TryGetProperty("factoryFixId", out var fixEl)) result.FactoryFixId = fixEl.GetString() ?? string.Empty;
+                if (data.TryGetProperty("mainDeputyType", out var mdtEl)) result.MainDeputyType = mdtEl.GetString() ?? "1";
+                if (data.TryGetProperty("tenantId", out var tenantEl)) result.TenantId = tenantEl.GetString() ?? tenantId;
+                if (data.TryGetProperty("cardOperate", out var opEl)) result.CardOperate = opEl.GetString() ?? cardOperate;
+                if (data.TryGetProperty("workStationNumb", out var wsEl)) result.WorkStationNumb = wsEl.GetString() ?? PrinterId;
+            }
+
             result.CardOperate = request.CardOperate;
             result.WorkStationNumb = request.WorkStationNumb;
-            result.TenantId = request.TenantId;
         }
         catch (Exception ex)
         {
@@ -415,6 +421,27 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
 
         return result;
     }
+
+    private static string GetCardTypeId(CardInfoModel? currentCard) =>
+        string.IsNullOrWhiteSpace(currentCard?.CardTypeId) ? "1" : currentCard.CardTypeId;
+
+    private static string GetExpiryDate(CardInfoModel? currentCard, UserInfoModel userInfo)
+    {
+        var date = currentCard?.ExpiryDate;
+        if (!date.HasValue)
+        {
+            date = userInfo switch
+            {
+                StaffInfoModel staff => staff.CardExpiryDate,
+                StudentInfoModel student => student.TrainingEndDate,
+                _ => null
+            };
+        }
+        return date?.ToString("yyyy-MM-dd HH:mm:ss") ?? DateTime.Today.AddYears(1).ToString("yyyy-MM-dd HH:mm:ss");
+    }
+
+    private static string GetMainDeputyType(CardInfoModel? currentCard) =>
+        (currentCard?.MainDeputyType ?? 1).ToString();
 
     private async Task<CardWriteResult> WriteCardAsync(CardInitResult initResult)
     {

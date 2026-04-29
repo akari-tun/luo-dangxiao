@@ -63,20 +63,30 @@
         <Border Grid.Row="0" Margin="45,30,45,30"
                 CornerRadius="7">
 		    <Grid RowDefinitions="48,*">
-                    <StackPanel Grid.Row="0" Margin="32,0,0,0" Orientation="Horizontal" VerticalAlignment="Center">
-                        <Image Source="avares://luo.dangxiao.resources/Images/payment.png"
-                               Width="48"
-                               Height="48"
-                               Margin="0,0,20,0"/>
-                        <TextBlock FontFamily="SimHei"
+                    <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                        <StackPanel Grid.Column="0" Margin="32,0,0,0" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Image Source="avares://luo.dangxiao.resources/Images/payment.png"
+                                   Width="48"
+                                   Height="48"
+                                   Margin="0,0,20,0"/>
+                            <TextBlock FontFamily="SimHei"
+                                       FontSize="45"
+                                       Foreground="{StaticResource PrimaryRedBrush}"
+                                       Text="{Binding PageTitle}"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <TextBlock Grid.Column="1"
+                                   Margin="0,0,32,0"
+                                   FontFamily="SimHei"
                                    FontSize="45"
                                    Foreground="{StaticResource PrimaryRedBrush}"
-                                   Text="{Binding PageTitle}"
-                                   VerticalAlignment="Center"/>
-                    </StackPanel>
+                                   Text="{Binding CountdownDisplay}"
+                                   VerticalAlignment="Center"
+                                   IsVisible="{Binding IsCountdownVisible}"/>
+                    </Grid>
 
                     <!-- Confirm State -->
-                    <Grid Grid.Row="1" IsVisible="{Binding IsConfirmState}" RowDefinitions="Auto,96,*">
+                    <Grid Grid.Row="1" IsVisible="{Binding IsConfirmState}" RowDefinitions="Auto,Auto,*">
                         <Border Grid.Row="0"
                                 Margin="0,8,0,0"
                                 HorizontalAlignment="Stretch"
@@ -89,9 +99,23 @@
                         </Border>
 
                         <Border Grid.Row="1"
+                                Margin="32,20,32,20"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Top"
+                                IsVisible="{ReflectionBinding IsOperationStatusVisible}">
+                            <TextBlock FontFamily="SimHei"
+                                       FontSize="36"
+                                       Foreground="{StaticResource PrimaryRedBrush}"
+                                       Text="{ReflectionBinding OperationStatusText}"
+                                       TextWrapping="Wrap"
+                                       TextAlignment="Center"/>
+                        </Border>
+
+                        <Border Grid.Row="2"
                                 Padding="30,0,30,0"
                                 CornerRadius="7"
-                                VerticalAlignment="Top">
+                                VerticalAlignment="Top"
+                                IsVisible="{Binding IsAmountSelectionVisible}">
                             <StackPanel Spacing="18" VerticalAlignment="Center">
                                 <StackPanel Orientation="Horizontal" Spacing="12">
                                     <Border Width="8" Height="32" Background="{StaticResource PrimaryRedDarkBrush}" CornerRadius="4"/>

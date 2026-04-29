@@ -105,4 +105,8 @@ public static class LanguageProvider
     public static string SelfService_Recharge_Status_PendingPayment => Get(nameof(SelfService_Recharge_Status_PendingPayment));
     public static string SelfService_Recharge_QRCode_Instruction => Get(nameof(SelfService_Recharge_QRCode_Instruction));
     public static string SelfService_Recharge_QRCode_ScanHint => Get(nameof(SelfService_Recharge_QRCode_ScanHint));
+    public static string SelfService_Recharge_Countdown_Format => Get(nameof(SelfService_Recharge_Countdown_Format));
+    public static string SelfService_Recharge_Status_GeneratingQrCode => Get(nameof(SelfService_Recharge_Status_GeneratingQrCode));
+    public static string SelfService_Recharge_Status_QrCodeGenerationFailed => Get(nameof(SelfService_Recharge_Status_QrCodeGenerationFailed));
+    public static string SelfService_Recharge_Status_QrCodeGenerationFailed_Default => Get(nameof(SelfService_Recharge_Status_QrCodeGenerationFailed_Default));
 }

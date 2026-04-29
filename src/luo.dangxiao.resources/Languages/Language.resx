@@ -136,4 +136,8 @@
   <data name="SelfService_Recharge_Status_PendingPayment" xml:space="preserve"><value>Amount pending payment: ¥{0:0.##}</value></data>
   <data name="SelfService_Recharge_QRCode_Instruction" xml:space="preserve"><value>Please complete the payment on your phone and return to this device to confirm.</value></data>
   <data name="SelfService_Recharge_QRCode_ScanHint" xml:space="preserve"><value>Please use WeChat/Alipay to scan the QR code</value></data>
+  <data name="SelfService_Recharge_Countdown_Format" xml:space="preserve"><value>{0}s</value></data>
+  <data name="SelfService_Recharge_Status_GeneratingQrCode" xml:space="preserve"><value>Generating payment QR code, please wait...</value></data>
+  <data name="SelfService_Recharge_Status_QrCodeGenerationFailed" xml:space="preserve"><value>Failed to generate QR code: {0}</value></data>
+  <data name="SelfService_Recharge_Status_QrCodeGenerationFailed_Default" xml:space="preserve"><value>Failed to generate QR code, please try again.</value></data>
 </root>
