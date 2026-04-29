@@ -134,7 +134,7 @@
     <File Path="../doc/WebApi/GetTraineeByIdentity.json" />
   </Folder>
   <Folder Name="/解决方案项/">
-    <File Path="AGENTS.md" />
+    <File Path="../AGENTS.md" />
   </Folder>
   <Project Path="D:/GitHub/luo-dangxiao/src/luo.dangxiao.cardcenter.app/luo.dangxiao.cardcenter.app.csproj" />
   <Project Path="D:/GitHub/luo-dangxiao/src/luo.dangxiao.cardcenter/luo.dangxiao.cardcenter.csproj" />
