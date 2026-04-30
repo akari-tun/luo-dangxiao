@@ -93,7 +93,7 @@ public partial class ReplacementPageViewModel : CardOperationViewModelBase
     }
 
     [RelayCommand(CanExecute = nameof(CanReplacement))]
-    private async Task ExecuteReplacementAsync() => await ExecuteCardProcessAsync("CHANGE");
+    private async Task ExecuteReplacementAsync() => await ExecuteCardProcessAsync("REISSUE");
 
     [RelayCommand]
     private void LoadData(ReplacementPageParameter parameter)

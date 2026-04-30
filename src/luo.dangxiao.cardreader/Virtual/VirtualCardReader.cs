@@ -24,7 +24,7 @@ public sealed class VirtualCardReader : CardReaderBase
             return false;
         }
 
-        factoryFixId = 1348446620;
+        factoryFixId = 1348446621;
         return true;
     }
 
@@ -49,7 +49,7 @@ public sealed class VirtualCardReader : CardReaderBase
             CardId = 40033,
             FactoryFixId = 1348446620,
             CardTypeId = (int)CardTypeEnum.UserCard,
-            UserNo = "VU-20260001",
+            UserNo = "20260001",
             ExpirDate = new DateTime(2027, 12, 31),
             ConsumeValue = _consumeBalance,
             WaterValue = _waterBalance,

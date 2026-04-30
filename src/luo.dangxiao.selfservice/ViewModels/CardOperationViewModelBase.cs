@@ -384,9 +384,9 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
             CardOperate = cardOperate,
             WorkStationNumb = Config.WorkStationNumb,
             TenantId = tenantId,
-            OldCardNo = cardOperate == "CHANGE" ? currentCard?.CardNo : string.Empty,
-            OldFactoryFixId = cardOperate == "CHANGE" ? currentCard?.FactoryFixId : string.Empty,
-            OldCardId = cardOperate == "CHANGE" ? currentCard?.CardId : string.Empty
+            OldCardNo = cardOperate == "REISSUE" ? currentCard?.CardNo : string.Empty,
+            OldFactoryFixId = cardOperate == "REISSUE" ? currentCard?.FactoryFixId : string.Empty,
+            OldCardId = cardOperate == "REISSUE" ? currentCard?.CardId : string.Empty
         };
 
         try
