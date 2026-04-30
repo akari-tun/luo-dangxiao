@@ -89,7 +89,7 @@ public partial class ReplacementPageViewModel : CardOperationViewModelBase
     }
 
     [RelayCommand(CanExecute = nameof(CanReplacement))]
-    private async Task ExecuteReplacementAsync() => await ExecuteCardProcessAsync("换卡");
+    private async Task ExecuteReplacementAsync() => await ExecuteCardProcessAsync("CHANGE");
 
     [RelayCommand]
     private void LoadData(ReplacementPageParameter parameter)
@@ -160,16 +160,14 @@ public partial class ReplacementPageViewModel : CardOperationViewModelBase
             {
                 Data = data as StaffInfoModel ?? new StaffInfoModel
                 {
-                    Id = data?.Id ?? "STF_TEST_001",
                     Name = data?.Name ?? "测试教职工",
                     UserType = data?.UserType ?? UserType.Staff,
                     IdCardNumber = data?.IdCardNumber ?? "430101198502031234",
-                    EmployeeNumber = "T2020001",
-                    CardType = "教职工卡",
-                    Department = "教务处",
+                    DeptId = "1001",
                     CardExpiryDate = DateTime.Today.AddYears(1),
                     ConsumptionBalance = 125.50m,
                     SubsidyBalance = 80m,
+                    UserId = "1624",
                     UserCards =
                     [
                         new CardInfoModel
@@ -195,7 +193,6 @@ public partial class ReplacementPageViewModel : CardOperationViewModelBase
             {
                 Data = data as StudentInfoModel ?? new StudentInfoModel
                 {
-                    Id = data?.Id ?? "STU_TEST_001",
                     Name = data?.Name ?? "测试学员",
                     UserType = data?.UserType ?? UserType.Student,
                     IdCardNumber = data?.IdCardNumber ?? "430101199001011234",
@@ -206,6 +203,7 @@ public partial class ReplacementPageViewModel : CardOperationViewModelBase
                     CheckInEndTime = DateTime.Today.AddDays(5),
                     TrainingStartDate = DateTime.Today,
                     TrainingEndDate = DateTime.Today.AddDays(5),
+                    UserId = "1955939983117803521",
                     UserCards =
                     [
                         new CardInfoModel

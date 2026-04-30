@@ -10,5 +10,6 @@
   },
   "CountdownSeconds": 60,
   "TenantId": "25",
-  "ServiceType": "StaffSelfService"
+  "WorkStationNumb": "71",
+  "ServiceType": "StudentSelfService"
 }

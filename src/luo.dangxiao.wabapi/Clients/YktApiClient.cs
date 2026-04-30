@@ -111,15 +111,24 @@ namespace luo.dangxiao.wabapi.Clients
             where TResponse : class, new()
         {
             string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
-            response.EnsureSuccessStatusCode();
-
+            
             if (string.IsNullOrWhiteSpace(responseContent))
             {
                 return new TResponse();
             }
 
-            TResponse? result = JsonSerializer.Deserialize<TResponse>(responseContent, s_jsonOptions);
-            return result ?? new TResponse();
+            try
+            {
+                TResponse? result = JsonSerializer.Deserialize<TResponse>(responseContent, s_jsonOptions);
+                if (result != null) return result;
+            }
+            catch
+            {
+                response.EnsureSuccessStatusCode();
+                throw;
+            }
+
+            return new TResponse();
         }
     }
 }

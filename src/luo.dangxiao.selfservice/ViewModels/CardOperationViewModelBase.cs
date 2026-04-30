@@ -246,8 +246,8 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
             if (await CheckCountdownExpiredAsync()) return;
             ResetCountdown();
             OperationStepText = LanguageProvider.SelfService_TakeCard_Status_ReadingCard;
-            var physicalCardId = await ReadCardAsync();
-            if (string.IsNullOrEmpty(physicalCardId))
+            var factoryFixId = await ReadCardAsync();
+            if (factoryFixId <= 0)
             {
                 await HandleOperationFailedAsync("Failed to read card information.");
                 return;
@@ -257,7 +257,7 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
             if (await CheckCountdownExpiredAsync()) return;
             ResetCountdown();
             OperationStepText = LanguageProvider.SelfService_TakeCard_Status_InitializingCard;
-            var initResult = await InitCardAsync(physicalCardId, cardOperate, opToken);
+            var initResult = await InitCardAsync(factoryFixId, cardOperate, opToken);
             if (!initResult.Success)
             {
                 await HandleOperationFailedAsync(initResult.ErrorMessage ?? "Card initialization failed.");
@@ -345,18 +345,16 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
         }
     }
 
-    private async Task<string> ReadCardAsync()
+    private async Task<uint> ReadCardAsync()
     {
-        var mockPhysicalCardId = string.IsNullOrEmpty(PrinterId)
-            ? $"PHYS-{DateTime.Now:yyyyMMddHHmmss}"
-            : $"PHYS-{PrinterId}-{DateTime.Now:yyyyMMddHHmmss}";
+        var mockPhysicalCardId = uint.Parse($"{DateTime.Now:MMddHHmmss}");
 
         System.Diagnostics.Debug.WriteLine($"[CardOperation] Simulated card read: {mockPhysicalCardId}");
         await Task.Delay(500);
         return mockPhysicalCardId;
     }
 
-    private async Task<CardInitResult> InitCardAsync(string physicalCardId, string cardOperate, CancellationToken ct)
+    private async Task<CardInitResult> InitCardAsync(uint factoryFixId, string cardOperate, CancellationToken ct)
     {
         var result = new CardInitResult();
 
@@ -375,39 +373,40 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
         var request = new CardInitRequestDto
         {
             CardId = string.Empty,
-            UserId = userInfo.Id,
-            CardTypeId = GetCardTypeId(currentCard),
+            UserId = ResolveUserId(userInfo),
+            CardTypeId = currentCard?.CardTypeId.ToString() ?? "1",
             ExpiryDate = GetExpiryDate(currentCard, userInfo),
-            FactoryFixId = physicalCardId,
-            MainDeputyType = GetMainDeputyType(currentCard),
+            FactoryFixId = factoryFixId.ToString(),
+            MainDeputyType = (currentCard?.MainDeputyType ?? 0).ToString(),
             CardNo = string.Empty,
             CardOperate = cardOperate,
-            WorkStationNumb = PrinterId,
+            WorkStationNumb = Config.WorkStationNumb,
             TenantId = tenantId,
-            OldCardNo = cardOperate == "换卡" ? currentCard?.CardNo : null,
-            OldFactoryFixId = cardOperate == "换卡" ? currentCard?.FactoryFixId : null,
-            OldCardId = cardOperate == "换卡" ? currentCard?.CardId : null
+            OldCardNo = cardOperate == "CHANGE" ? currentCard?.CardNo : string.Empty,
+            OldFactoryFixId = cardOperate == "CHANGE" ? currentCard?.FactoryFixId : string.Empty,
+            OldCardId = cardOperate == "CHANGE" ? currentCard?.CardId : string.Empty
         };
 
         try
         {
             var response = await YktApiClient.InitCardAsync(request, ct);
-            result.Success = response.Code == 200 || response.Code == null;
-            result.ErrorMessage = response.Message;
+            result.Success = IsApiSuccess(response);
+            result.ErrorMessage = FormatApiError(response.Message, "卡片初始化失败。");
 
             if (response.Data.HasValue)
             {
-                var data = response.Data.Value;
-                if (data.TryGetProperty("cardId", out var cardIdEl)) result.CardId = cardIdEl.GetString() ?? string.Empty;
-                if (data.TryGetProperty("cardNo", out var cardNoEl)) result.CardNo = cardNoEl.GetString() ?? string.Empty;
-                if (data.TryGetProperty("userId", out var userIdEl)) result.UserId = userIdEl.GetString() ?? string.Empty;
-                if (data.TryGetProperty("cardTypeId", out var cTypeId)) result.CardTypeId = cTypeId.GetString() ?? string.Empty;
-                if (data.TryGetProperty("expiryDate", out var expEl)) result.ExpiryDate = expEl.GetString() ?? string.Empty;
-                if (data.TryGetProperty("factoryFixId", out var fixEl)) result.FactoryFixId = fixEl.GetString() ?? string.Empty;
-                if (data.TryGetProperty("mainDeputyType", out var mdtEl)) result.MainDeputyType = mdtEl.GetString() ?? "1";
-                if (data.TryGetProperty("tenantId", out var tenantEl)) result.TenantId = tenantEl.GetString() ?? tenantId;
-                if (data.TryGetProperty("cardOperate", out var opEl)) result.CardOperate = opEl.GetString() ?? cardOperate;
-                if (data.TryGetProperty("workStationNumb", out var wsEl)) result.WorkStationNumb = wsEl.GetString() ?? PrinterId;
+                result.CardId = ExtractJsonString(response.Data, "cardId", "CardId") ?? string.Empty;
+                result.CardNo = ExtractJsonString(response.Data, "cardNo", "CardNo") ?? string.Empty;
+                result.UserId = ExtractJsonString(response.Data, "userId", "UserId") ?? string.Empty;
+                result.CardTypeId = ExtractJsonString(response.Data, "cardTypeId", "CardTypeId") ?? string.Empty;
+                result.ExpiryDate = ExtractJsonString(response.Data, "expiryDate", "ExpiryDate") ?? string.Empty;
+                result.FactoryFixId = ExtractJsonString(response.Data, "factoryFixId", "FactoryFixId") ?? string.Empty;
+                result.MainDeputyType = ExtractJsonString(response.Data, "mainDeputyType", "MainDeputyType") ?? "1";
+                result.TenantId = ExtractJsonString(response.Data, "tenantId", "TenantId") ?? tenantId;
+                var apiCardOperate = ExtractJsonString(response.Data, "cardOperate", "CardOperate");
+                var apiWorkStation = ExtractJsonString(response.Data, "workStationNumb", "WorkStationNumb");
+                result.CardOperate = apiCardOperate ?? request.CardOperate;
+                result.WorkStationNumb = apiWorkStation ?? PrinterId;
             }
 
             result.CardOperate = request.CardOperate;
@@ -421,9 +420,6 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
 
         return result;
     }
-
-    private static string GetCardTypeId(CardInfoModel? currentCard) =>
-        string.IsNullOrWhiteSpace(currentCard?.CardTypeId) ? "1" : currentCard.CardTypeId;
 
     private static string GetExpiryDate(CardInfoModel? currentCard, UserInfoModel userInfo)
     {
@@ -439,9 +435,6 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
         }
         return date?.ToString("yyyy-MM-dd HH:mm:ss") ?? DateTime.Today.AddYears(1).ToString("yyyy-MM-dd HH:mm:ss");
     }
-
-    private static string GetMainDeputyType(CardInfoModel? currentCard) =>
-        (currentCard?.MainDeputyType ?? 1).ToString();
 
     private async Task<CardWriteResult> WriteCardAsync(CardInitResult initResult)
     {
@@ -630,29 +623,8 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
         {
             StudentInfoModel student when !string.IsNullOrWhiteSpace(student.UserId) => student.UserId,
             StaffInfoModel staff when !string.IsNullOrWhiteSpace(staff.UserId) => staff.UserId,
-            _ => userInfo?.Id ?? string.Empty
+            _ => string.Empty
         };
-    }
-
-    private static string ResolveCardTypeId(CardInfoModel? currentCard)
-    {
-        if (currentCard is null)
-        {
-            return "1";
-        }
-
-        if (!string.IsNullOrWhiteSpace(currentCard.CardTypeId))
-        {
-            return currentCard.CardTypeId;
-        }
-
-        if (!string.IsNullOrWhiteSpace(currentCard.CardTypeName)
-            && int.TryParse(currentCard.CardTypeName, out _))
-        {
-            return currentCard.CardTypeName;
-        }
-
-        return "1";
     }
 
     private static string ResolveCardNo(CardInfoModel? currentCard)

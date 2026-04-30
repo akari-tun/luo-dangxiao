@@ -205,7 +205,7 @@ public partial class RechargePageViewModel : ViewModelBase
 
         SelectedAmount = amt;
 
-        var yktApiClient = Ioc.Default.GetService<IYktApiClient>();
+        var yktApiClient = GetYktApiClient();
 
         if (yktApiClient is null)
         {
@@ -233,7 +233,7 @@ public partial class RechargePageViewModel : ViewModelBase
         {
             var response = await yktApiClient.GetTeacherRechargeQrCodeAsync(request);
 
-            if (response.Code is not (null or 0 or 200))
+            if (!IsApiSuccess(response))
             {
                 ShowQrGenerationErrorAndRecover(response.Message);
                 return;
@@ -373,7 +373,7 @@ public partial class RechargePageViewModel : ViewModelBase
             return staff.UserId;
         }
 
-        return userInfo?.Id ?? string.Empty;
+        return string.Empty;
     }
 
     private void EnsureCountdownTimer()

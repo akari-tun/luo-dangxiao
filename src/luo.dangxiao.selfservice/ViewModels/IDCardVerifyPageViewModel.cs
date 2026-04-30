@@ -129,7 +129,7 @@ public partial class IDCardVerifyPageViewModel : ViewModelBase, IPageViewModel
     private static async Task<UserInfoModel> GetUserInfoByIdentityAsync(string identity)
     {
         var cfgData = Ioc.Default.GetRequiredService<SelfServiceConfig>();
-        var yktApiClient = Ioc.Default.GetService<IYktApiClient>()
+        var yktApiClient = GetYktApiClient()
             ?? throw new InvalidOperationException("未配置 YktApi 服务，请检查配置文件中的 YktApiConfig。");
         var mapper = Ioc.Default.GetService<IYktUserInfoMapper>()
             ?? throw new InvalidOperationException("未配置 Ykt 用户映射服务。");
@@ -153,17 +153,5 @@ public partial class IDCardVerifyPageViewModel : ViewModelBase, IPageViewModel
     {
         var bytes = Encoding.UTF8.GetBytes(identity);
         return Convert.ToBase64String(bytes);
-    }
-
-    private static void EnsureApiSuccess(int? code, string? message)
-    {
-        if (code is null or 0 or 200)
-        {
-            return;
-        }
-
-        throw new InvalidOperationException(string.IsNullOrWhiteSpace(message)
-            ? "接口调用失败。"
-            : message);
     }
 }

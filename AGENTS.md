@@ -195,18 +195,227 @@ public partial class {ViewName}ViewModel : ViewModelBase
 
 ```csharp
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.Mvvm.Input;
+using luo.dangxiao.interfaces.ViewModels;
+using luo.dangxiao.resources.Languages;
+using luo.dangxiao.wabapi.Clients;
+using luo.dangxiao.wabapi.Dtos.Responses;
+using System.Text.Json;
 
-namespace luo.dangxiao.{module}.ViewModels;
-
-/// <summary>
-/// Base class for all ViewModels
-/// </summary>
-public abstract class ViewModelBase : ObservableObject
+namespace luo.dangxiao.{module}.ViewModels
 {
+    /// <summary>
+    /// Base class for all ViewModels providing shared navigation and YktApi calling helpers.
+    /// </summary>
+    public abstract partial class ViewModelBase : ObservableObject, IPageViewModel
+    {
+        #region Navigation
+
+        [RelayCommand]
+        protected virtual void Back()
+        {
+            Ioc.Default.GetRequiredService<HomePageViewModel>().ReturnHome();
+        }
+
+        #endregion
+
+        #region YktApi Helpers
+
+        /// <summary>
+        /// Gets the configured IYktApiClient from the DI container.
+        /// Returns null if the client is not registered.
+        /// </summary>
+        protected static IYktApiClient? GetYktApiClient()
+        {
+            return Ioc.Default.GetService<IYktApiClient>();
+        }
+
+        /// <summary>
+        /// Determines whether an API response code indicates success.
+        /// </summary>
+        protected static bool IsApiSuccess(int? code)
+        {
+            return code is null or 0 or 200;
+        }
+
+        /// <summary>
+        /// Determines whether an API response indicates success using both Success and Code fields.
+        /// A response is successful when Success is true, OR Code is null/0/200.
+        /// </summary>
+        protected static bool IsApiSuccess<TData>(ApiResponseDto<TData> response)
+        {
+            return response.Success == true || IsApiSuccess(response.Code);
+        }
+
+        /// <summary>
+        /// Validates an API response and throws InvalidOperationException on failure.
+        /// </summary>
+        protected static void EnsureApiSuccess(int? code, string? message, string? fallbackResourceKey = null)
+        {
+            if (IsApiSuccess(code))
+            {
+                return;
+            }
+
+            var errorMsg = string.IsNullOrWhiteSpace(message)
+                ? LanguageProvider.GetLocalizedText(fallbackResourceKey ?? "Msg_Error")
+                : message;
+            throw new InvalidOperationException(errorMsg);
+        }
+
+        /// <summary>
+        /// Validates an API response and throws InvalidOperationException on failure.
+        /// </summary>
+        protected static void EnsureApiSuccess<TData>(ApiResponseDto<TData> response, string? fallbackResourceKey = null)
+        {
+            if (IsApiSuccess(response))
+            {
+                return;
+            }
+
+            var errorMsg = string.IsNullOrWhiteSpace(response.Message)
+                ? LanguageProvider.GetLocalizedText(fallbackResourceKey ?? "Msg_Error")
+                : response.Message;
+            throw new InvalidOperationException(errorMsg);
+        }
+
+        /// <summary>
+        /// Extracts a string property value from a JsonElement by trying field names in order.
+        /// </summary>
+        protected static string? ExtractJsonString(JsonElement? data, params string[] fieldNames)
+        {
+            if (!data.HasValue || data.Value.ValueKind != JsonValueKind.Object)
+            {
+                return null;
+            }
+
+            foreach (var name in fieldNames)
+            {
+                if (data.Value.TryGetProperty(name, out var prop) && prop.ValueKind == JsonValueKind.String)
+                {
+                    return prop.GetString();
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Formats an API error message for user-friendly UI display.
+        /// Returns the localized fallback message if apiMessage is empty.
+        /// </summary>
+        protected static string FormatApiError(string? apiMessage, string localizedFallback)
+        {
+            return string.IsNullOrWhiteSpace(apiMessage)
+                ? localizedFallback
+                : apiMessage;
+        }
+
+        #endregion
+    }
 }
 ```
 
-### 5.3 View Pattern (AXAML)
+**RULES:**
+- MUST be declared `abstract partial` (partial for CommunityToolkit source generators)
+- MUST inherit from `ObservableObject`
+- MUST provide `Back()` command for navigation
+- MUST provide YktApi helper methods (Section 5.3)
+
+### 5.3 YktApi Calling Convention
+
+All YktApi calls in ViewModels MUST use the base class helper methods from `ViewModelBase`.
+
+**Standard Pattern:**
+```csharp
+[RelayCommand]
+private async Task MyOperationAsync()
+{
+    // 1. Get client via base method
+    var yktApiClient = GetYktApiClient();
+    if (yktApiClient is null)
+    {
+        OperationStatusText = LanguageProvider.SelfService_Module_Status_Failed_ApiUnavailable;
+        return;
+    }
+
+    // 2. Build request
+    var request = new MyRequestDto { /* ... */ };
+
+    try
+    {
+        // 3. Call API
+        var response = await yktApiClient.MyMethodAsync(request);
+
+        // 4. Check success using base method (checks both Success and Code fields)
+        if (!IsApiSuccess(response))
+        {
+            // Display response.Message directly — it already contains the user-friendly error
+            OperationStatusText = FormatApiError(response.Message,
+                LanguageProvider.SelfService_Module_Status_Failed);
+            return;
+        }
+
+        // 5. Use response.Data...
+    }
+    catch (OperationCanceledException) when (_pageCleanupInProgress)
+    {
+        return;
+    }
+    catch (Exception ex)
+    {
+        OperationStatusText = string.Format(CultureInfo.CurrentUICulture,
+            LanguageProvider.SelfService_Module_Status_Failed_WithReason,
+            FormatApiError(ex.Message, LanguageProvider.SelfService_Module_Status_Failed));
+    }
+}
+```
+
+**EnsureApiSuccess Pattern** (for validation scenarios that throw):
+```csharp
+var response = await yktApiClient.GetTeacherByIdentityAsync(encodedIdentity);
+EnsureApiSuccess(response);
+// If success: continue. If failure: InvalidOperationException with response.Message is thrown.
+// The catch block should format ex.Message for UI display.
+```
+
+**ExtractJsonString Pattern** (for parsing JsonElement? responses):
+```csharp
+// Simple field name fallback
+var cardNo = ExtractJsonString(response.Data, "cardNo", "CardNo");
+
+// Multiple fields
+result.CardId = ExtractJsonString(response.Data, "cardId", "CardId") ?? string.Empty;
+result.UserId = ExtractJsonString(response.Data, "userId", "UserId") ?? string.Empty;
+```
+
+**FailResult.json Structure:**
+When the API returns an error (code != 200), the JSON structure is:
+```json
+{"success":false,"code":50001,"message":"物理卡号[1,348,446,620]和卡流水号[40,033]对应旧卡是正常卡片","data":null,"currentTime":1777455643169}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | `bool?` | `false` on failure, `true` on success |
+| `code` | `int?` | Business status code. `null`, `0`, or `200` = success; otherwise = error |
+| `message` | `string` | **User-facing error message** — display this directly in UI |
+| `data` | varies | `null` on failure; payload on success |
+| `currentTime` | `long?` | Server timestamp (milliseconds) |
+
+The `response.Code` is auto-deserialized to `Code`, `response.Message` to `Message`, etc. via camelCase JSON policy.
+
+**Error Message Display Rule:** The `message` field in the API response contains Chinese error text meant for end users. Always display it in the UI via `OperationStatusText`/`StatusMessage`/`ErrorMessage` bindings. Use `FormatApiError(response.Message, fallback)` to provide a localized fallback when the message is empty.
+
+**FORBIDDEN:**
+- MUST NOT use `Ioc.Default.GetService<IYktApiClient>()` directly — use `GetYktApiClient()`
+- MUST NOT use `response.Code is not (null or 0 or 200)` — use `!IsApiSuccess(response)` or `!IsApiSuccess(response.Code)`
+- MUST NOT inline duplicate `EnsureApiSuccess` implementations — use the base class method
+- MUST NOT discard `response.Message` — it contains the user-facing error text from the API
+- MUST NOT parse JSON with raw `TryGetProperty` loops — use `ExtractJsonString()`
+
+### 5.4 View Pattern (AXAML)
 
 ```xml
 <Window xmlns="https://github.com/avaloniaui"
@@ -234,7 +443,7 @@ public abstract class ViewModelBase : ObservableObject
 - MUST use `vm:` prefix for ViewModel namespaces
 - MUST set `mc:Ignorable="d"` for design-time attributes
 
-### 5.4 View Code-Behind
+### 5.5 View Code-Behind
 
 ```csharp
 using Avalonia.Controls;
@@ -253,7 +462,7 @@ public partial class {ViewName} : Window  // or UserControl
 }
 ```
 
-### 5.5 Application Entry Point (.app projects)
+### 5.6 Application Entry Point (.app projects)
 
 ```csharp
 using Avalonia;
@@ -278,7 +487,7 @@ internal sealed class Program
 }
 ```
 
-### 5.6 Application AXAML
+### 5.7 Application AXAML
 
 ```xml
 <Application xmlns="https://github.com/avaloniaui"
@@ -292,7 +501,7 @@ internal sealed class Program
 </Application>
 ```
 
-### 5.7 Utility Class Pattern (luo.dangxiao.common)
+### 5.8 Utility Class Pattern (luo.dangxiao.common)
 
 ```csharp
 namespace luo.dangxiao.common.Utils;
@@ -306,7 +515,7 @@ public static class {Name}Util
 }
 ```
 
-### 5.8 Enum Pattern (luo.dangxiao.common)
+### 5.9 Enum Pattern (luo.dangxiao.common)
 
 ```csharp
 using System.ComponentModel;
@@ -326,7 +535,7 @@ public enum {Name}
 }
 ```
 
-### 5.9 Converter Pattern (luo.dangxiao.common)
+### 5.10 Converter Pattern (luo.dangxiao.common)
 
 ```csharp
 using Avalonia.Data.Converters;
@@ -352,7 +561,7 @@ public class {Name}Converter : IValueConverter
 }
 ```
 
-### 5.10 Model Pattern (luo.dangxiao.models)
+### 5.11 Model Pattern (luo.dangxiao.models)
 
 ```csharp
 namespace luo.dangxiao.models;
@@ -387,7 +596,7 @@ public class {EntityName}
 - Include standard audit fields (Id, CreatedAt, ModifiedAt)
 - Use init-only setters for immutable properties
 
-### 5.11 Localization Pattern (luo.dangxiao.resources)
+### 5.12 Localization Pattern (luo.dangxiao.resources)
 
 **Resource File Structure:**
 ```
@@ -625,6 +834,10 @@ Optional but recommended:
 3. Use `[RelayCommand]` for commands
 4. Mark class as `partial`
 5. Place in `{module}/ViewModels/` folder
+6. Use base class `GetYktApiClient()` for API access (Section 5.3)
+7. Use base class `IsApiSuccess()` for response validation (Section 5.3)
+8. Use base class `EnsureApiSuccess()` for throw-on-failure scenarios
+9. Use base class `ExtractJsonString()` for JsonElement? parsing
 
 ### 9.3 When Generating Utilities
 1. Place in `luo.dangxiao.common/Utils/`
@@ -662,6 +875,10 @@ Before declaring code complete, verify:
 - [ ] Project references follow dependency rules (Section 6)
 - [ ] Namespaces match project names (Section 4.2)
 - [ ] ViewModels inherit from `ViewModelBase`
+- [ ] ViewModels use `GetYktApiClient()` for API calls (Section 5.3)
+- [ ] ViewModels use `IsApiSuccess()` for response validation (Section 5.3)
+- [ ] No inline `Ioc.Default.GetService<IYktApiClient>()` calls (Section 5.3 FORBIDDEN)
+- [ ] No duplicate `EnsureApiSuccess` implementations in derived ViewModels
 - [ ] ViewModels marked `partial`
 - [ ] AXAML files have `x:DataType` declared
 - [ ] Package versions match Section 1.1
@@ -727,6 +944,6 @@ Before declaring code complete, verify:
 
 ---
 
-*Last Updated: 2025-03-23*  
+*Last Updated: 2025-04-29*  
 *Maintainer: OpenCode Agent*  
-*Version: 1.1*
+*Version: 1.2*

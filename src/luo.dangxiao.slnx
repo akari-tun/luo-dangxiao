@@ -130,6 +130,7 @@
   </Folder>
   <Folder Name="/docs/WebApi/">
     <File Path="../docs/WebApi/CardService.cs" />
+    <File Path="../docs/WebApi/FailResult.json" />
     <File Path="../docs/WebApi/GetTeacherByIdentity.json" />
     <File Path="../docs/WebApi/GetTraineeByIdentity.json" />
   </Folder>

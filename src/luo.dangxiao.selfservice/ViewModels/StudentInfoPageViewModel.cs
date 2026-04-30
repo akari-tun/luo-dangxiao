@@ -39,17 +39,17 @@ public partial class StudentInfoPageViewModel : ViewModelBase, IPageViewModel
     [ObservableProperty]
     private StudentInfoModel _studentInfo = new()
     {
-        Id = "STU20260001",
         Name = "李天明",
         UserType = UserType.Student,
         Gender = "男",
         IdCardNumber = "430101199001011234",
         ClassName = "测试培训班一",
+        DeptId = "2001",
         CheckInStartTime = new DateTime(2020, 09, 01, 14, 0, 0),
         CheckInEndTime = new DateTime(2020, 09, 05, 12, 0, 0),
         TrainingStartDate = new DateTime(2020, 09, 01),
         TrainingEndDate = new DateTime(2020, 09, 05),
-        CardNumber = "20200901001",
+        UserId = "1955939983117803521",
         UserCards =
         [
             new CardInfoModel
@@ -87,7 +87,7 @@ public partial class StudentInfoPageViewModel : ViewModelBase, IPageViewModel
 
     public bool ShowCheckInStatus => CurrentMode != StudentInfoDisplayMode.WithPhoto;
 
-    public bool ShowCardInfo => !string.IsNullOrWhiteSpace(StudentInfo.CardNumber);
+    public bool ShowCardInfo => !string.IsNullOrWhiteSpace(StudentInfo.CurrentCard?.CardNo);
 
     public string RoomDisplay => string.IsNullOrWhiteSpace(StudentInfo.RoomName)
         ? StudentInfo.RoomNumber

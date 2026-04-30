@@ -96,7 +96,7 @@ public partial class TakeCardPageViewModel : CardOperationViewModelBase
     }
 
     [RelayCommand(CanExecute = nameof(CanStartTakeCard))]
-    private async Task StartTakeCardAsync() => await ExecuteCardProcessAsync("新卡");
+    private async Task StartTakeCardAsync() => await ExecuteCardProcessAsync("ISSUE");
 
     protected override void ConfirmPickup()
     {

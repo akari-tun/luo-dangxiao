@@ -152,7 +152,7 @@ public partial class ReportLossPageViewModel : ViewModelBase
         }
 
         var cfgData = Ioc.Default.GetRequiredService<SelfServiceConfig>();
-        var yktApiClient = Ioc.Default.GetService<IYktApiClient>();
+        var yktApiClient = GetYktApiClient();
 
         if (yktApiClient is null)
         {
@@ -276,19 +276,15 @@ public partial class ReportLossPageViewModel : ViewModelBase
             {
                 Data = data as StaffInfoModel ?? new StaffInfoModel
                 {
-                    Id = data?.Id ?? "STF_TEST_001",
                     Name = data?.Name ?? "测试教职工",
                     UserType = data?.UserType ?? UserType.Staff,
                     IdCardNumber = data?.IdCardNumber ?? "430101198502031234",
-                    EmployeeNumber = "T2020001",
-                    CardType = "教职工卡",
-                    Department = "教务处",
+                    DeptId = "1001",
                     CardExpiryDate = DateTime.Today.AddYears(1),
                     ConsumptionBalance = 125.50m,
                     SubsidyBalance = 80m,
-                    CardNumber = "60001",
-                    FactoryFixId = "1348446620",
                     UserId = "1624",
+                    PhoneNumber = "13800138001",
                     UserCards =
                     [
                         new CardInfoModel
@@ -321,7 +317,6 @@ public partial class ReportLossPageViewModel : ViewModelBase
             {
                 Data = data as StudentInfoModel ?? new StudentInfoModel
                 {
-                    Id = data?.Id ?? "STU_TEST_001",
                     Name = data?.Name ?? "测试学员",
                     UserType = data?.UserType ?? UserType.Student,
                     IdCardNumber = data?.IdCardNumber ?? "430101199001011234",
@@ -332,8 +327,6 @@ public partial class ReportLossPageViewModel : ViewModelBase
                     CheckInEndTime = DateTime.Today.AddDays(5),
                     TrainingStartDate = DateTime.Today,
                     TrainingEndDate = DateTime.Today.AddDays(5),
-                    CardNumber = "40001",
-                    FactoryFixId = "1348446620",
                     UserId = "1955939983117803521",
                     UserCards =
                     [
@@ -489,24 +482,7 @@ public partial class ReportLossPageViewModel : ViewModelBase
 
     private static string GetCardNumber(UserInfoModel userInfo)
     {
-        return userInfo switch
-        {
-            StudentInfoModel student => student.CardNumber,
-            StaffInfoModel staff => staff.CardNumber,
-            _ => string.Empty
-        };
-    }
-
-    private static void EnsureApiSuccess(int? code, string? message)
-    {
-        if (code is null or 0 or 200)
-        {
-            return;
-        }
-
-        throw new InvalidOperationException(string.IsNullOrWhiteSpace(message)
-            ? LanguageProvider.SelfService_ReportLoss_Status_Failed
-            : message);
+        return userInfo.CurrentCard?.CardNo ?? string.Empty;
     }
 
     private static int NormalizePositive(int value, int fallbackValue)
@@ -521,6 +497,7 @@ public partial class ReportLossPageViewModel : ViewModelBase
         out CardOperateRequestDto request,
         out string validationMessage)
     {
+        var currentCard = userInfo.CurrentCard;
         var missingItems = new List<string>();
 
         request = new CardOperateRequestDto();
@@ -530,60 +507,29 @@ public partial class ReportLossPageViewModel : ViewModelBase
             missingItems.Add($"{nameof(SelfServiceConfig)}.{nameof(SelfServiceConfig.TenantId)}");
         }
 
-        if (userInfo is not StaffInfoModel staffInfo)
+        if (string.IsNullOrWhiteSpace(currentCard?.FactoryFixId))
         {
-            if (userInfo is not StudentInfoModel studentInfo)
-            {
-                missingItems.Add($"{nameof(StaffInfoModel)}/{nameof(StudentInfoModel)}");
-            }
-            else
-            {
-                if (string.IsNullOrWhiteSpace(studentInfo.FactoryFixId))
-                {
-                    missingItems.Add($"{nameof(StudentInfoModel)}.{nameof(StudentInfoModel.FactoryFixId)}");
-                }
-
-                if (string.IsNullOrWhiteSpace(studentInfo.UserId))
-                {
-                    missingItems.Add($"{nameof(StudentInfoModel)}.{nameof(StudentInfoModel.UserId)}");
-                }
-            }
+            missingItems.Add($"{nameof(CardInfoModel)}.{nameof(CardInfoModel.FactoryFixId)}");
         }
-        else
-        {
-            if (string.IsNullOrWhiteSpace(staffInfo.FactoryFixId))
-            {
-                missingItems.Add($"{nameof(StaffInfoModel)}.{nameof(StaffInfoModel.FactoryFixId)}");
-            }
 
-            if (string.IsNullOrWhiteSpace(staffInfo.UserId))
-            {
-                missingItems.Add($"{nameof(StaffInfoModel)}.{nameof(StaffInfoModel.UserId)}");
-            }
+        string? userId = userInfo switch
+        {
+            StaffInfoModel staff => staff.UserId,
+            StudentInfoModel student => student.UserId,
+            _ => null
+        };
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            missingItems.Add("UserId");
         }
 
         if (missingItems.Count == 0)
         {
-            string factoryFixId;
-            string operatorId;
-
-            if (userInfo is StaffInfoModel requestStaffInfo)
-            {
-                factoryFixId = requestStaffInfo.FactoryFixId;
-                operatorId = requestStaffInfo.UserId;
-            }
-            else
-            {
-                var requestStudentInfo = (StudentInfoModel)userInfo;
-                factoryFixId = requestStudentInfo.FactoryFixId;
-                operatorId = requestStudentInfo.UserId;
-            }
-
             request = new CardOperateRequestDto
             {
                 CardNo = cardNumber,
-                FactoryFixId = factoryFixId,
-                OperatorId = operatorId,
+                FactoryFixId = currentCard!.FactoryFixId,
+                OperatorId = userId!,
                 TenantId = config.TenantId
             };
             validationMessage = string.Empty;

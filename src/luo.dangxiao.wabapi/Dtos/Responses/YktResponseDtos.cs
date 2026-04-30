@@ -5,11 +5,15 @@ namespace luo.dangxiao.wabapi.Dtos.Responses
 {
     public class ApiResponseDto<TData>
     {
+        public bool? Success { get; set; }
+
         public int? Code { get; set; }
 
         public string? Message { get; set; }
 
         public TData? Data { get; set; }
+
+        public long? CurrentTime { get; set; }
 
         [JsonExtensionData]
         public Dictionary<string, JsonElement>? AdditionalData { get; set; }

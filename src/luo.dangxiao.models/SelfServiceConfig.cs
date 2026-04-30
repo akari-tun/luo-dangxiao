@@ -21,5 +21,10 @@ public sealed class SelfServiceConfig : ConfigModel
     /// Gets or sets the tenant identifier used by self-service API requests.
     /// </summary>
     public string TenantId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the workstation identifier used in card initialization API requests.
+    /// </summary>
+    public string WorkStationNumb { get; set; } = string.Empty;
 }
 }

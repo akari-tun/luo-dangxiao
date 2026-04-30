@@ -7,13 +7,14 @@ namespace luo.dangxiao.models;
 /// </summary>
 public class UserInfoModel
 {
-    public string Id { get; set; } = string.Empty;
-
+    public string UserId { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
 
     public UserType UserType { get; set; }
 
     public string IdCardNumber { get; set; } = string.Empty;
+
+    public string DeptId { get; set; } = string.Empty;
 
     public List<CardInfoModel> UserCards { get; set; } = [];
 

@@ -92,7 +92,16 @@
                                     VerticalAlignment="Center"
                                     Spacing="18">
                             <TextBlock Text="补卡失败" FontFamily="SimHei" FontSize="36" FontWeight="Bold" Foreground="{StaticResource PrimaryRedDarkBrush}" HorizontalAlignment="Center"/>
-                            <TextBlock Text="{Binding OperationStepText}" FontFamily="SimHei" FontSize="30" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding OperationStepText}"
+                                       FontFamily="SimHei"
+                                       FontSize="30"
+                                       HorizontalAlignment="Center"
+                                       TextWrapping="Wrap"/>
+                            <TextBlock Text="请联系工作人员协助处理"
+                                       FontFamily="SimHei"
+                                       FontSize="28"
+                                       Foreground="{StaticResource PrimaryRedDarkBrush}"
+                                       HorizontalAlignment="Center"/>
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -108,8 +117,7 @@
                     Width="322"
                     Height="95"
                     FontSize="40"
-                    HorizontalAlignment="Left"
-                    IsVisible="{Binding IsConfirmState}">
+                    HorizontalAlignment="Left">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Image Source="avares://luo.dangxiao.resources/Images/back_icon.png"
                            Width="48"

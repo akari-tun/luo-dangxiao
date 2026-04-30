@@ -22,7 +22,7 @@ public sealed class CardInfoModel
 
     public string FactoryFixId { get; set; } = string.Empty;
 
-    public string CardTypeId { get; set; } = string.Empty;
+    public int CardTypeId { get; set; }
 
     public string CardStatusName { get; set; } = string.Empty;
 

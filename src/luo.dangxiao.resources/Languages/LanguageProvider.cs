@@ -7,6 +7,11 @@ public static class LanguageProvider
 {
     private static readonly ResourceManager ResourceManager = new("luo.dangxiao.resources.Languages.Language", typeof(LanguageProvider).Assembly);
 
+    /// <summary>
+    /// Resolves a localized string by resource key name. Falls back to the key if not found.
+    /// </summary>
+    public static string GetLocalizedText(string key) => Get(key);
+
     private static string Get(string key) => ResourceManager.GetString(key, CultureInfo.CurrentUICulture) ?? key;
 
     public static string App_Title => Get(nameof(App_Title));

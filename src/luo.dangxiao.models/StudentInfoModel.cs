@@ -37,12 +37,6 @@ public sealed class StudentInfoModel : UserInfoModel
 
     public DateTime TrainingEndDate { get; set; }
 
-    public string CardNumber { get; set; } = string.Empty;
-
-    public string FactoryFixId { get; set; } = string.Empty;
-
-    public string UserId { get; set; } = string.Empty;
-
     public string RoomName { get; set; } = string.Empty;
 
     public string RoomNumber { get; set; } = string.Empty;
@@ -51,11 +45,6 @@ public sealed class StudentInfoModel : UserInfoModel
     /// Room code for check-in registration (maps to API field roomCode).
     /// </summary>
     public string RoomCode { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Department/training class ID for check-in registration (maps to API field deptId).
-    /// </summary>
-    public string DeptId { get; set; } = string.Empty;
 
     public StudentCheckInStatus CheckInStatus { get; set; }
 

@@ -40,15 +40,12 @@ public partial class StaffInfoPageViewModel : ViewModelBase, IPageViewModel
     [ObservableProperty]
     private StaffInfoModel _staffInfo = new()
     {
-        Id = "STF2020001",
         Name = "张明华",
         UserType = UserType.Staff,
         Gender = "男",
         IdCardNumber = "430101198502031234",
-        Department = "教务处",
-        EmployeeNumber = "T2020001",
-        CardType = "教职工卡",
-        CardNumber = "2020001001",
+        DeptId = "1001",
+        UserId = "1624",
         UserCards =
         [
             new CardInfoModel
@@ -89,7 +86,7 @@ public partial class StaffInfoPageViewModel : ViewModelBase, IPageViewModel
 
     public bool ShowCardBalance => !ShowRechargePreview;
 
-    public bool ShowCardInfo => !string.IsNullOrWhiteSpace(StaffInfo.CardNumber);
+    public bool ShowCardInfo => !string.IsNullOrWhiteSpace(StaffInfo.CurrentCard?.CardNo);
 
     public string CardStatusText
     {

@@ -9,18 +9,6 @@ public sealed class StaffInfoModel : UserInfoModel
 {
     public string Gender { get; set; } = string.Empty;
 
-    public string Department { get; set; } = string.Empty;
-
-    public string EmployeeNumber { get; set; } = string.Empty;
-
-    public string CardType { get; set; } = string.Empty;
-
-    public string CardNumber { get; set; } = string.Empty;
-
-    public string FactoryFixId { get; set; } = string.Empty;
-
-    public string UserId { get; set; } = string.Empty;
-
     public decimal ConsumptionBalance { get; set; }
 
     public decimal SubsidyBalance { get; set; }

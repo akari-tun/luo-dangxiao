@@ -111,6 +111,24 @@
                             <TextBlock Text="{Binding PickupInstructionText}" FontFamily="SimHei" FontSize="34" HorizontalAlignment="Center"/>
                         </StackPanel>
 
+                        <StackPanel IsVisible="{Binding IsOperationFailedState}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Spacing="18">
+                            <TextBlock Text="操作失败" Classes="panel-title" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding OperationStepText}"
+                                       FontFamily="SimHei"
+                                       FontSize="30"
+                                       HorizontalAlignment="Center"
+                                       TextWrapping="Wrap"
+                                       MaxWidth="600"/>
+                            <TextBlock Text="请联系工作人员协助处理"
+                                       FontFamily="SimHei"
+                                       FontSize="28"
+                                       Foreground="{StaticResource PrimaryRedDarkBrush}"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
                         <StackPanel IsVisible="{Binding CurrentState, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Completed, Mode=OneWay}"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
@@ -153,6 +171,21 @@
                     FontSize="40"
                     HorizontalAlignment="Left"
                     IsVisible="{Binding CanGoBack}">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Image Source="avares://luo.dangxiao.resources/Images/back_icon.png"
+                           Width="48"
+                           Height="48"
+                           Margin="0,0,20,0"/>
+                    <TextBlock Text="{x:Static lang:LanguageProvider.Button_Back}"/>
+                </StackPanel>
+            </Button>
+
+            <Button Command="{Binding BackCommand}"
+                    Width="322"
+                    Height="95"
+                    FontSize="40"
+                    HorizontalAlignment="Center"
+                    IsVisible="{Binding IsOperationFailedState}">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Image Source="avares://luo.dangxiao.resources/Images/back_icon.png"
                            Width="48"

@@ -137,7 +137,7 @@ public partial class CheckInPageViewModel : ViewModelBase
             return;
         }
 
-        var yktApiClient = Ioc.Default.GetService<IYktApiClient>();
+        var yktApiClient = GetYktApiClient();
 
         if (yktApiClient is null)
         {
@@ -162,7 +162,7 @@ public partial class CheckInPageViewModel : ViewModelBase
         {
             var response = await yktApiClient.RegisterTraineeAsync(request);
 
-            if (response.Code is not (null or 0 or 200))
+            if (!IsApiSuccess(response))
             {
                 OperationStatusText = string.Format(
                     CultureInfo.CurrentUICulture,
@@ -337,7 +337,6 @@ public partial class CheckInPageViewModel : ViewModelBase
 
         return new StudentInfoModel
         {
-            Id = data?.Id ?? "STU_TEST_001",
             Name = data?.Name ?? "测试学员",
             UserType = data?.UserType ?? UserType.Student,
             IdCardNumber = data?.IdCardNumber ?? "430101199001011234",
