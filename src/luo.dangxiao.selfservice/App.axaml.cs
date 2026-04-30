@@ -4,6 +4,7 @@ using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 using CommunityToolkit.Mvvm.DependencyInjection;
+using luo.dangxiao.cardreader;
 using luo.dangxiao.interfaces.Mappers;
 using luo.dangxiao.models;
 using luo.dangxiao.printer;
@@ -40,12 +41,31 @@ namespace luo.dangxiao.selfservice
 
             var cardPrinter = CardPrinterFactory.Create(provider);
 
+            cfgData.ReaderConfig.RawProviderValue = ReaderProviderJsonConverter.LastInvalidValue ?? string.Empty;
+            var readerProvider = cfgData.ReaderConfig.ResolveProvider(out var readerWarning);
+            if (readerWarning is not null)
+            {
+                var readerFallbackMsg = string.Format(
+                    LanguageProvider.Msg_ReaderProviderFallback,
+                    string.IsNullOrWhiteSpace(readerWarning.InvalidProviderValue) ? "Unknown" : readerWarning.InvalidProviderValue,
+                    readerWarning.ResolvedProvider);
+                Trace.TraceWarning(readerFallbackMsg);
+                _providerWarningMessage = string.IsNullOrEmpty(_providerWarningMessage)
+                    ? readerFallbackMsg
+                    : _providerWarningMessage + "\n" + readerFallbackMsg;
+            }
+
+            var cardReader = CardReaderFactory.Create(readerProvider);
+
             IServiceCollection serviceCollection = new ServiceCollection()
                 .AddSingleton(cfgData)
                 .AddSingleton<ConfigModel>(cfgData)
                 .AddSingleton(cfgData.PrinterConfig)
                 .AddSingleton(cardPrinter)
                 .AddSingleton<CardPrinterBase>(cardPrinter)
+                .AddSingleton(cfgData.ReaderConfig)
+                .AddSingleton(cardReader)
+                .AddSingleton<CardReaderBase>(cardReader)
                 .AddSingleton<IYktUserInfoMapper, YktUserInfoMapper>()
                 .AddSingleton<MainWindowViewModel>()
                 .AddSingleton<HomePageViewModel>()

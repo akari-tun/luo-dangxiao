@@ -6,6 +6,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 using luo.dangxiao.cardcenter.ViewModels;
 using luo.dangxiao.cardcenter.Views;
+using luo.dangxiao.cardreader;
 using luo.dangxiao.models;
 using luo.dangxiao.printer;
 using luo.dangxiao.resources.Languages;
@@ -20,6 +21,11 @@ namespace luo.dangxiao.cardcenter
         /// Gets the configured card printer instance.
         /// </summary>
         public static CardPrinterBase? CardPrinter { get; private set; }
+
+        /// <summary>
+        /// Gets the configured card reader instance.
+        /// </summary>
+        public static CardReaderBase? CardReader { get; private set; }
 
         private string? _providerWarningMessage;
 
@@ -40,6 +46,22 @@ namespace luo.dangxiao.cardcenter
             }
 
             CardPrinter = CardPrinterFactory.Create(provider);
+
+            cfgData.ReaderConfig.RawProviderValue = ReaderProviderJsonConverter.LastInvalidValue ?? string.Empty;
+            var readerProvider = cfgData.ReaderConfig.ResolveProvider(out var readerWarning);
+            if (readerWarning is not null)
+            {
+                var readerFallbackMsg = string.Format(
+                    LanguageProvider.Msg_ReaderProviderFallback,
+                    string.IsNullOrWhiteSpace(readerWarning.InvalidProviderValue) ? "Unknown" : readerWarning.InvalidProviderValue,
+                    readerWarning.ResolvedProvider);
+                Trace.TraceWarning(readerFallbackMsg);
+                _providerWarningMessage = string.IsNullOrEmpty(_providerWarningMessage)
+                    ? readerFallbackMsg
+                    : _providerWarningMessage + "\n" + readerFallbackMsg;
+            }
+
+            CardReader = CardReaderFactory.Create(readerProvider);
             if (Current is { } app)
             {
                 app.RequestedThemeVariant = ResolveThemeVariant(cfgData.Theme);

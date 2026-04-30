@@ -30,13 +30,16 @@
 luo.dangxiao/
 ├── luo.dangxiao.common/              # Common utilities, enums, converters
 ├── luo.dangxiao.interfaces/          # Interface definitions (Controls, Models, Views, ViewModels)
-├── luo.dangxiao.models/              # Data models (DTOs, Entities)
+├── luo.dangxiao.models/              # Data models (DTOs, Entities), Config classes
 ├── luo.dangxiao.resources/           # Resource files (Images, Languages, Styles)
 ├── luo.dangxiao.controls/            # Custom Avalonia controls
+├── luo.dangxiao.printer/             # Card printer abstraction (CardPrinterBase + Virtual/Seaory)
+├── luo.dangxiao.cardreader/          # Card reader abstraction (CardReaderBase + Virtual/YC)
 ├── luo.dangxiao.selfservice/         # Self-service library (Views + ViewModels)
 ├── luo.dangxiao.selfservice.app/     # Self-service executable entry point
 ├── luo.dangxiao.cardcenter/          # Card center library (Views + ViewModels)
-└── luo.dangxiao.cardcenter.app/      # Card center executable entry point
+├── luo.dangxiao.cardcenter.app/      # Card center executable entry point
+└── luo.dangxiao.wabapi/              # YKT API client wrapper + DTOs
 ```
 
 ### 2.2 Project Roles & Responsibilities
@@ -45,12 +48,15 @@ luo.dangxiao/
 |---------|------|-------------|------------|
 | `luo.dangxiao.common` | Shared utilities library | Library | None |
 | `luo.dangxiao.interfaces` | Contract definitions | Library | None |
-| `luo.dangxiao.models` | Data models (DTOs, Entities) | Library | None |
+| `luo.dangxiao.models` | Data models (DTOs, Entities), Config classes | Library | None |
 | `luo.dangxiao.resources` | Resource files (Images, Languages, Styles) | Library | Avalonia |
 | `luo.dangxiao.controls` | Custom Avalonia controls | Library | Avalonia, luo.dangxiao.interfaces |
-| `luo.dangxiao.selfservice` | Self-service UI module | Library | Avalonia, CommunityToolkit.Mvvm, luo.dangxiao.common, luo.dangxiao.interfaces, luo.dangxiao.models, luo.dangxiao.resources, luo.dangxiao.controls |
+| `luo.dangxiao.printer` | Card printer abstraction (base + Virtual/Seaory) | Library | None |
+| `luo.dangxiao.cardreader` | Card reader abstraction (base + Virtual/YC) | Library | None |
+| `luo.dangxiao.wabapi` | YKT API client wrapper | Library | luo.dangxiao.models |
+| `luo.dangxiao.selfservice` | Self-service library (Views + ViewModels) | Library | Avalonia, CommunityToolkit.Mvvm, luo.dangxiao.common, luo.dangxiao.interfaces, luo.dangxiao.models, luo.dangxiao.resources, luo.dangxiao.controls, luo.dangxiao.printer, luo.dangxiao.cardreader, luo.dangxiao.wabapi |
 | `luo.dangxiao.selfservice.app` | Self-service application | WinExe | luo.dangxiao.selfservice, Avalonia.Desktop |
-| `luo.dangxiao.cardcenter` | Card center UI module | Library | Avalonia, CommunityToolkit.Mvvm, luo.dangxiao.common, luo.dangxiao.interfaces, luo.dangxiao.models, luo.dangxiao.resources, luo.dangxiao.controls |
+| `luo.dangxiao.cardcenter` | Card center library (Views + ViewModels) | Library | Avalonia, CommunityToolkit.Mvvm, luo.dangxiao.common, luo.dangxiao.interfaces, luo.dangxiao.models, luo.dangxiao.resources, luo.dangxiao.controls, luo.dangxiao.printer, luo.dangxiao.cardreader |
 | `luo.dangxiao.cardcenter.app` | Card center application | WinExe | luo.dangxiao.cardcenter, Avalonia.Desktop |
 
 ---
@@ -642,9 +648,12 @@ var message = Language.Msg_Success;
 | `luo.dangxiao.interfaces` | None (contract layer) |
 | `luo.dangxiao.models` | None (data layer) |
 | `luo.dangxiao.resources` | None (resource layer) |
+| `luo.dangxiao.printer` | None (device layer) |
+| `luo.dangxiao.cardreader` | None (device layer) |
 | `luo.dangxiao.controls` | `luo.dangxiao.interfaces` |
-| `luo.dangxiao.selfservice` | `luo.dangxiao.common`, `luo.dangxiao.interfaces`, `luo.dangxiao.models`, `luo.dangxiao.resources`, `luo.dangxiao.controls` |
-| `luo.dangxiao.cardcenter` | `luo.dangxiao.common`, `luo.dangxiao.interfaces`, `luo.dangxiao.models`, `luo.dangxiao.resources`, `luo.dangxiao.controls` |
+| `luo.dangxiao.wabapi` | `luo.dangxiao.models` |
+| `luo.dangxiao.selfservice` | `luo.dangxiao.common`, `luo.dangxiao.interfaces`, `luo.dangxiao.models`, `luo.dangxiao.resources`, `luo.dangxiao.controls`, `luo.dangxiao.printer`, `luo.dangxiao.cardreader`, `luo.dangxiao.wabapi` |
+| `luo.dangxiao.cardcenter` | `luo.dangxiao.common`, `luo.dangxiao.interfaces`, `luo.dangxiao.models`, `luo.dangxiao.resources`, `luo.dangxiao.controls`, `luo.dangxiao.printer`, `luo.dangxiao.cardreader` |
 | `luo.dangxiao.selfservice.app` | `luo.dangxiao.selfservice` only |
 | `luo.dangxiao.cardcenter.app` | `luo.dangxiao.cardcenter` only |
 
@@ -654,6 +663,8 @@ var message = Language.Msg_Success;
               -> models (DTOs/Entities)
               -> resources (Images/Languages/Styles)
               -> common (shared utilities)
+              -> printer (card printer abstraction)
+              -> cardreader (card reader abstraction)
 ```
 
 ---
@@ -935,6 +946,27 @@ Before declaring code complete, verify:
 - Status colors: `{Status}Color` (e.g., `SuccessColor`, `ErrorColor`)
 - Brush resources: `{ColorName}Brush` (e.g., `PrimaryRedBrush`)
 
+### Adding a Device Library (printer/cardreader pattern)
+
+1. Create `luo.dangxiao.{device}/` with minimal csproj (template 7.3)
+2. Create `Card{Device}Base.cs` — abstract base class at root level
+3. Create `Card{Device}Models.cs` — shared data models and enums at root level
+4. Create `Card{Device}{Provider}.cs` — provider enum at root level
+5. Create `Card{Device}Factory.cs` — static factory at root level, `Create(Enum?)` with string switch
+6. Create `Virtual/VirtualCard{Device}.cs` — simulated implementation
+7. Create `{Vendor}/{Vendor}Card{Device}.cs` — hardware driver extending base class
+8. If vendor has native SDK: create `{Vendor}/Native/` with P/Invoke wrappers
+9. Update csproj: add `<None Update="{Vendor}/libs\**">` entries for .dll/.so copy-to-output
+10. In App.axaml.cs: create instance via factory, register to DI or static property
+
+### Adding a Device Config (in luo.dangxiao.models)
+
+1. Create `DeviceConfig.cs` alongside `PrinterConfig.cs`
+2. Include `DeviceProvider` enum, `DeviceProviderJsonConverter`, and `DeviceConfig` class
+3. Follow `PrinterConfig` pattern exactly: JSON converter for graceful fallback, `ResolveProvider()` method
+4. Add `DeviceConfig` property to `ConfigModel` (e.g., `ReaderConfig`)
+5. In App.axaml.cs: load config, resolve provider, capture warnings
+
 ### Adding a New Module (e.g., admin)
 
 1. Create `luo.dangxiao.admin/` (use template 7.1)
@@ -944,6 +976,6 @@ Before declaring code complete, verify:
 
 ---
 
-*Last Updated: 2025-04-29*  
+*Last Updated: 2026-04-29*  
 *Maintainer: OpenCode Agent*  
-*Version: 1.2*
+*Version: 1.3*

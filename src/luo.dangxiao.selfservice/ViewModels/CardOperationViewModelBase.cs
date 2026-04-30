@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using luo.dangxiao.cardreader;
 using luo.dangxiao.models;
 using luo.dangxiao.printer;
 using luo.dangxiao.resources.Languages;
@@ -38,6 +39,11 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
     /// Printer abstraction for card movement and printing.
     /// </summary>
     protected abstract CardPrinterBase CardPrinter { get; }
+
+    /// <summary>
+    /// Card reader abstraction for physical card operations.
+    /// </summary>
+    protected abstract CardReaderBase CardReader { get; }
 
     /// <summary>
     /// YKT API client; may be null (mock mode) if not configured.
@@ -246,7 +252,7 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
             if (await CheckCountdownExpiredAsync()) return;
             ResetCountdown();
             OperationStepText = LanguageProvider.SelfService_TakeCard_Status_ReadingCard;
-            var factoryFixId = await ReadCardAsync();
+            var factoryFixId = await ReadFactoryFixIdAsync();
             if (factoryFixId <= 0)
             {
                 await HandleOperationFailedAsync("Failed to read card information.");
@@ -345,13 +351,9 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
         }
     }
 
-    private async Task<uint> ReadCardAsync()
+    private async Task<uint> ReadFactoryFixIdAsync()
     {
-        var mockPhysicalCardId = uint.Parse($"{DateTime.Now:MMddHHmmss}");
-
-        System.Diagnostics.Debug.WriteLine($"[CardOperation] Simulated card read: {mockPhysicalCardId}");
-        await Task.Delay(500);
-        return mockPhysicalCardId;
+        return await Task.Run(() => CardReader.ReadCardId(out uint factoryFixId) ? factoryFixId : 0u);
     }
 
     private async Task<CardInitResult> InitCardAsync(uint factoryFixId, string cardOperate, CancellationToken ct)

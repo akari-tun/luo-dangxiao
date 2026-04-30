@@ -148,4 +148,5 @@
   <Project Path="D:/GitHub/luo-dangxiao/src/luo.dangxiao.selfservice.app/luo.dangxiao.selfservice.app.csproj" Id="60579826-dcff-4a93-ad62-e32e3bb4c558" />
   <Project Path="D:/GitHub/luo-dangxiao/src/luo.dangxiao.selfservice/luo.dangxiao.selfservice.csproj" />
   <Project Path="D:/GitHub/luo-dangxiao/src/luo.dangxiao.wabapi/luo.dangxiao.wabapi.csproj" />
+  <Project Path="luo.dangxiao.cardreader/luo.dangxiao.cardreader.csproj" Id="2a28d39e-b19e-4cf2-8a20-f23017e5f32c" />
 </Solution>

@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
+using luo.dangxiao.cardreader;
 using luo.dangxiao.common.Enums;
 using luo.dangxiao.models;
 using luo.dangxiao.printer;
@@ -20,6 +21,7 @@ public partial class ReplacementPageViewModel : CardOperationViewModelBase
 {
     private readonly SelfServiceConfig _config;
     private readonly CardPrinterBase _cardPrinter;
+    private readonly CardReaderBase _cardReader;
     private readonly IYktApiClient? _yktApiClient;
     private readonly string _printerId;
 
@@ -43,16 +45,18 @@ public partial class ReplacementPageViewModel : CardOperationViewModelBase
 
     public bool IsProcessingState => IsCardProcessingState;
 
-    public ReplacementPageViewModel(SelfServiceConfig config, CardPrinterBase cardPrinter, IYktApiClient? yktApiClient = null)
+    public ReplacementPageViewModel(SelfServiceConfig config, CardPrinterBase cardPrinter, CardReaderBase cardReader, IYktApiClient? yktApiClient = null)
     {
         _config = config;
         _cardPrinter = cardPrinter;
+        _cardReader = cardReader;
         _yktApiClient = yktApiClient;
         _printerId = config.PrinterConfig.DefaultPrinterId;
     }
 
     protected override SelfServiceConfig Config => _config;
     protected override CardPrinterBase CardPrinter => _cardPrinter;
+    protected override CardReaderBase CardReader => _cardReader;
     protected override IYktApiClient? YktApiClient => _yktApiClient;
     protected override string PrinterId => _printerId;
     protected override UserInfoModel? UserInfoData => UserInfo;

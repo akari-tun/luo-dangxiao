@@ -8,6 +8,9 @@
     "Provider": "Virtual",
     "DefaultPrinterId": "virtual-printer-001"
   },
+  "ReaderConfig": {
+    "Provider": "Virtual"
+  },
   "CountdownSeconds": 60,
   "TenantId": "25",
   "WorkStationNumb": "71",
