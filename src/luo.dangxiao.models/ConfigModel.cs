@@ -24,6 +24,8 @@ namespace luo.dangxiao.models
 
         public ReaderConfig ReaderConfig { get; set; } = new();
 
+        public IdReaderConfig IdReaderConfig { get; set; } = new();
+
         public static T Load<T>(string? configFilePath = null) where T : ConfigModel, new()
         {
             var path = ResolveConfigFilePath(configFilePath);

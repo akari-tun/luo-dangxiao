@@ -5,10 +5,13 @@
     "TimeoutSeconds": 30
   },
   "PrinterConfig": {
-    "Provider": "Virtual",
-    "DefaultPrinterId": "virtual-printer-001"
+    "Provider": "Seaory",
+    "DefaultPrinterId": "Seaory S22K"
   },
   "ReaderConfig": {
+    "Provider": "Yc"
+  },
+  "IdReaderConfig": {
     "Provider": "Virtual"
   },
   "CountdownSeconds": 60,

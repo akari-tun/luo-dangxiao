@@ -10,5 +10,8 @@
   },
   "ReaderConfig": {
     "Provider": "Virtual"
+  },
+  "IdReaderConfig": {
+    "Provider": "Virtual"
   }
 }
