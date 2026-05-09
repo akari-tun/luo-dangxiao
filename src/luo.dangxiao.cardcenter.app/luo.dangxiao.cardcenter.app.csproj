@@ -22,4 +22,10 @@
   <ItemGroup>
     <ProjectReference Include="..\luo.dangxiao.cardcenter\luo.dangxiao.cardcenter.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="nlog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

@@ -4,6 +4,7 @@ using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
+using luo.dangxiao.log;
 using luo.dangxiao.cardcenter.ViewModels;
 using luo.dangxiao.cardcenter.Views;
 using luo.dangxiao.cardreader;
@@ -32,6 +33,8 @@ namespace luo.dangxiao.cardcenter
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
+
+            NLogConfig.Setup();
 
             var cfgData = ConfigModel.Load<CardCenterConfig>();
             cfgData.PrinterConfig.RawProviderValue = PrinterProviderJsonConverter.LastInvalidValue ?? string.Empty;

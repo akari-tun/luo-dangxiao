@@ -9,6 +9,7 @@ using luo.dangxiao.interfaces.Mappers;
 using luo.dangxiao.models;
 using luo.dangxiao.printer;
 using luo.dangxiao.resources.Languages;
+using luo.dangxiao.log;
 using luo.dangxiao.selfservice.ViewModels;
 using luo.dangxiao.selfservice.Views;
 using luo.dangxiao.wabapi.Extensions;
@@ -26,6 +27,8 @@ namespace luo.dangxiao.selfservice
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
+
+            NLogConfig.Setup();
 
             var cfgData = ConfigModel.Load<SelfServiceConfig>();
             cfgData.PrinterConfig.RawProviderValue = PrinterProviderJsonConverter.LastInvalidValue ?? string.Empty;
@@ -58,6 +61,7 @@ namespace luo.dangxiao.selfservice
             var cardReader = CardReaderFactory.Create(readerProvider);
 
             IServiceCollection serviceCollection = new ServiceCollection()
+                .AddNLogLogging()
                 .AddSingleton(cfgData)
                 .AddSingleton<ConfigModel>(cfgData)
                 .AddSingleton(cfgData.PrinterConfig)

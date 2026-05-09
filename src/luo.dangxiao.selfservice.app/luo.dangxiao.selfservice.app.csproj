@@ -28,4 +28,10 @@
   <ItemGroup>
     <ProjectReference Include="..\luo.dangxiao.selfservice\luo.dangxiao.selfservice.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="nlog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
 using luo.dangxiao.interfaces.ViewModels;
+using luo.dangxiao.log;
 using luo.dangxiao.resources.Languages;
 using luo.dangxiao.wabapi.Clients;
 using luo.dangxiao.wabapi.Dtos.Responses;
@@ -14,6 +15,27 @@ namespace luo.dangxiao.selfservice.ViewModels
     /// </summary>
     public abstract partial class ViewModelBase : ObservableObject, IPageViewModel
     {
+        #region Logging
+
+        /// <summary>
+        /// Gets or sets the NLog logger instance for this ViewModel.
+        /// Lazily resolved from DI container on first access.
+        /// </summary>
+        public NLog.ILogger Logger { get; set; } = null!;
+
+        /// <summary>
+        /// Resolves the logger for this instance type if not already set.
+        /// </summary>
+        protected void EnsureLogger()
+        {
+            if (Logger == null)
+            {
+                Logger = LoggerResolver.GetLogger(GetType());
+            }
+        }
+
+        #endregion
+
         #region Navigation
 
         /// <summary>

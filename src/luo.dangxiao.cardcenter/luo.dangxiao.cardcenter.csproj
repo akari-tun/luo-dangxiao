@@ -39,6 +39,7 @@
     <ProjectReference Include="..\luo.dangxiao.cardreader\luo.dangxiao.cardreader.csproj" />
     <ProjectReference Include="..\luo.dangxiao.common\luo.dangxiao.common.csproj" />
     <ProjectReference Include="..\luo.dangxiao.interfaces\luo.dangxiao.interfaces.csproj" />
+    <ProjectReference Include="..\luo.dangxiao.log\luo.dangxiao.log.csproj" />
     <ProjectReference Include="..\luo.dangxiao.controls\luo.dangxiao.controls.csproj" />
     <ProjectReference Include="..\luo.dangxiao.models\luo.dangxiao.models.csproj" />
     <ProjectReference Include="..\luo.dangxiao.printer\luo.dangxiao.printer.csproj" />

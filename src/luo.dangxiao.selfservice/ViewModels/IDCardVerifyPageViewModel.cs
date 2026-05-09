@@ -91,6 +91,15 @@ public partial class IDCardVerifyPageViewModel : ViewModelBase, IPageViewModel
         try
         {
             var identity = await SimulateReadIdCardNumberAsync();
+
+            if (string.IsNullOrEmpty(identity))
+            {
+                StatusMessage = $"读身份证失败，请重新操作！";
+                await Task.Delay(2000);
+                StatusMessage = "等待读取身份证...";
+                return;
+            }
+
             StatusMessage = $"读卡成功，身份证号 {identity}，正在查询信息...";
 
             var userInfo = await GetUserInfoByIdentityAsync(identity);
@@ -121,8 +130,7 @@ public partial class IDCardVerifyPageViewModel : ViewModelBase, IPageViewModel
             }
         }
 
-        var cfgData = Ioc.Default.GetRequiredService<SelfServiceConfig>();
-        return cfgData.ServiceType == SelfServiceType.StaffSelfService ? "430407197809211514" : "110101200007286106";
+        return string.Empty;
     }
 #endif
 
