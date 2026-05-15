@@ -35,6 +35,7 @@ luo.dangxiao/
 ├── luo.dangxiao.controls/            # Custom Avalonia controls
 ├── luo.dangxiao.printer/             # Card printer abstraction (CardPrinterBase + Virtual/Seaory)
 ├── luo.dangxiao.cardreader/          # Card reader abstraction (CardReaderBase + Virtual/YC)
+├── luo.dangxiao.idreader/            # ID card reader abstraction (IdReaderBase + Virtual/CVR100U)
 ├── luo.dangxiao.selfservice/         # Self-service library (Views + ViewModels)
 ├── luo.dangxiao.selfservice.app/     # Self-service executable entry point
 ├── luo.dangxiao.cardcenter/          # Card center library (Views + ViewModels)
@@ -53,8 +54,9 @@ luo.dangxiao/
 | `luo.dangxiao.controls` | Custom Avalonia controls | Library | Avalonia, luo.dangxiao.interfaces |
 | `luo.dangxiao.printer` | Card printer abstraction (base + Virtual/Seaory) | Library | None |
 | `luo.dangxiao.cardreader` | Card reader abstraction (base + Virtual/YC) | Library | None |
+| `luo.dangxiao.idreader` | ID card reader abstraction (base + Virtual/CVR100U) | Library | None |
 | `luo.dangxiao.wabapi` | YKT API client wrapper | Library | luo.dangxiao.models |
-| `luo.dangxiao.selfservice` | Self-service library (Views + ViewModels) | Library | Avalonia, CommunityToolkit.Mvvm, luo.dangxiao.common, luo.dangxiao.interfaces, luo.dangxiao.models, luo.dangxiao.resources, luo.dangxiao.controls, luo.dangxiao.printer, luo.dangxiao.cardreader, luo.dangxiao.wabapi |
+| `luo.dangxiao.selfservice` | Self-service library (Views + ViewModels) | Library | Avalonia, CommunityToolkit.Mvvm, luo.dangxiao.common, luo.dangxiao.interfaces, luo.dangxiao.models, luo.dangxiao.resources, luo.dangxiao.controls, luo.dangxiao.printer, luo.dangxiao.cardreader, luo.dangxiao.idreader, luo.dangxiao.wabapi |
 | `luo.dangxiao.selfservice.app` | Self-service application | WinExe | luo.dangxiao.selfservice, Avalonia.Desktop |
 | `luo.dangxiao.cardcenter` | Card center library (Views + ViewModels) | Library | Avalonia, CommunityToolkit.Mvvm, luo.dangxiao.common, luo.dangxiao.interfaces, luo.dangxiao.models, luo.dangxiao.resources, luo.dangxiao.controls, luo.dangxiao.printer, luo.dangxiao.cardreader |
 | `luo.dangxiao.cardcenter.app` | Card center application | WinExe | luo.dangxiao.cardcenter, Avalonia.Desktop |
@@ -650,9 +652,10 @@ var message = Language.Msg_Success;
 | `luo.dangxiao.resources` | None (resource layer) |
 | `luo.dangxiao.printer` | None (device layer) |
 | `luo.dangxiao.cardreader` | None (device layer) |
+| `luo.dangxiao.idreader` | None (device layer) |
 | `luo.dangxiao.controls` | `luo.dangxiao.interfaces` |
 | `luo.dangxiao.wabapi` | `luo.dangxiao.models` |
-| `luo.dangxiao.selfservice` | `luo.dangxiao.common`, `luo.dangxiao.interfaces`, `luo.dangxiao.models`, `luo.dangxiao.resources`, `luo.dangxiao.controls`, `luo.dangxiao.printer`, `luo.dangxiao.cardreader`, `luo.dangxiao.wabapi` |
+| `luo.dangxiao.selfservice` | `luo.dangxiao.common`, `luo.dangxiao.interfaces`, `luo.dangxiao.models`, `luo.dangxiao.resources`, `luo.dangxiao.controls`, `luo.dangxiao.printer`, `luo.dangxiao.cardreader`, `luo.dangxiao.idreader`, `luo.dangxiao.wabapi` |
 | `luo.dangxiao.cardcenter` | `luo.dangxiao.common`, `luo.dangxiao.interfaces`, `luo.dangxiao.models`, `luo.dangxiao.resources`, `luo.dangxiao.controls`, `luo.dangxiao.printer`, `luo.dangxiao.cardreader` |
 | `luo.dangxiao.selfservice.app` | `luo.dangxiao.selfservice` only |
 | `luo.dangxiao.cardcenter.app` | `luo.dangxiao.cardcenter` only |
@@ -660,11 +663,12 @@ var message = Language.Msg_Success;
 ### 6.2 Reference Direction
 ```
 .app -> Module -> controls -> interfaces
-              -> models (DTOs/Entities)
-              -> resources (Images/Languages/Styles)
-              -> common (shared utilities)
-              -> printer (card printer abstraction)
-              -> cardreader (card reader abstraction)
+               -> models (DTOs/Entities)
+               -> resources (Images/Languages/Styles)
+               -> common (shared utilities)
+               -> printer (card printer abstraction)
+               -> cardreader (card reader abstraction)
+               -> idreader (ID card reader abstraction)
 ```
 
 ---
@@ -946,26 +950,108 @@ Before declaring code complete, verify:
 - Status colors: `{Status}Color` (e.g., `SuccessColor`, `ErrorColor`)
 - Brush resources: `{ColorName}Brush` (e.g., `PrimaryRedBrush`)
 
-### Adding a Device Library (printer/cardreader pattern)
+### Adding a Device Library (printer/cardreader/idreader pattern)
 
 1. Create `luo.dangxiao.{device}/` with minimal csproj (template 7.3)
-2. Create `Card{Device}Base.cs` — abstract base class at root level
-3. Create `Card{Device}Models.cs` — shared data models and enums at root level
-4. Create `Card{Device}{Provider}.cs` — provider enum at root level
-5. Create `Card{Device}Factory.cs` — static factory at root level, `Create(Enum?)` with string switch
-6. Create `Virtual/VirtualCard{Device}.cs` — simulated implementation
-7. Create `{Vendor}/{Vendor}Card{Device}.cs` — hardware driver extending base class
-8. If vendor has native SDK: create `{Vendor}/Native/` with P/Invoke wrappers
+2. Create `{Device}Base.cs` — abstract base class (`IDisposable`) at root level
+3. Create `{Device}Models.cs` — shared data models and enums at root level
+4. Create `{Device}Provider.cs` — provider enum (`Unknown`, `Virtual`, `{Hardware}`) at root level
+5. Create `{Device}Factory.cs` — static factory at root level, `Create(Enum?)` with string switch
+6. Create `Virtual/{VirtualDevice}.cs` — simulated implementation
+7. Create `{Vendor}/{VendorDevice}.cs` — hardware driver extending base class
+8. If vendor has native SDK:
+   - Create `{Vendor}/Native/` with P/Invoke wrappers, OR
+   - Use interface abstraction: `{Vendor}/IC{Vendor}NativeMethods.cs` + platform implementations (Linux + Windows base + x86/x64)
+   - Windows: use `NativeLibrary.SetDllImportResolver` — **concrete pattern**: create a `NativeLibraryResolver.cs` at the device project root level that maps library names to `AppContext.BaseDirectory`-relative subdirectories (e.g., `Seaory/libs/win-x64/SeaorySDK.dll`). Register via `NativeLibraryResolver.Register()` in each app's `App.axaml.cs` Initialize(), **before** any P/Invoke calls. Use `Interlocked.Exchange` to ensure single registration.
+   - Linux: direct DllImport to `.so` file with `CallingConvention.Cdecl`
 9. Update csproj: add `<None Update="{Vendor}/libs\**">` entries for .dll/.so copy-to-output
 10. In App.axaml.cs: create instance via factory, register to DI or static property
 
+### Integrating ID Reader (`luo.dangxiao.idreader`)
+
+The `luo.dangxiao.idreader` library provides `IdReaderBase` for Chinese ID card reading.
+
+**Key architecture:**
+- `CVR100U/ICvr100UNativeMethods.cs` — interface for all SDK methods
+- `CVR100U/LinuxCvr100UNativeMethods.cs` — Linux implementation (`lib100UD.so`, Cdecl)
+- `CVR100U/WindowsCvr100UNativeMethods.cs` — Windows base with x86/x64 subclasses (`Termb.dll`, StdCall, DLL resolver)
+- `IdReaderConfig.cs` in `luo.dangxiao.models` — config with `IdReaderProvider` enum, JSON converter, fallback to Virtual
+
+**Integration in SelfService:**
+1. Add project reference: `luo.dangxiao.idreader`
+2. In `App.axaml.cs`: resolve `IdReaderConfig`, create via `IdReaderFactory.Create()`, register `AddSingleton<IdReaderBase>(idReader)`
+3. In ViewModel: constructor injection of `IdReaderBase`, call `Init()` → `ReadIdCard(out data)` → `Close()` wrapped in `Task.Run()`
+
+**Config.json entries:**
+```json
+{
+  "IdReaderConfig": {
+    "Provider": "Virtual"
+  }
+}
+```
+
 ### Adding a Device Config (in luo.dangxiao.models)
 
-1. Create `DeviceConfig.cs` alongside `PrinterConfig.cs`
-2. Include `DeviceProvider` enum, `DeviceProviderJsonConverter`, and `DeviceConfig` class
-3. Follow `PrinterConfig` pattern exactly: JSON converter for graceful fallback, `ResolveProvider()` method
-4. Add `DeviceConfig` property to `ConfigModel` (e.g., `ReaderConfig`)
+1. Create `{Device}Config.cs` alongside `PrinterConfig.cs` in `luo.dangxiao.models`
+2. Include `{Device}Provider` enum, `{Device}ProviderJsonConverter`, and `{Device}Config` class
+3. Follow `PrinterConfig`/`ReaderConfig` pattern exactly: JSON converter for graceful fallback, `ResolveProvider()` method
+4. Add `{Device}Config` property to `ConfigModel` (e.g., `IdReaderConfig`)
 5. In App.axaml.cs: load config, resolve provider, capture warnings
+
+**Existing device configs:**
+| File | Enum | Default Provider | Fallback Provider |
+|------|------|------------------|-------------------|
+| `PrinterConfig.cs` | `PrinterProvider` | `Seaory` | `Seaory` |
+| `ReaderConfig.cs` | `ReaderProvider` | `Virtual` | `Yc` |
+| `IdReaderConfig.cs` | `IdReaderProvider` | `Virtual` | `Virtual` |
+
+**PrinterConfig** has additional fields beyond Provider:
+- `DefaultPrinterId` — printer identifier (e.g., `"Seaory S22K"`)
+- `PrintText` — list of `PrintTextConfig` objects defining text to print on cards
+- `Seaory` — `SeaoryPrintConfig` for Seaory-specific print settings
+
+**PrintTextConfig** fields:
+| Field | Type | Description |
+|-------|------|-------------|
+| `PropertyName` | string | Property name on `UserInfoModel` (e.g., `"Name"`, `"ClassName"`) |
+| `BodyFont` | string | Font name (e.g., `"微软雅黑"`, `"Arial"`) |
+| `BodySize` | int | Font size (default: 12) |
+| `X` | int | X position in pixels |
+| `Y` | int | Y position in pixels |
+
+**SeaoryPrintConfig** fields:
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `RibbonType` | byte | 0 | S series: 0=YMCKO, 1=K, 2=1/2ymcKO, 3=YMCKOK, 4=KO, 5=Gold, 6=Silver, 7=White |
+| `Orientation` | byte | 1 | 1=portrait, 2=landscape |
+| `InputBin` | byte? | null | 0=card feeder, 1=front slot, 2=back slot |
+| `OutputBin` | byte? | null | 0=hopper, 1=front slot, 2=back slot, 3=reject, 4=don't eject |
+| `CardInOut` | byte? | null | 1=use device settings, 0=use InputBin/OutputBin |
+
+### Printer Error Tracking
+
+`CardPrinterBase` provides error state properties:
+- `LastErrorCode` (uint) — last SDK error code, 0 = no error
+- `LastErrorMsg` (string?) — user-friendly description of last error, null on success
+- `ClearError()` (protected) — resets error state to default
+
+When printer operations fail (`ConnectAsync`, `MoveCardAsync`, `ResetPrinterAsync`), SeaorySdk error codes are automatically recorded via `RecordError(uint)` in `SeaoryPrinterDriver`. Virtual implementations set synthetic error codes on failure.
+
+### Print Session Architecture
+
+Seaory printing follows the SDK pattern: `BeginPrintSession` → `BeginPage` → `PrintImage`/`PrintText` → `EndPage` → session disposal (`EndPrinting2`).
+
+`SeaoryPrinterDriver.BeginPrintSession` has a 3-level overload chain:
+1. `BeginPrintSession(printerId)` → calls #2 with null docProp
+2. `BeginPrintSession(printerId, docProp)` → calls #3 with null seaoryConfig  
+3. `BeginPrintSession(printerId, docProp, seaoryConfig)` → uses `BuildSeaoryDocProp()` from config
+
+`CardOperationViewModelBase.PrintCardAsync` iterates `Config.PrinterConfig.PrintText` entries, uses reflection to read `PropertyName` from `UserInfoModel`, and prints at configured positions. Non-existent properties are silently skipped.
+
+### Card Processing Pipeline (`CardOperationViewModelBase`)
+
+`ExecuteCardProcessAsync` coordinates the card lifecycle (move → read → init → write → print → output), with post-failure recovery via `EnsureCardRecoveryToRejectAsync`.
 
 ### Adding a New Module (e.g., admin)
 
@@ -976,6 +1062,6 @@ Before declaring code complete, verify:
 
 ---
 
-*Last Updated: 2026-04-29*  
+*Last Updated: 2026-05-09*  
 *Maintainer: OpenCode Agent*  
-*Version: 1.3*
+*Version: 1.4*
