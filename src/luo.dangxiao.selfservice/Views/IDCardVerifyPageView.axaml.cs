@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.VisualTree;
 using Avalonia.Layout;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.DependencyInjection;
@@ -18,7 +19,8 @@ public partial class IDCardVerifyPageView : UserControl, IPageView
 {
     private static readonly Regex IdCardRegex = new(@"^\d{17}[\dXx]$", RegexOptions.Compiled);
 
-    IDCardVerifyPageViewModel _viewModel;
+    private readonly EventHandler<IDCardVerificationSucceededEventArgs> _verificationSucceededHandler;
+    private readonly IDCardVerifyPageViewModel _viewModel;
     public IPageViewModel ViewModel => _viewModel;
 
     public IDCardVerifyPageView()
@@ -26,10 +28,28 @@ public partial class IDCardVerifyPageView : UserControl, IPageView
         InitializeComponent();
 
         _viewModel = Ioc.Default.GetRequiredService<IDCardVerifyPageViewModel>();
+        _verificationSucceededHandler = (_, _) => _viewModel.CancelAutoRead();
 #if DEBUG
         _viewModel.RequestTestIdCardNumberAsync = ShowTestIdCardInputDialogAsync;
 #endif
         DataContext = _viewModel;
+    }
+
+    /// <inheritdoc />
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        _viewModel.VerificationSucceeded -= _verificationSucceededHandler;
+        _viewModel.VerificationSucceeded += _verificationSucceededHandler;
+        _viewModel.StartAutoReadAsync();
+    }
+
+    /// <inheritdoc />
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        _viewModel.CancelAutoRead();
+        _viewModel.VerificationSucceeded -= _verificationSucceededHandler;
+        base.OnDetachedFromVisualTree(e);
     }
 
 #if DEBUG

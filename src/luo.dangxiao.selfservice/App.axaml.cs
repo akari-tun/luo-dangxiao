@@ -5,6 +5,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Styling;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using luo.dangxiao.cardreader;
+using luo.dangxiao.idreader;
 using luo.dangxiao.interfaces.Mappers;
 using luo.dangxiao.models;
 using luo.dangxiao.printer;
@@ -29,6 +30,9 @@ namespace luo.dangxiao.selfservice
             AvaloniaXamlLoader.Load(this);
 
             NLogConfig.Setup();
+
+            // Register native library resolver before any Seaory P/Invoke calls.
+            NativeLibraryResolver.Register();
 
             var cfgData = ConfigModel.Load<SelfServiceConfig>();
             cfgData.PrinterConfig.RawProviderValue = PrinterProviderJsonConverter.LastInvalidValue ?? string.Empty;
@@ -60,6 +64,22 @@ namespace luo.dangxiao.selfservice
 
             var cardReader = CardReaderFactory.Create(readerProvider);
 
+            cfgData.IdReaderConfig.RawProviderValue = IdReaderProviderJsonConverter.LastInvalidValue ?? string.Empty;
+            var idReaderProvider = cfgData.IdReaderConfig.ResolveProvider(out var idReaderWarning);
+            if (idReaderWarning is not null)
+            {
+                var idReaderFallbackMsg = string.Format(
+                    LanguageProvider.Msg_ReaderProviderFallback,
+                    string.IsNullOrWhiteSpace(idReaderWarning.InvalidProviderValue) ? "Unknown" : idReaderWarning.InvalidProviderValue,
+                    idReaderWarning.ResolvedProvider);
+                Trace.TraceWarning(idReaderFallbackMsg);
+                _providerWarningMessage = string.IsNullOrEmpty(_providerWarningMessage)
+                    ? idReaderFallbackMsg
+                    : _providerWarningMessage + "\n" + idReaderFallbackMsg;
+            }
+
+            var idReader = IdReaderFactory.Create(idReaderProvider);
+
             IServiceCollection serviceCollection = new ServiceCollection()
                 .AddNLogLogging()
                 .AddSingleton(cfgData)
@@ -70,6 +90,9 @@ namespace luo.dangxiao.selfservice
                 .AddSingleton(cfgData.ReaderConfig)
                 .AddSingleton(cardReader)
                 .AddSingleton<CardReaderBase>(cardReader)
+                .AddSingleton(cfgData.IdReaderConfig)
+                .AddSingleton(idReader)
+                .AddSingleton<IdReaderBase>(idReader)
                 .AddSingleton<IYktUserInfoMapper, YktUserInfoMapper>()
                 .AddSingleton<MainWindowViewModel>()
                 .AddSingleton<HomePageViewModel>()

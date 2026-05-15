@@ -23,6 +23,19 @@ public enum CardProcessingState
 }
 
 /// <summary>
+/// Result of a card operation pipeline run.
+/// </summary>
+/// <param name="Success">Whether the pipeline completed without error.</param>
+/// <param name="ErrorMessage">Error description when <paramref name="Success"/> is false; null otherwise.</param>
+/// <param name="Cancelled">Whether the pipeline was interrupted by countdown expiry.</param>
+public readonly record struct CardOperationResult(bool Success, string? ErrorMessage, bool Cancelled = false)
+{
+    public static CardOperationResult SuccessResult => new(Success: true, ErrorMessage: null);
+    public static CardOperationResult Failed(string message) => new(Success: false, ErrorMessage: message);
+    public static CardOperationResult CountdownExpired => new(Success: false, ErrorMessage: null, Cancelled: true);
+}
+
+/// <summary>
 /// Abstract base class providing shared countdown management, card processing pipeline,
 /// and pickup monitoring for both TakeCard and Replacement flows.
 /// </summary>
@@ -236,71 +249,85 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
         _operationCts = new CancellationTokenSource();
         var opToken = _operationCts.Token;
 
+        var result = await ExecuteCardOperationPipelineAsync(cardOperate, opToken);
+
+        if (!result.Success)
+        {
+            await HandleOperationFailedAsync(result.ErrorMessage ?? "Failed to card operation.");
+            await EnsureCardRecoveryToRejectAsync();
+        }
+    }
+
+    /// <summary>
+    /// Orchestrates the full card lifecycle: move to reader → read → init → write → print → output.
+    /// Returns a result indicating success or failure with an error message.
+    /// Does NOT handle card recovery — caller is responsible for ensuring the card is discarded.
+    /// </summary>
+    private async Task<CardOperationResult> ExecuteCardOperationPipelineAsync(string cardOperate, CancellationToken opToken)
+    {
         try
         {
             // Move card to reader
-            if (await CheckCountdownExpiredAsync()) return;
+            if (await CheckCountdownExpiredAsync()) return CardOperationResult.CountdownExpired;
             ResetCountdown();
             OperationStepText = LanguageProvider.SelfService_TakeCard_Status_MovingCard;
             if (!await MoveCardToReaderAsync())
             {
-                await HandleOperationFailedAsync("Failed to move card to reader position.");
-                return;
+                return CardOperationResult.Failed(GetPrinterLastError("Failed to move card to reader position."));
             }
 
             // Read card
-            if (await CheckCountdownExpiredAsync()) return;
+            if (await CheckCountdownExpiredAsync()) return CardOperationResult.CountdownExpired;
             ResetCountdown();
             OperationStepText = LanguageProvider.SelfService_TakeCard_Status_ReadingCard;
             var factoryFixId = await ReadFactoryFixIdAsync();
             if (factoryFixId <= 0)
             {
-                await HandleOperationFailedAsync("Failed to read card information.");
-                return;
+                return CardOperationResult.Failed("Failed to read card information.");
             }
 
             // Initialize card
-            if (await CheckCountdownExpiredAsync()) return;
+            if (await CheckCountdownExpiredAsync()) return CardOperationResult.CountdownExpired;
             ResetCountdown();
             OperationStepText = LanguageProvider.SelfService_TakeCard_Status_InitializingCard;
             var initResult = await InitCardAsync(factoryFixId, cardOperate, opToken);
             if (!initResult.Success)
             {
-                await HandleOperationFailedAsync(initResult.ErrorMessage ?? "Card initialization failed.");
                 await DiscardCardToRejectAsync();
-                return;
+                return CardOperationResult.Failed(initResult.ErrorMessage ?? "Card initialization failed.");
             }
 
             // Write card
-            if (await CheckCountdownExpiredAsync()) return;
+            if (await CheckCountdownExpiredAsync()) return CardOperationResult.CountdownExpired;
             ResetCountdown();
             OperationStepText = LanguageProvider.SelfService_TakeCard_Status_WritingCard;
             var writeResult = await WriteCardAsync(initResult);
             if (!writeResult.Success)
             {
                 await WriteCardFailureApi(initResult, writeResult.ErrorMessage);
-                await HandleOperationFailedAsync(writeResult.ErrorMessage ?? "Failed to write card data.");
                 await DiscardCardToRejectAsync();
-                return;
+                return CardOperationResult.Failed(writeResult.ErrorMessage ?? "Failed to write card data.");
             }
 
             // Print card
-            if (await CheckCountdownExpiredAsync()) return;
+            if (await CheckCountdownExpiredAsync()) return CardOperationResult.CountdownExpired;
             ResetCountdown();
             OperationStepText = LanguageProvider.SelfService_TakeCard_Status_PrintingCard;
             var printSuccess = await PrintCardAsync(initResult);
             if (!printSuccess)
             {
-                await HandleOperationFailedAsync("Failed to print card.");
                 await DiscardCardToRejectAsync();
-                return;
+                return CardOperationResult.Failed(GetPrinterLastError("Failed to print card."));
             }
 
             // Report success
             WriteCardSuccessApi(initResult);
 
             // Move card to front holder
-            await CardPrinter.MoveCardAsync(PrinterId, CardMoveCommand.MoveToFront);
+            if (!await CardPrinter.MoveCardAsync(PrinterId, CardMoveCommand.MoveToFront))
+            {
+                return CardOperationResult.Failed(GetPrinterLastError("Failed to move card to output."));
+            }
 
             // Transition to ready-to-pickup
             PickupInstructionText = GetPickupInstructionText();
@@ -309,20 +336,46 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
             IsBusy = false;
 
             StartPickupMonitor(initResult);
+            return CardOperationResult.SuccessResult;
         }
         catch (OperationCanceledException)
         {
-            await HandleOperationFailedAsync(LanguageProvider.SelfService_TakeCard_Status_Timeout);
+            return CardOperationResult.Failed(LanguageProvider.SelfService_TakeCard_Status_Timeout);
         }
         catch (Exception ex)
         {
-            await HandleOperationFailedAsync(ex.Message);
+            return CardOperationResult.Failed(ex.Message);
         }
     }
 
     /// <summary>
-    /// Subclass hook to set the processing title when entering CardProcessing state.
+    /// Checks the printer card position and discards the card to the reject box
+    /// if a card is still inside the printer.
     /// </summary>
+    private async Task EnsureCardRecoveryToRejectAsync()
+    {
+        try
+        {
+            var position = await CardPrinter.GetCardPositionAsync(PrinterId);
+            if (position != CardPositionState.OutOfPrinter)
+            {
+                await DiscardCardToRejectAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[CardOperation] EnsureCardRecoveryToReject failed: {ex.Message}");
+            // Fallback: attempt discard anyway in case position check failed
+            await DiscardCardToRejectAsync();
+        }
+    }
+
+    private string GetPrinterLastError(string fallback)
+    {
+        var msg = CardPrinter.LastErrorMsg;
+        return string.IsNullOrEmpty(msg) ? fallback : msg;
+    }
+
     protected abstract void SetProcessingTitle();
 
     /// <summary>
@@ -339,10 +392,9 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
         try
         {
             _ = await CardPrinter.ConnectAsync(PrinterId);
-            await CardPrinter.MoveCardAsync(PrinterId, CardMoveCommand.MoveFromStorageToPrepare);
-            await Task.Delay(300);
-            await CardPrinter.MoveCardAsync(PrinterId, CardMoveCommand.MoveToContact);
-            return true;
+            //await CardPrinter.MoveCardAsync(PrinterId, CardMoveCommand.MoveFromStorageToPrepare);
+            //await Task.Delay(300);
+            return await CardPrinter.MoveCardAsync(PrinterId, CardMoveCommand.MoveToContact);
         }
         catch (Exception ex)
         {
@@ -460,14 +512,31 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
         {
             using var session = CardPrinter.BeginPrintSession(PrinterId);
             session.BeginPage();
-            if (!string.IsNullOrEmpty(UserInfoData?.Name))
-                session.PrintText(x: 120, y: 80, text: UserInfoData.Name, fontName: "SimHei", fontSize: 18);
-            if (!string.IsNullOrEmpty(initResult.CardNo))
-                session.PrintText(x: 120, y: 120, text: initResult.CardNo, fontName: "Arial", fontSize: 14);
-            if (!string.IsNullOrEmpty(initResult.ExpiryDate))
-                session.PrintText(x: 120, y: 150, text: initResult.ExpiryDate, fontName: "Arial", fontSize: 12);
+
+            var printTextConfigs = Config.PrinterConfig.PrintText;
+            if (printTextConfigs != null && printTextConfigs.Count > 0 && UserInfoData != null)
+            {
+                var userInfoType = typeof(UserInfoModel);
+                foreach (var textConfig in printTextConfigs)
+                {
+                    if (string.IsNullOrEmpty(textConfig.PropertyName))
+                        continue;
+
+                    var prop = userInfoType.GetProperty(textConfig.PropertyName);
+                    if (prop != null)
+                    {
+                        var value = prop.GetValue(UserInfoData);
+                        var text = value?.ToString();
+                        if (!string.IsNullOrEmpty(text))
+                        {
+                            session.PrintText(x: textConfig.X, y: textConfig.Y,
+                                text: text, fontName: textConfig.BodyFont, fontSize: textConfig.BodySize);
+                        }
+                    }
+                }
+            }
+
             session.EndPage();
-            session.Dispose();
             return true;
         }
         catch (Exception ex)
