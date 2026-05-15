@@ -6,13 +6,47 @@
   },
   "PrinterConfig": {
     "Provider": "Seaory",
-    "DefaultPrinterId": "Seaory S22K"
+    "DefaultPrinterId": "Seaory S22K",
+    "PrintText": [
+      {
+        "PropertyName": "Name",
+        "BodyFont": "微软雅黑",
+        "BodySize": 10,
+        "X": 200,
+        "Y": 430
+      },
+      {
+        "PropertyName": "ClassName",
+        "BodyFont": "微软雅黑",
+        "BodySize": 10,
+        "X": 100,
+        "Y": 500
+      },
+      {
+        "PropertyName": "Department",
+        "BodyFont": "微软雅黑",
+        "BodySize": 10,
+        "X": 100,
+        "Y": 500
+      },
+      {
+        "PropertyName": "EmployeeNumber",
+        "BodyFont": "微软雅黑",
+        "BodySize": 10,
+        "X": 458,
+        "Y": 257
+      }
+    ],
+    "Seaory": {
+      "RibbonType": 1,
+      "Orientation": 1
+    }
   },
   "ReaderConfig": {
     "Provider": "Yc"
   },
   "IdReaderConfig": {
-    "Provider": "Virtual"
+    "Provider": "CVR100U"
   },
   "CountdownSeconds": 60,
   "TenantId": "25",
