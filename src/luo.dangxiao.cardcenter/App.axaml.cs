@@ -36,6 +36,9 @@ namespace luo.dangxiao.cardcenter
 
             NLogConfig.Setup();
 
+            // Register native library resolver before any Seaory P/Invoke calls.
+            NativeLibraryResolver.Register();
+
             var cfgData = ConfigModel.Load<CardCenterConfig>();
             cfgData.PrinterConfig.RawProviderValue = PrinterProviderJsonConverter.LastInvalidValue ?? string.Empty;
             var provider = cfgData.PrinterConfig.ResolveProvider(out var providerWarning);
