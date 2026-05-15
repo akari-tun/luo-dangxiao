@@ -19,7 +19,7 @@ public static class IdReaderFactory
         return provider?.ToString() switch
         {
             "Virtual" => new VirtualIdReader(),
-            "HuashiCvr100U" => new Cv100UIdReader(),
+            "CVR100U" => new CVR100UIdReader(),
             "Unknown" or null or "" => new VirtualIdReader(),
             _ => new VirtualIdReader(),
         };

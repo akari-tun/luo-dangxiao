@@ -26,9 +26,9 @@ public abstract class WindowsCvr100UMethodsBase : ICvr100UMethods
 
         var dllDir = arch switch
         {
-            Architecture.X86 => Path.Combine(basePath, "native", "win-x86"),
-            Architecture.X64 => Path.Combine(basePath, "native", "win-x64"),
-            Architecture.Arm64 => Path.Combine(basePath, "native", "win-arm64"),
+            Architecture.X86 => Path.Combine(basePath, "CVR100U", "libs", "win-x86"),
+            Architecture.X64 => Path.Combine(basePath, "CVR100U", "libs", "win-x64"),
+            Architecture.Arm64 => Path.Combine(basePath, "CVR100U", "libs", "win-arm64"),
             _ => basePath,
         };
 
@@ -46,7 +46,7 @@ public abstract class WindowsCvr100UMethodsBase : ICvr100UMethods
     public int CVR_Authenticate() => CVR_Authenticate_Native();
     public int CVR_Read_Content(int active) => CVR_Read_Content_Native(active);
     public int CVR_GetSAMID(StringBuilder buffer, ref int length) => CVR_GetSAMID_Native(buffer, ref length);
-    public int CVR_GetUID(byte[] buffer, ref int length) => CVR_GetUID_Native(buffer, ref length);
+    public int CVR_GetUID(byte[] buffer, ref int length) => throw new PlatformNotSupportedException("CVR_GetUID is not available on Windows SDK.");
     public int GetPeopleName(StringBuilder buffer, ref int length) => GetPeopleName_Native(buffer, ref length);
     public int GetPeopleSex(StringBuilder buffer, ref int length) => GetPeopleSex_Native(buffer, ref length);
     public int GetPeopleNation(StringBuilder buffer, ref int length) => GetPeopleNation_Native(buffer, ref length);
@@ -73,9 +73,6 @@ public abstract class WindowsCvr100UMethodsBase : ICvr100UMethods
 
     [DllImport("Termb.dll", CallingConvention = CallingConvention.StdCall, EntryPoint = "CVR_GetSAMID")]
     private static extern int CVR_GetSAMID_Native(StringBuilder buffer, ref int length);
-
-    [DllImport("Termb.dll", CallingConvention = CallingConvention.StdCall, EntryPoint = "CVR_GetUID")]
-    private static extern int CVR_GetUID_Native(byte[] buffer, ref int length);
 
     [DllImport("Termb.dll", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi, EntryPoint = "GetPeopleName")]
     private static extern int GetPeopleName_Native(StringBuilder buffer, ref int length);

@@ -8,11 +8,11 @@ namespace luo.dangxiao.idreader.CVR100U;
 /// CVR100U hardware ID reader implementation.
 /// Supports Linux (lib100UD.so) and Windows (Termb.dll, with x86/x64 resolution).
 /// </summary>
-public sealed class Cv100UIdReader : IdReaderBase
+public sealed class CVR100UIdReader : IdReaderBase
 {
     private static readonly ICvr100UMethods _sdk;
 
-    static Cv100UIdReader()
+    static CVR100UIdReader()
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
@@ -125,8 +125,9 @@ public sealed class Cv100UIdReader : IdReaderBase
 
                 byte[] certTypeBytes = ReadSdkByteArray(_sdk.GetCertType, DefaultBinaryBufferSize);
                 byte[] photoBytes = ReadSdkByteArray(_sdk.GetBMPData, PhotoBufferSize);
-                byte[] uidBytes = ReadSdkByteArray(_sdk.CVR_GetUID, 8);
-                string uid = uidBytes.Length > 0 ? Convert.ToHexString(uidBytes) : string.Empty;
+                string? uid = RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
+                    ? ReadUid()
+                    : null;
 
                 data = new IdCardData
                 {
@@ -141,7 +142,7 @@ public sealed class Cv100UIdReader : IdReaderBase
                     EndDate = ReadSdkString(_sdk.GetEndDate),
                     PhotoBytes = photoBytes.Length == 0 ? null : photoBytes,
                     CertType = ParseCertType(certTypeBytes),
-                    Uid = string.IsNullOrWhiteSpace(uid) ? null : uid,
+                    Uid = uid,
                     SamId = string.IsNullOrWhiteSpace(_samId) ? null : _samId,
                 };
 
@@ -222,6 +223,12 @@ public sealed class Cv100UIdReader : IdReaderBase
                 _disposed = true;
             }
         }
+    }
+
+    private string ReadUid()
+    {
+        byte[] uidBytes = ReadSdkByteArray(_sdk.CVR_GetUID, 8);
+        return uidBytes.Length > 0 ? Convert.ToHexString(uidBytes) : string.Empty;
     }
 
     private static IdTypeEnum ParseCertType(byte[] certTypeBytes)

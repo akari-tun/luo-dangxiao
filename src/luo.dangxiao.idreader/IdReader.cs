@@ -18,5 +18,5 @@ public enum IdReader
     /// <summary>
     /// Huashi CV100U hardware ID reader.
     /// </summary>
-    HuashiCvr100U,
+    CVR100U,
 }
