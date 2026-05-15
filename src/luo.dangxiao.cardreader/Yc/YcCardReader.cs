@@ -35,7 +35,7 @@ public sealed class YcCardReader : CardReaderBase
 
         try
         {
-            int result = _consumption.ReadCardIdNew(out _, out uint serialNumber);
+            int result = _consumption.ReadCardId(out _, out uint serialNumber);
             if (result != (int)ErrorCode.Success)
             {
                 return false;
