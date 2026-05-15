@@ -14,6 +14,17 @@ namespace luo.dangxiao.printer
         public abstract string ProviderName { get; }
 
         /// <summary>
+        /// Gets the last error code returned by the printer SDK. 0 means no error.
+        /// </summary>
+        public uint LastErrorCode { get; protected set; }
+
+        /// <summary>
+        /// Gets a user-friendly description of the last printer error.
+        /// Set to null when an operation succeeds.
+        /// </summary>
+        public string? LastErrorMsg { get; protected set; }
+
+        /// <summary>
         /// Discovers available printers for the provider.
         /// </summary>
         /// <returns>The discovered printer list.</returns>
@@ -100,6 +111,12 @@ namespace luo.dangxiao.printer
         /// </summary>
         public virtual void Dispose()
         {
+        }
+
+        protected void ClearError()
+        {
+            LastErrorCode = 0;
+            LastErrorMsg = null;
         }
     }
 }

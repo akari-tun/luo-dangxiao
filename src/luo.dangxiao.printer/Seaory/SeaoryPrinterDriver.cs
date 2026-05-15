@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using luo.dangxiao.models;
 using luo.dangxiao.printer.Seaory.Native;
 
 namespace luo.dangxiao.printer.Seaory
@@ -164,15 +165,19 @@ namespace luo.dangxiao.printer.Seaory
                         return true;
 
                     uint status = 0;
-                    var result = SeaorySdk.SOY_PR_GetPrinterStatusA(printerId, ref status);
+                    var connectResult = SeaorySdk.SOY_PR_GetPrinterStatusA(printerId, ref status);
 
-                    if (result != 0)
+                    if (connectResult != 0)
+                    {
+                        RecordError(connectResult);
                         return false;
+                    }
 
                     var printer = TryConnectToPrinter(printerId);
                     if (printer == null)
                         return false;
 
+                    ClearError();
                     printer.IsConnected = true;
                     _connectedPrinters[printerId] = printer;
                     
@@ -412,13 +417,26 @@ namespace luo.dangxiao.printer.Seaory
         /// Starts a Seaory-specific print session.
         /// </summary>
         /// <param name="printerId">The printer identifier.</param>
-        /// <param name="docProp">Optional native document properties.</param>
+        /// <param name="docProp">Optional native document properties. If null, defaults are used.</param>
         /// <returns>A Seaory print session.</returns>
         public PrintSession BeginPrintSession(string printerId, SeaoryDocProp? docProp = null)
         {
+            return BeginPrintSession(printerId, docProp, seaoryConfig: null);
+        }
+
+        /// <summary>
+        /// Starts a Seaory-specific print session with Seaory configuration.
+        /// </summary>
+        /// <param name="printerId">The printer identifier.</param>
+        /// <param name="docProp">Optional native document properties. If provided, takes precedence over seaoryConfig.</param>
+        /// <param name="seaoryConfig">Optional Seaory print configuration. Unconfigured fields use SDK defaults.</param>
+        /// <returns>A Seaory print session.</returns>
+        public PrintSession BeginPrintSession(string printerId, SeaoryDocProp? docProp, SeaoryPrintConfig? seaoryConfig)
+        {
             lock (_sdkLock)
             {
-                var prop = docProp ?? SeaoryDocProp.Create();
+                var prop = docProp ?? BuildSeaoryDocProp(seaoryConfig);
+
                 var propPtr = Marshal.AllocHGlobal(Marshal.SizeOf<SeaoryDocProp>());
                 Marshal.StructureToPtr(prop, propPtr, false);
 
@@ -431,6 +449,32 @@ namespace luo.dangxiao.printer.Seaory
 
                 return new PrintSession(this, printerId, context);
             }
+        }
+
+        private static SeaoryDocProp BuildSeaoryDocProp(SeaoryPrintConfig? config)
+        {
+            var prop = SeaoryDocProp.Create();
+
+            if (config == null)
+            {
+                prop.byOrientation = 1;
+                prop.byRibbonType = 0;
+                prop.byAutoDetectRibbon = 1;
+                prop.byCardInOutByDev = 1;
+                return prop;
+            }
+
+            prop.byOrientation = config.Orientation;
+            prop.byRibbonType = config.RibbonType;
+            prop.byAutoDetectRibbon = 1;
+            prop.byCardInOutByDev = config.CardInOut ?? 1;
+
+            if (config.InputBin.HasValue)
+                prop.byInputBin = config.InputBin.Value;
+            if (config.OutputBin.HasValue)
+                prop.byOutputBin = config.OutputBin.Value;
+
+            return prop;
         }
 
         internal void EndPrintSession(IntPtr context, bool cancel)
@@ -467,13 +511,33 @@ namespace luo.dangxiao.printer.Seaory
         /// <inheritdoc />
         public override Task<bool> MoveCardAsync(string printerId, CardMoveCommand command)
         {
-            return Task.Run(() => MoveCard(printerId, MapMoveCommand(command)) == ErrorCode.Success);
+            return Task.Run(() =>
+            {
+                var result = MoveCard(printerId, MapMoveCommand(command));
+                if (result != ErrorCode.Success)
+                {
+                    RecordError(result);
+                    return false;
+                }
+                ClearError();
+                return true;
+            });
         }
 
         /// <inheritdoc />
         public override Task<bool> ResetPrinterAsync(string printerId, bool hardReset = false)
         {
-            return Task.Run(() => ResetPrinter(printerId, hardReset) == ErrorCode.Success);
+            return Task.Run(() =>
+            {
+                var result = ResetPrinter(printerId, hardReset);
+                if (result != ErrorCode.Success)
+                {
+                    RecordError(result);
+                    return false;
+                }
+                ClearError();
+                return true;
+            });
         }
 
         /// <inheritdoc />
@@ -586,6 +650,15 @@ namespace luo.dangxiao.printer.Seaory
         #endregion
 
         #region Error Handling
+
+        /// <summary>
+        /// Records the last SDK error code and its description into the base properties.
+        /// </summary>
+        protected void RecordError(uint errorCode)
+        {
+            LastErrorCode = errorCode;
+            LastErrorMsg = GetErrorDescription(errorCode);
+        }
 
         public static string GetErrorDescription(uint errorCode)
         {

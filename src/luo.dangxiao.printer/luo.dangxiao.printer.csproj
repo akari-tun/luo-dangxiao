@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\luo.dangxiao.models\luo.dangxiao.models.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Seaory\libs\linux-x86-64\libdcrf32.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

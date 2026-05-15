@@ -51,8 +51,13 @@ namespace luo.dangxiao.printer.Virtual
         public override Task<bool> ConnectAsync(string printerId)
         {
             if (!_printers.TryGetValue(printerId, out var printer))
+            {
+                LastErrorCode = 20;
+                LastErrorMsg = "Virtual printer not found";
                 return Task.FromResult(false);
+            }
 
+            ClearError();
             printer.IsConnected = true;
             printer.Status = PrinterStatus.Ready;
             printer.LastSeen = DateTime.Now;
@@ -141,8 +146,13 @@ namespace luo.dangxiao.printer.Virtual
         public override Task<bool> MoveCardAsync(string printerId, CardMoveCommand command)
         {
             if (!_positions.ContainsKey(printerId))
+            {
+                LastErrorCode = 20;
+                LastErrorMsg = "Virtual printer not found";
                 return Task.FromResult(false);
+            }
 
+            ClearError();
             _positions[printerId] = command switch
             {
                 CardMoveCommand.MoveToHopper => CardPositionState.OutOfPrinter,
@@ -169,8 +179,13 @@ namespace luo.dangxiao.printer.Virtual
         public override Task<bool> ResetPrinterAsync(string printerId, bool hardReset = false)
         {
             if (!_printers.TryGetValue(printerId, out var printer))
+            {
+                LastErrorCode = 20;
+                LastErrorMsg = "Virtual printer not found";
                 return Task.FromResult(false);
+            }
 
+            ClearError();
             printer.Status = PrinterStatus.Ready;
             _positions[printerId] = CardPositionState.OutOfPrinter;
             return Task.Delay(1000).ContinueWith(p => true);
