@@ -21,6 +21,53 @@ namespace luo.dangxiao.models
     }
 
     /// <summary>
+    /// Configuration for a single text element to print on a card.
+    /// </summary>
+    public sealed class PrintTextConfig
+    {
+        public string PropertyName { get; set; } = string.Empty;
+
+        public string BodyFont { get; set; } = "SimHei";
+
+        public int BodySize { get; set; } = 12;
+
+        public int X { get; set; }
+
+        public int Y { get; set; }
+    }
+
+    /// <summary>
+    /// Seaory-specific print configuration.
+    /// </summary>
+    public sealed class SeaoryPrintConfig
+    {
+        /// <summary>
+        /// Ribbon type. For S series: 0=YMCKO, 1=K, 2=1/2ymcKO, 3=YMCKOK, etc.
+        /// </summary>
+        public byte RibbonType { get; set; } = 0;
+
+        /// <summary>
+        /// Orientation. 1=portrait, 2=landscape.
+        /// </summary>
+        public byte Orientation { get; set; } = 1;
+
+        /// <summary>
+        /// Card input bin. 0=card feeder, 1=front manual slot, 2=back manual slot.
+        /// </summary>
+        public byte? InputBin { get; set; }
+
+        /// <summary>
+        /// Card output bin. 0=output hopper, 1=front manual slot, 2=back manual slot, 3=reject box, 4=do not eject.
+        /// </summary>
+        public byte? OutputBin { get; set; }
+
+        /// <summary>
+        /// Use device card in/out settings. 1=use device settings, 0=use InputBin/OutputBin values.
+        /// </summary>
+        public byte? CardInOut { get; set; }
+    }
+
+    /// <summary>
     /// Supported card printer providers.
     /// </summary>
     public enum PrinterProvider
@@ -99,6 +146,16 @@ namespace luo.dangxiao.models
         /// Gets or sets the default printer identifier.
         /// </summary>
         public string DefaultPrinterId { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the list of text elements to print on the card.
+        /// </summary>
+        public List<PrintTextConfig> PrintText { get; set; } = [];
+
+        /// <summary>
+        /// Gets or sets the Seaory-specific print configuration.
+        /// </summary>
+        public SeaoryPrintConfig? Seaory { get; set; }
 
         /// <summary>
         /// Resolves the configured provider to a supported runtime provider.

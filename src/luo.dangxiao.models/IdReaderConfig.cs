@@ -33,7 +33,7 @@ public enum IdReaderProvider
     /// <summary>
     /// Huashi CVR-100U ID reader.
     /// </summary>
-    HuashiCvr100U,
+    CVR100U,
 
     /// <summary>
     /// Virtual ID reader provider.
