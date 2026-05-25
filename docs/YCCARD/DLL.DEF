@@ -1,0 +1,98 @@
+EXPORTS
+	OpenComm
+	CloseComm
+
+	Check_Reader
+
+	rf_beep
+	rf_init
+	rf_halt
+	rf_card
+	rf_read
+	rf_exit
+	rf_write
+	rf_select
+	rf_request
+	rf_anticoll
+	rf_increment
+	rf_decrement
+	rf_load_key_hex
+	rf_authentication
+
+	Init_Mobile_SysCard
+	Init_SysCard12_NewCreat
+	Init_SysCard12_NewReWrite
+
+	ReadCard_ID
+	ReadCard_ID_NEW
+	Get_SysUse_Sec
+	Query_Card_Type
+	Query_Pos_UserCard12
+	Change_Pos_UserType12
+	Change_Pos_UserType12_NEW
+	Update_UserCard_Period
+
+	RST_Pos_OPTCard12
+	RST_Pos_UserCard12
+
+	Init_JS_OPTCard12
+	Init_Pos_OPTCard12
+
+	Init_Pos_UserCard12
+	Init_Pos_UserCard_N12
+
+	WRT_UserCard_Term
+	WRT_Pos_UserCard12
+	WRT_Pos_UserCard_AddCount12
+	
+	Init_Js_UserCard
+	Init_Js_UserCard_N
+	Init_Js_UserCard_New
+
+	WRT_Js_UserCard
+	WRT_Js_UserCard_AddCount
+	InitCollectCard
+	InitBlackCard
+	WriteBlackCard
+	ReadRecNum
+	ReadRecNum_NEW
+	ReadAllRec_NEW
+	ReadDetailedRec_NEW
+	ReadAllRec
+	ReadRecbySec
+	QueryJsCard
+	RSTJsUserCard
+	ClearRecNum
+	RSTCollectCard
+	RSTJSSubSysCard
+	MakeJSSubSysCard
+	MakeJSSubSysCard12
+	MakeJSSubSysCard12_New
+	MakeJSSubSysCard12_Integrative
+	Set_Js_AddreCard
+	Set_Js_Overdraft_Card
+	Set_Js_DateTimeCard
+	Set_Js_QueryCard
+	WRT_UserCard_Subsidize_Time
+
+	GK_Calc_Key
+	Advanced_Read_UserCard_Message
+	Advanced_Write_UserCard_Message
+
+	Write_UP_Warrant
+	Read_UP_Warrant
+	RST_UP_Warrant
+	WRT_Pos_Virement
+	Read_Pos_Balance
+
+	Make_UserCard_New
+	MAKE_UserCard12_CardName
+	Make_UserCard_New091102
+
+	Read_SysMainKey
+
+	OpenCommAuto
+	RST_UserCard
+
+	FlashTool_ResolveData
+	WRT_UserCard_PassWord

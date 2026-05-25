@@ -25,6 +25,8 @@ namespace luo.dangxiao.models
     /// </summary>
     public sealed class PrintTextConfig
     {
+        public string Label { get; set; } = string.Empty;
+
         public string PropertyName { get; set; } = string.Empty;
 
         public string BodyFont { get; set; } = "SimHei";

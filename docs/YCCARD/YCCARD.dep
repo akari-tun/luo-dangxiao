@@ -1,0 +1,10 @@
+# Microsoft Developer Studio Generated Dependency File, included by YCCARD.mak
+
+"F:\7.发卡器系列\YC-M3\Code\USB_Lib\YCCARD\YCCARD.CPP" : \
+	"f:\7.发卡器系列\yc-m3\code\usb_lib\yccard\hid\hid.h"\
+	"f:\7.发卡器系列\yc-m3\code\usb_lib\yccard\hid\hidpi.h"\
+	"f:\7.发卡器系列\yc-m3\code\usb_lib\yccard\hid\hidsdi.h"\
+	"f:\7.发卡器系列\yc-m3\code\usb_lib\yccard\hid\hidusage.h"\
+	"f:\7.发卡器系列\yc-m3\code\usb_lib\yccard\stdafx.h"\
+	"f:\7.发卡器系列\yc-m3\code\usb_lib\yccard\yccard.h"\
+	

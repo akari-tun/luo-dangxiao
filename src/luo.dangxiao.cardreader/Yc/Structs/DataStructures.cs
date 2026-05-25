@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+
 namespace luo.dangxiao.cardreader.Yc.Structs;
 
 public struct SystemInfo
@@ -27,8 +29,10 @@ public struct SystemInfo
     }
 }
 
+[StructLayout(LayoutKind.Sequential, Pack = 1, Size = 120)]
 public struct SystemInfoNew
 {
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
     public byte[] Reserved;
     public int AccessControlSystem;
     public int AccessControlSector;
@@ -37,15 +41,25 @@ public struct SystemInfoNew
     public int PaymentSector;
     public int WaterBillingSystem;
     public int WaterBillingSector;
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)]
     public byte[] SystemCardNumberPayment;
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)]
     public byte[] SystemCardNumberAccess;
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)]
     public byte[] SystemCardNumberWater;
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
     public byte[] SystemKeyB;
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
     public byte[] UserPassword;
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
     public byte[] OperatorPassword;
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
     public byte[] CommunicationPassword;
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
     public byte[] Reserved2;
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
     public byte[] UserKeyAB;
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
     public byte[] UserReturnKeyAB;
 
     public SystemInfoNew()

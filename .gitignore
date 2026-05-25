@@ -5,3 +5,4 @@ obj/
 AppPackages/
 ~$*.docx
 ~$*.doc
+dist/

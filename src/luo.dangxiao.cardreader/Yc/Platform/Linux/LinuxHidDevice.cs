@@ -20,7 +20,7 @@ internal sealed class LinuxHidDevice : IHidDevice
     {
         _vendorId = vendorId;
         _productId = productId;
-        _devicePath = FindDevicePath(vendorId, productId) 
+        _devicePath = FindDevicePath(vendorId, productId)
             ?? throw new InvalidOperationException($"HID device not found (VID:{vendorId:X4}, PID:{productId:X4})");
     }
 
@@ -54,21 +54,20 @@ internal sealed class LinuxHidDevice : IHidDevice
         if (_disposed) throw new ObjectDisposedException(nameof(LinuxHidDevice));
         if (!IsOpen) throw new InvalidOperationException("Device not open");
 
-        // Linux hidraw returns 64 bytes directly without report ID prefix
         byte[] readBuffer = new byte[64];
-        
+
         nint bytesRead = NativeMethods.read(_fd, readBuffer, 64);
-        
+
         if (bytesRead < 0)
         {
-            ReaderLogger.Log($"[LinuxHidDevice.Read] ERROR: read returned {bytesRead}");
+            int errno = Marshal.GetLastWin32Error();
+            ReaderLogger.Log($"[LinuxHidDevice.Read] ERROR: read failed (errno={errno}), returned {bytesRead}");
             return -1;
         }
 
         ReaderLogger.Log($"[LinuxHidDevice.Read] Raw {bytesRead} bytes from HID");
         ReaderLogger.Log($"[LinuxHidDevice.Read] Full buffer: {BitConverter.ToString(readBuffer, 0, Math.Min((int)bytesRead, 64))}");
-        
-        // Copy all bytes (Linux hidraw doesn't have report ID like Windows)
+
         if (bytesRead > 0)
         {
             int copyLength = Math.Min((int)bytesRead, buffer.Length);
@@ -76,7 +75,7 @@ internal sealed class LinuxHidDevice : IHidDevice
             ReaderLogger.Log($"[LinuxHidDevice.Read] Copied {copyLength} bytes to output buffer");
             return copyLength;
         }
-        
+
         return 0;
     }
 
@@ -85,18 +84,16 @@ internal sealed class LinuxHidDevice : IHidDevice
         if (_disposed) throw new ObjectDisposedException(nameof(LinuxHidDevice));
         if (!IsOpen) throw new InvalidOperationException("Device not open");
 
-        // Linux hidraw expects same format as Windows: [report_id][length][data...]
-        // Total buffer must be 65 bytes for the device
         byte[] writeBuffer = new byte[65];
-        writeBuffer[0] = 0x00;  // Report ID
-        writeBuffer[1] = (byte)buffer.Length;  // Length byte
-        int copyLen = Math.Min(buffer.Length, 63);  // Max 63 bytes after report_id and length
+        writeBuffer[0] = 0x00;
+        writeBuffer[1] = (byte)buffer.Length;
+        int copyLen = Math.Min(buffer.Length, 63);
         Buffer.BlockCopy(buffer, 0, writeBuffer, 2, copyLen);
 
         ReaderLogger.Log($"[LinuxHidDevice.Write] Writing 65 bytes (report_id + length + {copyLen} data): {BitConverter.ToString(writeBuffer, 0, Math.Min(30, 65))}");
 
         nint bytesWritten = NativeMethods.write(_fd, writeBuffer, 65);
-        
+
         if (bytesWritten < 0)
         {
             ReaderLogger.Log($"[LinuxHidDevice.Write] ERROR: write returned {bytesWritten}");
@@ -109,11 +106,10 @@ internal sealed class LinuxHidDevice : IHidDevice
 
     private static string? FindDevicePath(ushort vendorId, ushort productId)
     {
-        // Check up to 256 hidraw devices
         for (int i = 0; i < 256; i++)
         {
             string path = $"/dev/hidraw{i}";
-            
+
             if (!File.Exists(path))
                 continue;
 
@@ -127,8 +123,6 @@ internal sealed class LinuxHidDevice : IHidDevice
                 var devInfo = new NativeMethods.HidrawDevinfo();
                 if (NativeMethods.ioctl(fd, NativeMethods.HidioCgrawinfo, ref devInfo) >= 0)
                 {
-                    // Vendor and Product are signed shorts in kernel struct
-                    // Cast to ushort to get correct values
                     ushort vid = (ushort)devInfo.Vendor;
                     ushort pid = (ushort)devInfo.Product;
 

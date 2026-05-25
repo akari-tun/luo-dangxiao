@@ -458,9 +458,10 @@ namespace luo.dangxiao.printer.Seaory
             if (config == null)
             {
                 prop.byOrientation = 1;
-                prop.byRibbonType = 0;
+                prop.byRibbonType = 1;
                 prop.byAutoDetectRibbon = 1;
                 prop.byCardInOutByDev = 1;
+                prop.byPrintSide = 1;
                 return prop;
             }
 
@@ -468,6 +469,7 @@ namespace luo.dangxiao.printer.Seaory
             prop.byRibbonType = config.RibbonType;
             prop.byAutoDetectRibbon = 1;
             prop.byCardInOutByDev = config.CardInOut ?? 1;
+            prop.byPrintSide = 1;
 
             if (config.InputBin.HasValue)
                 prop.byInputBin = config.InputBin.Value;

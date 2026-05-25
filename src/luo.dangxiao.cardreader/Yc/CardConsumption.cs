@@ -10,6 +10,12 @@ public class CardConsumption : IDisposable
 
     public LicenseManager License => LicenseManager.Instance;
 
+    private static byte[]? GetSystemKey6(byte[]? key)
+    {
+        if (key == null || key.Length < 6) return null;
+        return key.Length == 6 ? key : key[..6];
+    }
+
     public CardConsumption(CardReader reader)
     {
         _reader = reader ?? throw new ArgumentNullException(nameof(reader));
@@ -100,15 +106,16 @@ public class CardConsumption : IDisposable
 
         uint usercardSec;
 
+        result = _reader.Card(0x52, out _);
+        if (result != (int)ErrorCode.Success) return (int)ErrorCode.ReaderError;
+
         if (License.HasPaymentAuth)
         {
             usercardSec = (uint)License.SystemInfo.PaymentSector;
-            result = _reader.LoadKey(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec, License.SystemInfo.SystemKeyB);
+            var sysKey6 = GetSystemKey6(License.SystemInfo.SystemKeyB);
+            if (sysKey6 == null) return (int)ErrorCode.ParameterError;
+            result = _reader.LoadKey(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec, sysKey6);
             if (result != (int)ErrorCode.Success) return (int)ErrorCode.ReaderError;
-
-            _reader.Halt();
-            result = ReadCardIdNew(out _, out cardSerno);
-            if (result != (int)ErrorCode.Success) return (int)ErrorCode.NoCard;
 
             result = _reader.Authentication(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec);
             if (result == (int)ErrorCode.Success)
@@ -128,12 +135,10 @@ public class CardConsumption : IDisposable
         if (License.HasWaterBillingAuth)
         {
             usercardSec = (uint)License.SystemInfo.WaterBillingSector;
-            result = _reader.LoadKey(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec, License.SystemInfo.SystemKeyB);
+            var sysKey6 = GetSystemKey6(License.SystemInfo.SystemKeyB);
+            if (sysKey6 == null) return (int)ErrorCode.ParameterError;
+            result = _reader.LoadKey(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec, sysKey6);
             if (result != (int)ErrorCode.Success) return (int)ErrorCode.ReaderError;
-
-            _reader.Halt();
-            result = ReadCardIdNew(out _, out cardSerno);
-            if (result != (int)ErrorCode.Success) return (int)ErrorCode.NoCard;
 
             result = _reader.Authentication(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec);
             if (result == (int)ErrorCode.Success)
@@ -153,12 +158,10 @@ public class CardConsumption : IDisposable
         if (License.HasAccessControlAuth)
         {
             usercardSec = (uint)License.SystemInfo.AccessControlSector;
-            result = _reader.LoadKey(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec, License.SystemInfo.SystemKeyB);
+            var sysKey6 = GetSystemKey6(License.SystemInfo.SystemKeyB);
+            if (sysKey6 == null) return (int)ErrorCode.ParameterError;
+            result = _reader.LoadKey(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec, sysKey6);
             if (result != (int)ErrorCode.Success) return (int)ErrorCode.ReaderError;
-
-            _reader.Halt();
-            result = ReadCardIdNew(out _, out cardSerno);
-            if (result != (int)ErrorCode.Success) return (int)ErrorCode.NoCard;
 
             result = _reader.Authentication(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec);
             if (result == (int)ErrorCode.Success)
@@ -249,7 +252,12 @@ public class CardConsumption : IDisposable
 
         uint usercardSec = (uint)License.SystemInfo.PaymentSector;
 
-        result = _reader.LoadKey(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec, License.SystemInfo.SystemKeyB);
+        int cardResult = _reader.Card(0x52, out _);
+        if (cardResult != (int)ErrorCode.Success) return (int)ErrorCode.NoCard;
+
+        var sysKey6 = GetSystemKey6(License.SystemInfo.SystemKeyB);
+        if (sysKey6 == null) return (int)ErrorCode.ParameterError;
+        result = _reader.LoadKey(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec, sysKey6);
         if (result != (int)ErrorCode.Success) return (int)ErrorCode.ReaderError;
 
         result = _reader.Authentication(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec);
@@ -308,6 +316,9 @@ public class CardConsumption : IDisposable
 
         uint usercardSec = (uint)License.SystemInfo.PaymentSector;
 
+        int cardResult = _reader.Card(0x52, out _);
+        if (cardResult != (int)ErrorCode.Success) return (int)ErrorCode.NoCard;
+
         byte[] data0 = new byte[16];
         byte[] data1 = new byte[16];
         byte[] data2 = new byte[16];
@@ -341,7 +352,9 @@ public class CardConsumption : IDisposable
         data3[9] = 0xDA;
         Buffer.BlockCopy(License.SystemInfo.SystemKeyB, 0, data3, 10, 6);
 
-        result = _reader.LoadKey(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec, License.SystemInfo.SystemKeyB);
+        var sysKey6 = GetSystemKey6(License.SystemInfo.SystemKeyB);
+        if (sysKey6 == null) return (int)ErrorCode.ParameterError;
+        result = _reader.LoadKey(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec, sysKey6);
         if (result != (int)ErrorCode.Success) return (int)ErrorCode.ReaderError;
 
         result = _reader.Authentication(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec);
@@ -381,6 +394,9 @@ public class CardConsumption : IDisposable
         if (useSnr != cardSerno) return (int)ErrorCode.UserCardError;
 
         uint usercardSec = (uint)License.SystemInfo.PaymentSector;
+
+        int cardResult = _reader.Card(0x52, out _);
+        if (cardResult != (int)ErrorCode.Success) return (int)ErrorCode.NoCard;
 
         byte[] password = new byte[16];
         KeyCalculator.CalculateKey12(BitConverter.GetBytes(cardSerno), License.SystemInfo.OperatorPassword, password);
@@ -430,6 +446,9 @@ public class CardConsumption : IDisposable
         if (useSnr != cardSerno) return (int)ErrorCode.UserCardError;
 
         uint usercardSec = (uint)License.SystemInfo.PaymentSector;
+
+        int cardResult = _reader.Card(0x52, out _);
+        if (cardResult != (int)ErrorCode.Success) return (int)ErrorCode.NoCard;
 
         byte[] password = new byte[16];
         KeyCalculator.CalculateKey12(BitConverter.GetBytes(cardSerno), License.SystemInfo.OperatorPassword, password);
@@ -485,7 +504,12 @@ public class CardConsumption : IDisposable
 
         uint usercardSec = (uint)License.SystemInfo.PaymentSector;
 
-        result = _reader.LoadKey(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec, License.SystemInfo.SystemKeyB);
+        int cardResult = _reader.Card(0x52, out _);
+        if (cardResult != (int)ErrorCode.Success) return (int)ErrorCode.NoCard;
+
+        var sysKey6 = GetSystemKey6(License.SystemInfo.SystemKeyB);
+        if (sysKey6 == null) return (int)ErrorCode.ParameterError;
+        result = _reader.LoadKey(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec, sysKey6);
         if (result != (int)ErrorCode.Success) return (int)ErrorCode.ReaderError;
 
         result = _reader.Authentication(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec);
@@ -551,6 +575,9 @@ public class CardConsumption : IDisposable
 
         byte usercardSec = 1;
 
+        int cardResult = _reader.Card(0x52, out _);
+        if (cardResult != (int)ErrorCode.Success) return (int)ErrorCode.NoCard;
+
         result = _reader.LoadKey(KeyTypes.KeyA | KeyTypes.KeySet0, usercardSec, KeyCalculator.DefaultKeyA1);
         if (result != (int)ErrorCode.Success) return (int)ErrorCode.ReaderError;
 
@@ -605,6 +632,9 @@ public class CardConsumption : IDisposable
 
         byte usercardSec = 1;
 
+        int cardResult = _reader.Card(0x52, out _);
+        if (cardResult != (int)ErrorCode.Success) return (int)ErrorCode.NoCard;
+
         result = _reader.LoadKey(KeyTypes.KeyB | KeyTypes.KeySet2, usercardSec, KeyCalculator.SystemCardKeyB12);
         if (result != (int)ErrorCode.Success) return (int)ErrorCode.ReaderError;
 
@@ -652,9 +682,14 @@ public class CardConsumption : IDisposable
         int result = ReadCardIdNew(out _, out cardSerno);
         if (result != (int)ErrorCode.Success) return result;
 
+        int cardResult = _reader.Card(0x52, out _);
+        if (cardResult != (int)ErrorCode.Success) return (int)ErrorCode.NoCard;
+
         uint usercardSec = (uint)License.SystemInfo.WaterBillingSector;
 
-        result = _reader.LoadKey(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec, License.SystemInfo.SystemKeyB);
+        var sysKey6 = GetSystemKey6(License.SystemInfo.SystemKeyB);
+        if (sysKey6 == null) return (int)ErrorCode.ParameterError;
+        result = _reader.LoadKey(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec, sysKey6);
         if (result != (int)ErrorCode.Success) return (int)ErrorCode.ReaderError;
 
         result = _reader.Authentication(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec);
@@ -720,6 +755,9 @@ public class CardConsumption : IDisposable
 
         uint usercardSec = (uint)License.SystemInfo.WaterBillingSector;
 
+        int cardResult = _reader.Card(0x52, out _);
+        if (cardResult != (int)ErrorCode.Success) return (int)ErrorCode.NoCard;
+
         byte[] data0 = new byte[16];
         byte[] data1 = new byte[16];
         byte[] data2 = new byte[16];
@@ -753,7 +791,9 @@ public class CardConsumption : IDisposable
         data3[9] = 0xDA;
         Buffer.BlockCopy(License.SystemInfo.SystemKeyB, 0, data3, 10, 6);
 
-        result = _reader.LoadKey(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec, License.SystemInfo.SystemKeyB);
+        var sysKey6 = GetSystemKey6(License.SystemInfo.SystemKeyB);
+        if (sysKey6 == null) return (int)ErrorCode.ParameterError;
+        result = _reader.LoadKey(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec, sysKey6);
         if (result != (int)ErrorCode.Success) return (int)ErrorCode.ReaderError;
 
         result = _reader.Authentication(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec);
@@ -777,6 +817,11 @@ public class CardConsumption : IDisposable
         if (result != (int)ErrorCode.Success) return result;
 
         if (useSnr != cardSerno) return (int)ErrorCode.UserCardError;
+
+        if (useSnr != cardSerno) return (int)ErrorCode.UserCardError;
+
+        int cardResult = _reader.Card(0x52, out _);
+        if (cardResult != (int)ErrorCode.Success) return (int)ErrorCode.NoCard;
 
         uint usercardSec = (uint)License.SystemInfo.WaterBillingSector;
 
@@ -819,6 +864,9 @@ public class CardConsumption : IDisposable
         if (result != (int)ErrorCode.Success) return result;
 
         if (useSnr != cardSerno) return (int)ErrorCode.UserCardError;
+
+        int cardResult = _reader.Card(0x52, out _);
+        if (cardResult != (int)ErrorCode.Success) return (int)ErrorCode.NoCard;
 
         uint usercardSec = License.HasWaterBillingAuth 
             ? (uint)License.SystemInfo.WaterBillingSector 
@@ -878,9 +926,14 @@ public class CardConsumption : IDisposable
 
         if (useSnr != cardSerno) return (int)ErrorCode.UserCardError;
 
+        int cardResult = _reader.Card(0x52, out _);
+        if (cardResult != (int)ErrorCode.Success) return (int)ErrorCode.NoCard;
+
         uint usercardSec = (uint)License.SystemInfo.WaterBillingSector;
 
-        result = _reader.LoadKey(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec, License.SystemInfo.SystemKeyB);
+        var sysKey6 = GetSystemKey6(License.SystemInfo.SystemKeyB);
+        if (sysKey6 == null) return (int)ErrorCode.ParameterError;
+        result = _reader.LoadKey(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec, sysKey6);
         if (result != (int)ErrorCode.Success) return (int)ErrorCode.ReaderError;
 
         result = _reader.Authentication(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec);
@@ -920,6 +973,9 @@ public class CardConsumption : IDisposable
         if (License.HasPaymentAuth)
         {
             uint usercardSec = (uint)License.SystemInfo.PaymentSector;
+
+            int cardResult = _reader.Card(0x52, out _);
+            if (cardResult != (int)ErrorCode.Success) return (int)ErrorCode.NoCard;
             byte[] password = new byte[16];
             KeyCalculator.CalculateKey12(BitConverter.GetBytes(cardSerno), License.SystemInfo.OperatorPassword, password);
 
@@ -941,21 +997,25 @@ public class CardConsumption : IDisposable
 
         if (License.HasWaterBillingAuth)
         {
-            uint usercardSec = (uint)License.SystemInfo.WaterBillingSector;
-            byte[] password = new byte[16];
-            KeyCalculator.CalculateKey12(BitConverter.GetBytes(cardSerno), License.SystemInfo.OperatorPassword, password);
-
-            result = _reader.LoadKey(KeyTypes.KeyA | KeyTypes.KeySet0, (byte)usercardSec, password);
-            if (result == (int)ErrorCode.Success)
+            int cardResult = _reader.Card(0x52, out _);
+            if (cardResult == (int)ErrorCode.Success)
             {
-                result = _reader.Authentication(KeyTypes.KeyA | KeyTypes.KeySet0, (byte)usercardSec);
+                uint usercardSec = (uint)License.SystemInfo.WaterBillingSector;
+                byte[] password = new byte[16];
+                KeyCalculator.CalculateKey12(BitConverter.GetBytes(cardSerno), License.SystemInfo.OperatorPassword, password);
+
+                result = _reader.LoadKey(KeyTypes.KeyA | KeyTypes.KeySet0, (byte)usercardSec, password);
                 if (result == (int)ErrorCode.Success)
                 {
-                    byte[] data1 = new byte[16];
-                    result = _reader.Read((byte)(usercardSec * 4 + 1), data1);
+                    result = _reader.Authentication(KeyTypes.KeyA | KeyTypes.KeySet0, (byte)usercardSec);
                     if (result == (int)ErrorCode.Success)
                     {
-                        balanceJs = (uint)(data1[0] | (data1[1] << 8) | (data1[2] << 16));
+                        byte[] data1 = new byte[16];
+                        result = _reader.Read((byte)(usercardSec * 4 + 1), data1);
+                        if (result == (int)ErrorCode.Success)
+                        {
+                            balanceJs = (uint)(data1[0] | (data1[1] << 8) | (data1[2] << 16));
+                        }
                     }
                 }
             }
@@ -974,6 +1034,9 @@ public class CardConsumption : IDisposable
         if (result != (int)ErrorCode.Success) return result;
 
         if (useSnr != cardSerno) return (int)ErrorCode.UserCardError;
+
+        int cardResult = _reader.Card(0x52, out _);
+        if (cardResult != (int)ErrorCode.Success) return (int)ErrorCode.NoCard;
 
         uint usercardSec;
         if (flag == 1 && License.HasPaymentAuth)
@@ -1035,6 +1098,9 @@ public class CardConsumption : IDisposable
 
         uint usercardSec = (uint)License.SystemInfo.PaymentSector;
 
+        int cardResult = _reader.Card(0x52, out _);
+        if (cardResult != (int)ErrorCode.Success) return (int)ErrorCode.NoCard;
+
         byte[] password = new byte[16];
         KeyCalculator.CalculateKey12(BitConverter.GetBytes(cardSerno), License.SystemInfo.OperatorPassword, password);
 
@@ -1086,6 +1152,9 @@ public class CardConsumption : IDisposable
         int result = ReadCardIdNew(out _, out uint cardSerno);
         if (result != (int)ErrorCode.Success) return result;
 
+        int cardResult = _reader.Card(0x52, out _);
+        if (cardResult != (int)ErrorCode.Success) return (int)ErrorCode.NoCard;
+
         byte[] password = new byte[16];
         KeyCalculator.CalculateKey12(BitConverter.GetBytes(cardSerno), License.SystemInfo.OperatorPassword, password);
 
@@ -1134,6 +1203,9 @@ public class CardConsumption : IDisposable
 
         int result = ReadCardIdNew(out _, out uint cardSerno);
         if (result != (int)ErrorCode.Success) return result;
+
+        int cardResult = _reader.Card(0x52, out _);
+        if (cardResult != (int)ErrorCode.Success) return (int)ErrorCode.NoCard;
 
         byte[] password = new byte[16];
         KeyCalculator.CalculateKey12(BitConverter.GetBytes(cardSerno), License.SystemInfo.OperatorPassword, password);

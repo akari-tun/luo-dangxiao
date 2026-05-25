@@ -310,24 +310,37 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
             }
 
             // Print card
-            if (await CheckCountdownExpiredAsync()) return CardOperationResult.CountdownExpired;
-            ResetCountdown();
-            OperationStepText = LanguageProvider.SelfService_TakeCard_Status_PrintingCard;
-            var printSuccess = await PrintCardAsync(initResult);
-            if (!printSuccess)
+            if (Config.PrinterConfig.PrintText?.Count > 0)
             {
-                await DiscardCardToRejectAsync();
-                return CardOperationResult.Failed(GetPrinterLastError("Failed to print card."));
+                if (await CheckCountdownExpiredAsync()) return CardOperationResult.CountdownExpired;
+                ResetCountdown();
+                OperationStepText = LanguageProvider.SelfService_TakeCard_Status_PrintingCard;
+                var printSuccess = await PrintCardAsync(initResult);
+                if (!printSuccess)
+                {
+                    await DiscardCardToRejectAsync();
+                    return CardOperationResult.Failed(GetPrinterLastError("Failed to print card."));
+                }
+
+                var status = PrinterStatus.Printing;
+                while (status == PrinterStatus.Printing)
+                {
+                    await Task.Delay(1000, opToken);
+                    status = await CardPrinter.GetPrinterStatusAsync(PrinterId);
+                    if (await CheckCountdownExpiredAsync()) return CardOperationResult.CountdownExpired;
+                }
+            }
+            else
+            {
+                // Move card to front holder
+                if (!await CardPrinter.MoveCardAsync(PrinterId, CardMoveCommand.MoveToFront))
+                {
+                    return CardOperationResult.Failed(GetPrinterLastError("Failed to move card to output."));
+                }
             }
 
             // Report success
             WriteCardSuccessApi(initResult);
-
-            // Move card to front holder
-            if (!await CardPrinter.MoveCardAsync(PrinterId, CardMoveCommand.MoveToFront))
-            {
-                return CardOperationResult.Failed(GetPrinterLastError("Failed to move card to output."));
-            }
 
             // Transition to ready-to-pickup
             PickupInstructionText = GetPickupInstructionText();
@@ -529,8 +542,11 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
                         var text = value?.ToString();
                         if (!string.IsNullOrEmpty(text))
                         {
+                            var printText = string.IsNullOrEmpty(textConfig.Label)
+                                ? text
+                                : $"{textConfig.Label}{text}";
                             session.PrintText(x: textConfig.X, y: textConfig.Y,
-                                text: text, fontName: textConfig.BodyFont, fontSize: textConfig.BodySize);
+                                text: printText, fontName: textConfig.BodyFont, fontSize: textConfig.BodySize);
                         }
                     }
                 }
