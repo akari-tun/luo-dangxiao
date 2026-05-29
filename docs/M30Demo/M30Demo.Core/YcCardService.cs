@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using M30Demo.Core.Native;
@@ -7,6 +8,16 @@ namespace M30Demo.Core;
 
 public sealed class YcCardService : IDisposable
 {
+    static YcCardService()
+    {
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+    }
+
+    private static readonly string LogFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "initcard_debug.log");
+    private static void Log(string msg)
+    {
+        try { File.AppendAllText(LogFilePath, $"[{DateTime.Now:HH:mm:ss.fff}] {msg}{Environment.NewLine}"); } catch { }
+    }
     private IntPtr _handle = IntPtr.Zero;
     private bool _isDisposed;
 
@@ -194,93 +205,125 @@ public sealed class YcCardService : IDisposable
             return false;
         }
 
-        byte[] byte_userno = Encoding.ASCII.GetBytes(employeeId);
-        byte[] byte_username = Encoding.GetEncoding(936).GetBytes(employeeName);
-        byte[] byte_cardtypename = Encoding.GetEncoding(936).GetBytes(cardTypeName);
-
-        int cardCodeLen = byte_userno.Length;
-        int nameLen = byte_username.Length;
-        int typeLen = byte_cardtypename.Length;
-
-        var secretKey = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01 };
-        byte[] newbytes = new byte[59];
-        Array.Copy(secretKey, 0, newbytes, 0, secretKey.Length);
-
-        if (cardCodeLen + nameLen + typeLen + 12 <= 50)
-        {
-            newbytes[9] = (byte)cardCodeLen;
-            Array.Copy(byte_userno, 0, newbytes, 10, cardCodeLen);
-            newbytes[cardCodeLen + 10] = (byte)nameLen;
-            Array.Copy(byte_username, 0, newbytes, cardCodeLen + 11, nameLen);
-            newbytes[cardCodeLen + 11 + nameLen] = (byte)typeLen;
-            Array.Copy(byte_cardtypename, 0, newbytes, cardCodeLen + nameLen + 12, typeLen);
-        }
-
-        int result;
-        string shortUserCode = employeeId.Length > 5 ? employeeId.Substring(0, 5) : employeeId;
-
-        // Consume card init (issueType 0 or 1)
-        if (issueType is 0 or 1)
-        {
-            result = YcCardNative.ActivatePosUserCard12(
-                _handle, cardID, 0, 0xAA, 0xCC, cardTypeId,
-                ref cardSerno, useTerm, ref newbytes[0]);
-
-            if (result != 0)
+            try
             {
-                LastErrorCode = result;
+                Log("[InitCard] Encoding employeeId...");
+                byte[] byte_userno = string.IsNullOrEmpty(employeeId) ? Array.Empty<byte>() : Encoding.ASCII.GetBytes(employeeId);
+                Log($"[InitCard] Encoding employeeName (GB2312)...");
+                byte[] byte_username = string.IsNullOrEmpty(employeeName) ? Array.Empty<byte>() : Encoding.GetEncoding("GB2312").GetBytes(employeeName);
+                Log($"[InitCard] Encoding cardTypeName (GB2312)...");
+                byte[] byte_cardtypename = string.IsNullOrEmpty(cardTypeName) ? Array.Empty<byte>() : Encoding.GetEncoding("GB2312").GetBytes(cardTypeName);
+
+                int cardCodeLen = byte_userno.Length;
+                int nameLen = byte_username.Length;
+                int typeLen = byte_cardtypename.Length;
+                Log($"[InitCard] Lengths: empId={cardCodeLen}, name={nameLen}, type={typeLen}, total+12={cardCodeLen + nameLen + typeLen + 12}");
+
+                var secretKey = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01 };
+                byte[] newbytes = new byte[59];
+                Array.Copy(secretKey, 0, newbytes, 0, secretKey.Length);
+
+                if (cardCodeLen + nameLen + typeLen + 12 <= 50)
+                {
+                    newbytes[9] = (byte)cardCodeLen;
+                    if (cardCodeLen > 0) Array.Copy(byte_userno, 0, newbytes, 10, cardCodeLen);
+                    newbytes[cardCodeLen + 10] = (byte)nameLen;
+                    if (nameLen > 0) Array.Copy(byte_username, 0, newbytes, cardCodeLen + 11, nameLen);
+                    newbytes[cardCodeLen + 11 + nameLen] = (byte)typeLen;
+                    if (typeLen > 0) Array.Copy(byte_cardtypename, 0, newbytes, cardCodeLen + nameLen + 12, typeLen);
+                }
+                else
+                {
+                    Log("[InitCard] WARNING: payload too large, leaving newbytes mostly empty");
+                }
+
+                int result;
+                string shortUserCode = employeeId.Length > 5 ? employeeId.Substring(0, 5) : employeeId;
+                Log($"[InitCard] shortUserCode={shortUserCode}, issueType={issueType}");
+
+                // Consume card init (issueType 0 or 1)
+                if (issueType is 0 or 1)
+                {
+                    Log($"[InitCard] Calling ActivatePosUserCard12(cardID={cardID}, userType={cardTypeId}, useTerm={useTerm})...");
+                    result = YcCardNative.ActivatePosUserCard12(
+                        _handle, cardID, 0, 0xAA, 0xCC, cardTypeId,
+                        ref cardSerno, useTerm, ref newbytes[0]);
+                    Log($"[InitCard] ActivatePosUserCard12 returned result={result}, cardSerno={cardSerno}");
+
+                    if (result != 0)
+                    {
+                        LastErrorCode = result;
+                        Log($"[InitCard] ActivatePosUserCard12 FAILED, returning false");
+                        return false;
+                    }
+
+                    if (creditValue && consumeValue != 0)
+                    {
+                        Log($"[InitCard] Calling WRT_Pos_UserCard_AddCount12(value={consumeValue}, cardSerno={cardSerno})...");
+                        result = YcCardNative.WRT_Pos_UserCard_AddCount12(
+                            _handle, consumeValue, cardSerno, 500);
+                        Log($"[InitCard] WRT_Pos_UserCard_AddCount12 returned result={result}");
+                        if (result != 0)
+                        {
+                            YcCardNative.RST_Pos_UserCard12(_handle, cardSerno, 500, ref secretKey[0]);
+                            LastErrorCode = result;
+                            Log($"[InitCard] WRT_Pos_UserCard_AddCount12 FAILED, returning false");
+                            return false;
+                        }
+                    }
+                }
+
+                // Water card init: skip for issueType=0 since ActivatePosUserCard12 already
+                // initialized the sector. Only run for issueType=2 (water-only cards).
+                if (issueType == 2)
+                {
+                    uint waterSerno = 0;
+                    Log($"[InitCard] Calling Init_Js_UserCard(cardID={cardID}, shortUserCode={shortUserCode}, userType={cardTypeId})...");
+                    result = YcCardNative.Init_Js_UserCard(
+                        _handle, cardID, shortUserCode, cardTypeId,
+                        ref waterSerno, ref secretKey[0]);
+                    Log($"[InitCard] Init_Js_UserCard returned result={result}, waterSerno={waterSerno}");
+
+                    if (result != 0)
+                    {
+                        LastErrorCode = result;
+                        Log($"[InitCard] Init_Js_UserCard FAILED, returning false");
+                        if (issueType == 0)
+                        {
+                            YcCardNative.RST_Pos_UserCard12(_handle, cardSerno, 500, ref secretKey[0]);
+                            Log($"[InitCard] Rolled back consume card");
+                        }
+                        return false;
+                    }
+
+                    if (creditValue && waterValue != 0)
+                    {
+                        var timeStr = DateTime.Now.ToString("yyMMddHHmmss");
+                        Log($"[InitCard] Calling WRT_Js_UserCard_AddCount(balance={waterValue}, time={timeStr}, waterSerno={waterSerno})...");
+                        result = YcCardNative.WRT_Js_UserCard_AddCount(
+                            _handle, waterValue, timeStr, waterSerno);
+                        Log($"[InitCard] WRT_Js_UserCard_AddCount returned result={result}");
+                        if (result != 0)
+                        {
+                            if (issueType == 0)
+                                YcCardNative.RST_Pos_UserCard12(_handle, cardSerno, 500, ref secretKey[0]);
+                            YcCardNative.RSTJsUserCard(_handle, waterSerno, ref secretKey[0]);
+                            LastErrorCode = result;
+                            Log($"[InitCard] WRT_Js_UserCard_AddCount FAILED, returning false");
+                            return false;
+                        }
+                    }
+                }
+
+                Log("[InitCard] Returning true (SUCCESS)");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log($"[InitCard] EXCEPTION: {ex.GetType().Name}: {ex.Message}\n{ex.StackTrace}");
+                LastErrorCode = -99;
                 return false;
             }
-
-            if (creditValue && consumeValue != 0)
-            {
-                result = YcCardNative.WRT_Pos_UserCard_AddCount12(
-                    _handle, consumeValue, cardSerno, 500);
-                if (result != 0)
-                {
-                    YcCardNative.RST_Pos_UserCard12(_handle, cardSerno, 500, ref secretKey[0]);
-                    LastErrorCode = result;
-                    return false;
-                }
-            }
-        }
-
-        // Water card init (issueType 0 or 2)
-        if (issueType is 0 or 2)
-        {
-            uint waterSerno = 0;
-            result = YcCardNative.Init_Js_UserCard(
-                _handle, cardID, shortUserCode, cardTypeId,
-                ref waterSerno, ref secretKey[0]);
-
-            if (result != 0)
-            {
-                LastErrorCode = result;
-                if (issueType == 0)
-                {
-                    YcCardNative.RST_Pos_UserCard12(_handle, cardSerno, 500, ref secretKey[0]);
-                }
-                return false;
-            }
-
-            if (creditValue && waterValue != 0)
-            {
-                var time = DateTime.Now.ToString("yyMMddHHmmss");
-                var sbTime = new StringBuilder(time);
-                result = YcCardNative.WRT_Js_UserCard_AddCount(
-                    _handle, waterValue, sbTime, waterSerno);
-                if (result != 0)
-                {
-                    if (issueType == 0)
-                        YcCardNative.RST_Pos_UserCard12(_handle, cardSerno, 500, ref secretKey[0]);
-                    YcCardNative.RSTJsUserCard(_handle, waterSerno, ref secretKey[0]);
-                    LastErrorCode = result;
-                    return false;
-                }
-            }
-        }
-
-        return true;
     }
 
     public bool RecycleCard(uint cardSerno)

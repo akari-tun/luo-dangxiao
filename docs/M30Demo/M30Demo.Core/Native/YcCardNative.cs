@@ -18,7 +18,7 @@ internal static class YcCardNative
     [DllImport(Dll, EntryPoint = "CloseComm")]
     public static extern int CloseComm(IntPtr hwnd);
 
-    [DllImport(Dll, EntryPoint = "ReadCard_ID")]
+    [DllImport(Dll, EntryPoint = "ReadCard_ID", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
     public static extern int ReadCard_ID(IntPtr hwnd, ref int tagType, ref uint cardID);
 
     [DllImport(Dll, EntryPoint = "ReadCard_ID_NEW")]
@@ -69,7 +69,7 @@ internal static class YcCardNative
         int useTerm,
         ref byte secretKey);
 
-    [DllImport(Dll, EntryPoint = "ActivatePosUserCard12")]
+    [DllImport(Dll, EntryPoint = "ActivatePosUserCard12", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
     public static extern int ActivatePosUserCard12(
         IntPtr hwnd,
         int cardID,
@@ -95,7 +95,7 @@ internal static class YcCardNative
         uint cardserno,
         int waitime);
 
-    [DllImport(Dll, EntryPoint = "Init_Js_UserCard")]
+    [DllImport(Dll, EntryPoint = "Init_Js_UserCard", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
     public static extern int Init_Js_UserCard(
         IntPtr hwnd,
         int cardID,
@@ -139,7 +139,7 @@ internal static class YcCardNative
     public static extern int WRT_Js_UserCard_AddCount(
         IntPtr hwnd,
         int balance,
-        StringBuilder chargeDateTime,
+        string chargeDateTime,
         uint cardserno);
 
     [DllImport(Dll, EntryPoint = "rf_beep")]
