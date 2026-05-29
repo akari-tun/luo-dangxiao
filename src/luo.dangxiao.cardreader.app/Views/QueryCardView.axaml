@@ -1,0 +1,56 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:luo.dangxiao.cardreader.app.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             x:Class="luo.dangxiao.cardreader.app.Views.QueryCardView"
+             x:DataType="vm:MainViewModel">
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="15">
+            <TextBlock Text="Query Card Type" FontSize="18" FontWeight="Bold"/>
+            
+            <Border BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}" 
+                    BorderThickness="1" Padding="15" CornerRadius="5">
+                <StackPanel Spacing="10" Orientation="Horizontal">
+                    <TextBlock Text="Wait Time (ms):" VerticalAlignment="Center"/>
+                    <NumericUpDown Value="{Binding QueryCardViewModel.WaitTime}" Minimum="0" Maximum="10000" Width="140"/>
+                    <Button Content="Query Card Type" Command="{Binding QueryCardViewModel.QueryCommand}"
+                            IsEnabled="{Binding IsConnected}" Width="130"/>
+                </StackPanel>
+            </Border>
+
+            <Border BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}" 
+                    BorderThickness="1" Padding="15" CornerRadius="5">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="System Type:" VerticalAlignment="Center" Margin="0,5,10,5"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding QueryCardViewModel.SysType, Mode=OneWay}" IsReadOnly="True" Margin="0,5"/>
+                    
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Card Type:" VerticalAlignment="Center" Margin="0,5,10,5"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding QueryCardViewModel.CardType, Mode=OneWay}" IsReadOnly="True" Margin="0,5"/>
+                    
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Card Serial:" VerticalAlignment="Center" Margin="0,5,10,5"/>
+                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding QueryCardViewModel.CardSerno, Mode=OneWay, StringFormat=X8}" IsReadOnly="True" Margin="0,5"/>
+                    
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="OPT Number:" VerticalAlignment="Center" Margin="0,5,10,5"/>
+                    <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding QueryCardViewModel.OptNum, Mode=OneWay}" IsReadOnly="True" Margin="0,5"/>
+                    
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="Result:" VerticalAlignment="Center" Margin="0,5,10,5"/>
+                    <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding QueryCardViewModel.ResultMessage, Mode=OneWay}" IsReadOnly="True" Margin="0,5"/>
+                </Grid>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

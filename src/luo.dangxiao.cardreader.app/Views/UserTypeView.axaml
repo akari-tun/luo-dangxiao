@@ -1,0 +1,73 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:luo.dangxiao.cardreader.app.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             x:Class="luo.dangxiao.cardreader.app.Views.UserTypeView"
+             x:DataType="vm:MainViewModel">
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="15">
+            <TextBlock Text="User Type and Period Operations" FontSize="18" FontWeight="Bold"/>
+            
+            <!-- Change User Type -->
+            <Border BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}" 
+                    BorderThickness="1" Padding="15" CornerRadius="5">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Change User Type" FontWeight="SemiBold"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="5">
+                            <TextBlock Text="New User Type:"/>
+                            <NumericUpDown Value="{Binding UserTypeViewModel.UserType}" Minimum="1" Maximum="32"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="5">
+                            <TextBlock Text="System Type (1-3):"/>
+                            <NumericUpDown Value="{Binding UserTypeViewModel.SysType}" Minimum="1" Maximum="3"/>
+                        </StackPanel>
+                    </Grid>
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Button Content="Change Type" Command="{Binding UserTypeViewModel.ChangeUserTypeCommand}"
+                                IsEnabled="{Binding IsConnected}"/>
+                        <Button Content="Change (with Old)" Command="{Binding UserTypeViewModel.ChangeUserTypeNewCommand}"
+                                IsEnabled="{Binding IsConnected}"/>
+                    </StackPanel>
+                    <TextBlock Text="{Binding UserTypeViewModel.OldUserType, StringFormat='Old Type: {0}'}"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Update Period -->
+            <Border BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}" 
+                    BorderThickness="1" Padding="15" CornerRadius="5">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Update Validity Period" FontWeight="SemiBold"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="5">
+                            <TextBlock Text="Use Term:"/>
+                            <NumericUpDown Value="{Binding UserTypeViewModel.UseTerm}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="5">
+                            <TextBlock Text="Card Serial:"/>
+                            <TextBox Text="{Binding UserTypeViewModel.CardSerno}"/>
+                        </StackPanel>
+                    </Grid>
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Button Content="Update Period" Command="{Binding UserTypeViewModel.UpdatePeriodCommand}"
+                                IsEnabled="{Binding IsConnected}"/>
+                        <Button Content="Write Term" Command="{Binding UserTypeViewModel.WriteTermCommand}"
+                                IsEnabled="{Binding IsConnected}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <TextBox Text="{Binding UserTypeViewModel.ResultMessage, Mode=OneWay}" IsReadOnly="True"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

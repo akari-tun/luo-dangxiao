@@ -1,0 +1,56 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:luo.dangxiao.cardreader.app.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             x:Class="luo.dangxiao.cardreader.app.Views.CardIdView"
+             x:DataType="vm:MainViewModel">
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="15">
+            <TextBlock Text="Card ID Operations" FontSize="18" FontWeight="Bold"/>
+            
+            <Border BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}" 
+                    BorderThickness="1" Padding="15" CornerRadius="5">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Read Card ID" FontWeight="SemiBold"/>
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Button Content="Read Card ID" Command="{Binding CardIdViewModel.ReadCardIdCommand}"
+                                IsEnabled="{Binding IsConnected}" />
+                        <Button Content="Read Card ID (Retry)" Command="{Binding CardIdViewModel.ReadCardIdNewCommand}"
+                                IsEnabled="{Binding IsConnected}" />
+                        <Button Content="Beep" Command="{Binding CardIdViewModel.BeepCommand}"
+                                IsEnabled="{Binding IsConnected}" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Border BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}" 
+                    BorderThickness="1" Padding="15" CornerRadius="5">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Tag Type:" VerticalAlignment="Center" Margin="0,5,10,5"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding CardIdViewModel.TagType, Mode=OneWay}" 
+                             IsReadOnly="True" Margin="0,5"/>
+                    
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Serial Number:" VerticalAlignment="Center" Margin="0,5,10,5"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding CardIdViewModel.SerialNumber, Mode=OneWay, StringFormat=X8}" 
+                             IsReadOnly="True" Margin="0,5"/>
+                    
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Result:" VerticalAlignment="Center" Margin="0,5,10,5"/>
+                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding CardIdViewModel.ResultMessage, Mode=OneWay}" 
+                             IsReadOnly="True" Margin="0,5"/>
+                </Grid>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

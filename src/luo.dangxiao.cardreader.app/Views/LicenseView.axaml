@@ -1,0 +1,113 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:luo.dangxiao.cardreader.app.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             x:Class="luo.dangxiao.cardreader.app.Views.LicenseView"
+             x:DataType="vm:MainViewModel">
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="15">
+            <TextBlock Text="License Configuration" FontSize="18" FontWeight="Bold"/>
+            
+            <Border BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}" 
+                    BorderThickness="1" Padding="15" CornerRadius="5">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="System Authorization" FontWeight="SemiBold"/>
+                    <StackPanel Orientation="Horizontal" Spacing="20">
+                        <CheckBox Content="Payment System" IsChecked="{Binding LicenseViewModel.HasPaymentAuth}"/>
+                        <CheckBox Content="Water Billing System" IsChecked="{Binding LicenseViewModel.HasWaterBillingAuth}"/>
+                        <CheckBox Content="Access Control System" IsChecked="{Binding LicenseViewModel.HasAccessControlAuth}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Border BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}" 
+                    BorderThickness="1" Padding="15" CornerRadius="5">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Sector Configuration" FontWeight="SemiBold"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="5">
+                            <TextBlock Text="Payment Sector:"/>
+                            <NumericUpDown Value="{Binding LicenseViewModel.PaymentSector}" Minimum="1" Maximum="15" FormatString="N0"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="10,0,0,0" Spacing="5">
+                            <TextBlock Text="Water Billing Sector:"/>
+                            <NumericUpDown Value="{Binding LicenseViewModel.WaterBillingSector}" Minimum="1" Maximum="15" FormatString="N0"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Margin="10,0,0,0" Spacing="5">
+                            <TextBlock Text="Access Control Sector:"/>
+                            <NumericUpDown Value="{Binding LicenseViewModel.AccessControlSector}" Minimum="1" Maximum="15" FormatString="N0"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Border BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}" 
+                    BorderThickness="1" Padding="15" CornerRadius="5">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Operator Password" FontWeight="SemiBold"/>
+                    <TextBox Text="{Binding LicenseViewModel.OperatorPassword}" />
+                </StackPanel>
+            </Border>
+
+            <Border BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}" 
+                    BorderThickness="1" Padding="15" CornerRadius="5">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Keys from Licence" FontWeight="SemiBold"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="KeyA (Operator):" VerticalAlignment="Center" Margin="0,5,10,5"/>
+                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding LicenseViewModel.UserKeyAHex, Mode=OneWay}" IsReadOnly="True" Margin="0,5" FontFamily="Consolas,Monospace"/>
+                        <TextBlock Grid.Row="0" Grid.Column="2" Text="KeyB (SystemKeyB):" VerticalAlignment="Center" Margin="20,5,10,5"/>
+                        <TextBox Grid.Row="0" Grid.Column="3" Text="{Binding LicenseViewModel.UserKeyBHex, Mode=OneWay}" IsReadOnly="True" Margin="0,5" FontFamily="Consolas,Monospace"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+             <Border BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}" 
+                     BorderThickness="1" Padding="15" CornerRadius="5">
+                 <StackPanel Spacing="10">
+                     <TextBlock Text="Load Licence File" FontWeight="SemiBold"/>
+                    <StackPanel Orientation="Horizontal" Spacing="5">
+                        <TextBlock Text="Key Mode:" VerticalAlignment="Center"/>
+                        <ComboBox SelectedIndex="{Binding KeyMode}" Width="200">
+                            <ComboBoxItem Content="1: FF Keys (factory)"/>
+                            <ComboBoxItem Content="2: Fixed Keys (YCCARD default)"/>
+                            <ComboBoxItem Content="3: Calculated Keys"/>
+                        </ComboBox>
+                    </StackPanel>
+                     <Grid>
+                         <Grid.ColumnDefinitions>
+                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" Text="{Binding LicenseViewModel.LicenceFilePath}" Watermark="Select licencecard.dat file..."/>
+                        <Button Grid.Column="1" Content="Browse..." Command="{Binding LicenseViewModel.BrowseLicenceFileCommand}" Margin="10,0,0,0"/>
+                    </Grid>
+                    <Button Content="Load Licence" Command="{Binding LicenseViewModel.LoadLicenceCommand}" HorizontalAlignment="Left" Width="120"/>
+                </StackPanel>
+            </Border>
+
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <Button Content="Apply Configuration" Command="{Binding LicenseViewModel.ConfigureCommand}"/>
+                <Button Content="Clear Authorization" Command="{Binding LicenseViewModel.ClearAuthCommand}"/>
+            </StackPanel>
+
+            <TextBox Text="{Binding LicenseViewModel.ResultMessage, Mode=OneWay}" IsReadOnly="True"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

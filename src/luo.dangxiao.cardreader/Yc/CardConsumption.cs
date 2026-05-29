@@ -16,7 +16,344 @@ public class CardConsumption : IDisposable
         return key.Length == 6 ? key : key[..6];
     }
 
-    public CardConsumption(CardReader reader)
+    private static void LogInit(string msg)
+    {
+        try
+        {
+            var logPath = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "poscard_consumption.log");
+            System.IO.File.AppendAllText(logPath, $"[CC] {DateTime.Now:HH:mm:ss.fff} {msg}\n");
+        } catch { }
+    }
+
+    private static readonly byte[] LockCardKeyB = { 0xDD, 0xEA, 0xFC, 0xA0, 0xBC, 0xD1 };
+    private static readonly byte[] FactoryKey = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
+
+    private static int ResolveKeyMode(UserCode? userCode)
+    {
+        if (userCode?.Data == null || userCode.Data.Length <= 8)
+        {
+            return 0;
+        }
+
+        return userCode.Data[8] switch
+        {
+            <= 2 => userCode.Data[8] + 1,
+            _ => 0
+        };
+    }
+
+    private bool LoadUserSectorKeys(byte sector, byte[] password, byte[] cardSerial, UserCode? userCode = null)
+    {
+        int keyMode = ResolveKeyMode(userCode);
+
+        if (keyMode == 0)
+        {
+            return false;
+        }
+
+        byte[] keyA;
+        byte[] keyB;
+
+        switch (keyMode)
+        {
+            case 1:
+                keyA = FactoryKey;
+                keyB = FactoryKey;
+                break;
+            case 2:
+                keyA = KeyCalculator.UserCard1KeyA;
+                keyB = LockCardKeyB;
+                break;
+            case 3:
+                byte[] calcKeyBytes = new byte[16];
+                KeyCalculator.CalculateKey12(cardSerial, password, calcKeyBytes);
+                keyA = calcKeyBytes[..6];
+                keyB = calcKeyBytes[10..16];
+                break;
+            default:
+                return false;
+        }
+
+        return _reader.LoadKey(KeyTypes.KeyA | KeyTypes.KeySet0, sector, keyA) == (int)ErrorCode.Success
+            && _reader.LoadKey(KeyTypes.KeyA | KeyTypes.KeySet1, sector, keyA) == (int)ErrorCode.Success
+            && _reader.LoadKey(KeyTypes.KeyB | KeyTypes.KeySet0, sector, keyB) == (int)ErrorCode.Success
+            && _reader.LoadKey(KeyTypes.KeyB | KeyTypes.KeySet1, sector, keyB) == (int)ErrorCode.Success;
+    }
+
+    private bool AuthenticateLoadedUserSector(byte sector)
+    {
+        if (_reader.Authentication(KeyTypes.KeyA | KeyTypes.KeySet0, sector) == (int)ErrorCode.Success)
+        {
+            return true;
+        }
+
+        if (_reader.Halt() != (int)ErrorCode.Success || _reader.Card(0x52, out _) != (int)ErrorCode.Success)
+        {
+            return false;
+        }
+
+        if (_reader.Authentication(KeyTypes.KeyA | KeyTypes.KeySet1, sector) == (int)ErrorCode.Success)
+        {
+            return true;
+        }
+
+        if (_reader.Halt() != (int)ErrorCode.Success || _reader.Card(0x52, out _) != (int)ErrorCode.Success)
+        {
+            return false;
+        }
+
+        return _reader.Authentication(KeyTypes.KeyB | KeyTypes.KeySet0, sector) == (int)ErrorCode.Success;
+    }
+
+    private bool AuthenticateUserSector(byte sector, byte[] password, byte[] cardSerial, UserCode? userCode = null)
+    {
+        return LoadUserSectorKeys(sector, password, cardSerial, userCode) && AuthenticateLoadedUserSector(sector);
+    }
+
+    private int ReadUserCardBlocks(byte sector, byte[] data0, byte[] data1, byte[] data2)
+    {
+        int result = _reader.Read((byte)(sector * 4), data0);
+        if (result != (int)ErrorCode.Success)
+        {
+            return (int)ErrorCode.ReadCardError;
+        }
+
+        result = _reader.Read((byte)(sector * 4 + 1), data1);
+        if (result != (int)ErrorCode.Success)
+        {
+            return (int)ErrorCode.ReadCardError;
+        }
+
+        result = _reader.Read((byte)(sector * 4 + 2), data2);
+        if (result != (int)ErrorCode.Success)
+        {
+            return (int)ErrorCode.ReadCardError;
+        }
+
+        return (int)ErrorCode.Success;
+    }
+
+    private void ReadUserCodeSector(byte usercardSec, UserCode? userCode, uint cardSerno)
+    {
+        if (userCode?.Data == null) return;
+
+        byte dataSec = (byte)(usercardSec + 1);
+        LogInit($"ReadUserCodeSector: Trying sector {dataSec}, cardSerial={cardSerno}");
+
+        // Reselect card
+        if (_reader.Card(0x52, out _) != (int)ErrorCode.Success)
+        {
+            LogInit("ReadUserCodeSector: Card reselect FAILED");
+            return;
+        }
+
+        // Try SystemKeyB with KEYB|KEYSET2
+        var sysKey6 = GetSystemKey6(License.SystemInfo.SystemKeyB);
+        if (sysKey6 != null)
+        {
+            LogInit($"ReadUserCodeSector: SYSKEYB={BitConverter.ToString(sysKey6).Replace("-", "")}");
+            int loadR = _reader.LoadKey(KeyTypes.KeyB | KeyTypes.KeySet2, dataSec, sysKey6);
+            LogInit($"  LoadKey(SYSKEYB|SET2, dataSec={dataSec})={loadR}");
+            if (loadR == (int)ErrorCode.Success)
+            {
+                int authR = _reader.Authentication(KeyTypes.KeyB | KeyTypes.KeySet2, dataSec);
+                LogInit($"  Auth(SYSKEYB|SET2, dataSec={dataSec})={authR}");
+                if (authR == (int)ErrorCode.Success)
+                {
+                    LogInit("ReadUserCodeSector: SYSKEYB auth OK, reading data...");
+                    ReadUserCodeBlocks(dataSec, userCode.Data);
+                    _reader.Halt();
+                    return;
+                }
+
+                // Try with reselect + same key
+                if (_reader.Halt() == (int)ErrorCode.Success && _reader.Card(0x52, out _) == (int)ErrorCode.Success)
+                {
+                    authR = _reader.Authentication(KeyTypes.KeyB | KeyTypes.KeySet2, dataSec);
+                    LogInit($"  Auth(SYSKEYB|SET2, dataSec={dataSec}, reselect)={authR}");
+                    if (authR == (int)ErrorCode.Success)
+                    {
+                        LogInit("ReadUserCodeSector: SYSKEYB auth OK (reselect), reading data...");
+                        ReadUserCodeBlocks(dataSec, userCode.Data);
+                        _reader.Halt();
+                        return;
+                    }
+                }
+            }
+        }
+
+        // Try fixed keys: UserCard1_KeyA and LockCard_KeyB
+        {
+            byte[] keyA = KeyCalculator.UserCard1KeyA;
+            byte[] keyB = LockCardKeyB;
+            LogInit($"ReadUserCodeSector: FIXED KeyA={BitConverter.ToString(keyA).Replace("-", "")}, KeyB={BitConverter.ToString(keyB).Replace("-", "")}");
+
+            int r = _reader.LoadKey(KeyTypes.KeyA | KeyTypes.KeySet0, dataSec, keyA);
+            LogInit($"  LoadKey(KEYA|SET0, dataSec={dataSec})={r}");
+            if (r == 0)
+            {
+                r = _reader.Authentication(KeyTypes.KeyA | KeyTypes.KeySet0, dataSec);
+                LogInit($"  Auth(KEYA|SET0, dataSec={dataSec})={r}");
+                if (r == 0)
+                {
+                    LogInit("ReadUserCodeSector: FIXED KeyA auth OK, reading data...");
+                    ReadUserCodeBlocks(dataSec, userCode.Data);
+                    _reader.Halt();
+                    return;
+                }
+            }
+
+            // Retry with KEYB
+            if (_reader.Halt() == 0 && _reader.Card(0x52, out _) == 0)
+            {
+                r = _reader.LoadKey(KeyTypes.KeyB | KeyTypes.KeySet0, dataSec, keyB);
+                LogInit($"  LoadKey(KEYB|SET0, dataSec={dataSec})={r}");
+                if (r == 0)
+                {
+                    r = _reader.Authentication(KeyTypes.KeyB | KeyTypes.KeySet0, dataSec);
+                    LogInit($"  Auth(KEYB|SET0, dataSec={dataSec})={r}");
+                    if (r == 0)
+                    {
+                        LogInit("ReadUserCodeSector: FIXED KeyB auth OK, reading data...");
+                        ReadUserCodeBlocks(dataSec, userCode.Data);
+                        _reader.Halt();
+                        return;
+                    }
+                }
+            }
+        }
+
+        // Try calculated keys
+        {
+            byte[] password = License.SystemInfo.OperatorPassword ?? Array.Empty<byte>();
+            byte[] calcKey = new byte[16];
+            KeyCalculator.CalculateKey12(BitConverter.GetBytes(cardSerno), password, calcKey);
+            byte[] calcKeyA = calcKey[..6];
+            byte[] calcKeyB = calcKey[10..16];
+            LogInit($"ReadUserCodeSector: CALC KeyA={BitConverter.ToString(calcKeyA).Replace("-", "")}, KeyB={BitConverter.ToString(calcKeyB).Replace("-", "")}");
+
+            // Load keys into both slots (C++ loads both)
+            int r = _reader.LoadKey(KeyTypes.KeyA | KeyTypes.KeySet0, dataSec, calcKeyA);
+            int r2 = _reader.LoadKey(KeyTypes.KeyA | KeyTypes.KeySet1, dataSec, calcKeyA);
+            int r3 = _reader.LoadKey(KeyTypes.KeyB | KeyTypes.KeySet0, dataSec, calcKeyB);
+            LogInit($"  LoadKey(CALC|SET0/SET1, dataSec={dataSec}) => A0={r}, A1={r2}, B0={r3}");
+            if (r == 0)
+            {
+                int authR = _reader.Authentication(KeyTypes.KeyA | KeyTypes.KeySet0, dataSec);
+                LogInit($"  Auth(CALC A|SET0, dataSec={dataSec})={authR}");
+                if (authR == 0)
+                {
+                    LogInit("ReadUserCodeSector: CALC KeyA auth OK, reading data...");
+                    ReadUserCodeBlocks(dataSec, userCode.Data);
+                    _reader.Halt();
+                    return;
+                }
+
+                if (_reader.Halt() == 0 && _reader.Card(0x52, out _) == 0)
+                {
+                    authR = _reader.Authentication(KeyTypes.KeyA | KeyTypes.KeySet1, dataSec);
+                    LogInit($"  Auth(CALC A|SET1, dataSec={dataSec}, reselect)={authR}");
+                    if (authR == 0)
+                    {
+                        LogInit("ReadUserCodeSector: CALC KeyA (SET1) auth OK, reading data...");
+                        ReadUserCodeBlocks(dataSec, userCode.Data);
+                        _reader.Halt();
+                        return;
+                    }
+                }
+            }
+
+            // Try KEYB from calc
+            if (_reader.Halt() == 0 && _reader.Card(0x52, out _) == 0)
+            {
+                int authR = _reader.Authentication(KeyTypes.KeyB | KeyTypes.KeySet0, dataSec);
+                LogInit($"  Auth(CALC B|SET0, dataSec={dataSec})={authR}");
+                if (authR == 0)
+                {
+                    LogInit("ReadUserCodeSector: CALC KeyB auth OK, reading data...");
+                    ReadUserCodeBlocks(dataSec, userCode.Data);
+                    _reader.Halt();
+                    return;
+                }
+            }
+        }
+
+        LogInit($"ReadUserCodeSector: ALL MODES FAILED for sector {dataSec}");
+    }
+
+    private void ReadUserCodeBlocks(byte sector, byte[] data)
+    {
+        byte[] block0 = new byte[16];
+        byte[] block1 = new byte[16];
+        byte[] block2 = new byte[16];
+
+        int r0 = _reader.Read((byte)(sector * 4), block0);
+        int r1 = _reader.Read((byte)(sector * 4 + 1), block1);
+        int r2 = _reader.Read((byte)(sector * 4 + 2), block2);
+
+        LogInit($"ReadUserCodeBlocks: r0={r0}, r1={r1}, r2={r2}");
+        if (r0 == 0 && r1 == 0 && r2 == 0)
+        {
+            Buffer.BlockCopy(block0, 0, data, 0, 16);
+            Buffer.BlockCopy(block1, 0, data, 16, 16);
+            Buffer.BlockCopy(block2, 0, data, 32, 16);
+            LogInit("ReadUserCodeBlocks: DATA READ SUCCESS");
+        }
+        else
+        {
+            LogInit("ReadUserCodeBlocks: READ FAILED");
+        }
+    }
+
+    private static void ClearQueriedUserCode(UserCode? userCode)
+    {
+        if (userCode?.Data == null)
+        {
+            return;
+        }
+
+        if (userCode.Data.Length > 9)
+        {
+            Array.Clear(userCode.Data, 9, Math.Min(16, userCode.Data.Length - 9));
+        }
+
+        if (userCode.Data.Length > 25)
+        {
+            Array.Clear(userCode.Data, 25, Math.Min(16, userCode.Data.Length - 25));
+        }
+    }
+
+    private void PopulatePosUserCardResult(
+        byte[] data0,
+        byte[] data1,
+        byte[] data2,
+        out int serno,
+        out string cardNo,
+        out int userType,
+        out int value,
+        out int lastPay,
+        out int count,
+        out uint useTerm,
+        out int addCount)
+    {
+        serno = (data0[2] << 16) | (data0[1] << 8) | data0[0];
+        userType = data0[3];
+
+        value = data1[0] | (data1[1] << 8) | (data1[2] << 16);
+        lastPay = data1[3] | (data1[4] << 8) | (data1[5] << 16);
+        count = data1[11] | (data1[12] << 8);
+        addCount = data0[9];
+
+        uint temp1 = (uint)(((data0[6] & 0xF0) >> 4) | ((data0[7] & 0xE0) >> 1));
+        temp1 = temp1 * 10000 + (uint)((data0[6] & 0x0F) * 100);
+        useTerm = temp1 + (uint)(data0[7] & 0x1F);
+
+        byte[] cardNoBytes = new byte[5];
+        Buffer.BlockCopy(data0, 10, cardNoBytes, 0, 5);
+        cardNo = System.Text.Encoding.ASCII.GetString(cardNoBytes).TrimEnd('\0', ' ');
+    }
+
+        public CardConsumption(CardReader reader)
     {
         _reader = reader ?? throw new ArgumentNullException(nameof(reader));
     }
@@ -250,54 +587,111 @@ public class CardConsumption : IDisposable
         int result = ReadCardIdNew(out _, out cardSerno);
         if (result != (int)ErrorCode.Success) return result;
 
-        uint usercardSec = (uint)License.SystemInfo.PaymentSector;
+        byte usercardSec = (byte)License.SystemInfo.PaymentSector;
+        byte[] data0 = new byte[16];
+        byte[] data1 = new byte[16];
+        byte[] data2 = new byte[16];
 
         int cardResult = _reader.Card(0x52, out _);
         if (cardResult != (int)ErrorCode.Success) return (int)ErrorCode.NoCard;
 
         var sysKey6 = GetSystemKey6(License.SystemInfo.SystemKeyB);
         if (sysKey6 == null) return (int)ErrorCode.ParameterError;
-        result = _reader.LoadKey(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec, sysKey6);
+        result = _reader.LoadKey(KeyTypes.KeyB | KeyTypes.KeySet2, usercardSec, sysKey6);
         if (result != (int)ErrorCode.Success) return (int)ErrorCode.ReaderError;
 
-        result = _reader.Authentication(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec);
-        if (result != (int)ErrorCode.Success)
+        result = _reader.Authentication(KeyTypes.KeyB | KeyTypes.KeySet2, usercardSec);
+
+        if (result == (int)ErrorCode.Success)
         {
+            result = ReadUserCardBlocks(usercardSec, data0, data1, data2);
+            if (result != (int)ErrorCode.Success) return result;
+
+            if (_reader.Halt() != (int)ErrorCode.Success) return (int)ErrorCode.ReaderError;
+
+            if (!KeyCalculator.VerifyBcc(data1) || !KeyCalculator.VerifyBcc(data2))
+            {
+                return (int)ErrorCode.UserCardError;
+            }
+
+            PopulatePosUserCardResult(data0, data1, data2, out serno, out cardNo, out userType, out value, out lastPay, out count, out useTerm, out addCount);
+            ReadUserCodeSector(usercardSec, userCode, cardSerno);
+            cardType = 0;
+            return (int)ErrorCode.Success;
+        }
+
+        result = _reader.LoadKey(KeyTypes.KeyB | KeyTypes.KeySet2, usercardSec, KeyCalculator.SystemCardKeyB12);
+        if (result != (int)ErrorCode.Success) return (int)ErrorCode.ReaderError;
+
+        if (_reader.Halt() != (int)ErrorCode.Success) return (int)ErrorCode.ReaderError;
+        result = ReadCardIdNew(out _, out cardSerno);
+        if (result != (int)ErrorCode.Success) return (int)ErrorCode.NoCard;
+
+        result = _reader.Authentication(KeyTypes.KeyB | KeyTypes.KeySet2, usercardSec);
+        if (result == (int)ErrorCode.Success)
+        {
+            result = _reader.Read(4, data0);
+            if (result != (int)ErrorCode.Success) return (int)ErrorCode.ReadCardError;
+            result = _reader.Read(5, data1);
+            if (result != (int)ErrorCode.Success) return (int)ErrorCode.ReadCardError;
+
             _reader.Halt();
+
+            bool isPaymentSystemCard = data0[0] == 3
+                && License.SystemInfo.SystemCardNumberPayment.Take(5).SequenceEqual(data0.Skip(1).Take(5));
+            bool isBlankCard = data0[0] == 0x02;
+            bool isPaymentOperatorCard = data0[0] == 4
+                && License.SystemInfo.SystemCardNumberPayment.Take(5).SequenceEqual(data0.Skip(1).Take(5));
+
+            if (isPaymentSystemCard)
+            {
+                cardType = 2;
+                return (int)ErrorCode.Success;
+            }
+
+            if (isBlankCard)
+            {
+                cardType = 3;
+                return (int)ErrorCode.Success;
+            }
+
+            if (isPaymentOperatorCard)
+            {
+                cardType = 1;
+                optNum = data1[0];
+                return (int)ErrorCode.Success;
+            }
+
             return (int)ErrorCode.UserCardError;
         }
 
-        byte[] data0 = new byte[16];
-        byte[] data1 = new byte[16];
-        byte[] data2 = new byte[16];
+        if (_reader.Halt() != (int)ErrorCode.Success) return (int)ErrorCode.ReaderError;
+        result = ReadCardIdNew(out _, out cardSerno);
+        if (result != (int)ErrorCode.Success) return (int)ErrorCode.NoCard;
 
-        result = _reader.Read((byte)(usercardSec * 4), data0);
-        if (result != (int)ErrorCode.Success) return (int)ErrorCode.ReadCardError;
+        if (!LoadUserSectorKeys(usercardSec, License.SystemInfo.OperatorPassword ?? Array.Empty<byte>(), BitConverter.GetBytes(cardSerno), userCode))
+        {
+            return (int)ErrorCode.ParameterError;
+        }
 
-        result = _reader.Read((byte)(usercardSec * 4 + 1), data1);
-        if (result != (int)ErrorCode.Success) return (int)ErrorCode.ReadCardError;
+        if (!AuthenticateLoadedUserSector(usercardSec))
+        {
+            return (int)ErrorCode.NotIdentified;
+        }
 
-        result = _reader.Read((byte)(usercardSec * 4 + 2), data2);
-        if (result != (int)ErrorCode.Success) return (int)ErrorCode.ReadCardError;
+        result = ReadUserCardBlocks(usercardSec, data0, data1, data2);
+        if (result != (int)ErrorCode.Success) return result;
 
-        _reader.Halt();
+        if (_reader.Halt() != (int)ErrorCode.Success) return (int)ErrorCode.ReaderError;
 
-        if (!KeyCalculator.VerifyBcc(data0) || !KeyCalculator.VerifyBcc(data1))
+        if (!KeyCalculator.VerifyBcc(data1) || !KeyCalculator.VerifyBcc(data2))
+        {
             return (int)ErrorCode.UserCardError;
+        }
 
-        serno = (data0[2] << 16) | (data0[1] << 8) | data0[0];
-        userType = data0[3];
-        value = data1[0] | (data1[1] << 8) | (data1[2] << 16);
-        count = data0[8] | (data0[9] << 8);
-
-        useTerm = (uint)((data0[6] >> 4) * 10000 + (data0[6] & 0x0F) * 100 + (data0[7] & 0x1F));
-
-        var cardNoBytes = new byte[6];
-        Buffer.BlockCopy(data0, 10, cardNoBytes, 0, 5);
-        cardNo = System.Text.Encoding.ASCII.GetString(cardNoBytes).TrimEnd('\0');
-
-        cardType = 0;
-
+        PopulatePosUserCardResult(data0, data1, data2, out serno, out cardNo, out userType, out value, out lastPay, out count, out useTerm, out addCount);
+        ReadUserCodeSector(usercardSec, userCode, cardSerno);
+        cardType = 4;
         return (int)ErrorCode.Success;
     }
 
@@ -345,20 +739,19 @@ public class CardConsumption : IDisposable
         data1[15] = KeyCalculator.CalculateBcc(data1, 15);
         data2[15] = KeyCalculator.CalculateBcc(data2, 15);
 
-        KeyCalculator.CalculateKey12(BitConverter.GetBytes(cardSerno), License.SystemInfo.OperatorPassword, data3);
+        KeyCalculator.CalculateKey12(BitConverter.GetBytes(cardSerno), License.SystemInfo.OperatorPassword ?? Array.Empty<byte>(), data3);
         data3[6] = 0x7F;
         data3[7] = 0x07;
         data3[8] = 0x88;
         data3[9] = 0xDA;
         Buffer.BlockCopy(License.SystemInfo.SystemKeyB, 0, data3, 10, 6);
 
-        var sysKey6 = GetSystemKey6(License.SystemInfo.SystemKeyB);
-        if (sysKey6 == null) return (int)ErrorCode.ParameterError;
-        result = _reader.LoadKey(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec, sysKey6);
-        if (result != (int)ErrorCode.Success) return (int)ErrorCode.ReaderError;
+        LogInit($"InitPosUserCard12: sector={usercardSec}, cardSerno={cardSerno}");
+        LogInit($"License: OperatorPassword={BitConverter.ToString(License.SystemInfo.OperatorPassword ?? Array.Empty<byte>()).Replace("-", "")}");
+        LogInit($"License: SystemKeyB={BitConverter.ToString(License.SystemInfo.SystemKeyB ?? Array.Empty<byte>()).Replace("-", "")}");
 
-        result = _reader.Authentication(KeyTypes.KeyB | KeyTypes.KeySet2, (byte)usercardSec);
-        if (result != (int)ErrorCode.Success) return (int)ErrorCode.UserCardError;
+        if (!AuthenticateUserSector((byte)usercardSec, License.SystemInfo.OperatorPassword ?? Array.Empty<byte>(), BitConverter.GetBytes(cardSerno), userCode))
+            return (int)ErrorCode.UserCardError;
 
         if (_reader.Write((byte)(usercardSec * 4), data0) != (int)ErrorCode.Success) return (int)ErrorCode.WriteCardError;
         if (_reader.Write((byte)(usercardSec * 4 + 1), data1) != (int)ErrorCode.Success) return (int)ErrorCode.WriteCardError;
@@ -373,6 +766,29 @@ public class CardConsumption : IDisposable
     {
         int result = InitPosUserCard12(serno, cardNo, userType, waitTime, out cardSerno, useTerm, userCode);
         if (result != (int)ErrorCode.Success) return result;
+
+        userCode ??= new UserCode();
+
+        uint usercardSec = (uint)License.SystemInfo.PaymentSector + 1;
+
+        int cardResult2 = _reader.Card(0x52, out _);
+        if (cardResult2 != (int)ErrorCode.Success) return (int)ErrorCode.NoCard;
+
+        if (!AuthenticateUserSector((byte)usercardSec, License.SystemInfo.OperatorPassword ?? Array.Empty<byte>(), BitConverter.GetBytes(cardSerno), userCode))
+            return (int)ErrorCode.UserCardError;
+
+        byte[] data3 = new byte[16];
+        KeyCalculator.CalculateKey12(BitConverter.GetBytes(cardSerno), License.SystemInfo.OperatorPassword, data3);
+        data3[6] = 0x7F;
+        data3[7] = 0x07;
+        data3[8] = 0x88;
+        data3[9] = 0xDA;
+        Buffer.BlockCopy(License.SystemInfo.SystemKeyB, 0, data3, 10, 6);
+
+        if (_reader.Write((byte)(usercardSec * 4), userCode.Data.AsSpan(0, 16).ToArray()) != (int)ErrorCode.Success) return (int)ErrorCode.WriteCardError;
+        if (_reader.Write((byte)(usercardSec * 4 + 1), userCode.Data.AsSpan(16, 16).ToArray()) != (int)ErrorCode.Success) return (int)ErrorCode.WriteCardError;
+        if (_reader.Write((byte)(usercardSec * 4 + 2), userCode.Data.AsSpan(32, 16).ToArray()) != (int)ErrorCode.Success) return (int)ErrorCode.WriteCardError;
+        if (_reader.Write((byte)(usercardSec * 4 + 3), data3) != (int)ErrorCode.Success) return (int)ErrorCode.WriteCardError;
 
         if (value > 0)
         {
