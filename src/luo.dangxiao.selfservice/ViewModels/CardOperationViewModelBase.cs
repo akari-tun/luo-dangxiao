@@ -267,6 +267,23 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
     {
         try
         {
+            if (!Config.PrinterConfig.EnableIssueCard)
+            {
+                OperationStepText = LanguageProvider.SelfService_TakeCard_Status_InitializingCard;
+                var initResultSkip = await InitCardAsync(0, cardOperate, opToken);
+                if (!initResultSkip.Success)
+                {
+                    return CardOperationResult.Failed(initResultSkip.ErrorMessage ?? "Card initialization failed.");
+                }
+
+                WriteCardSuccessApi(initResultSkip);
+                PickupInstructionText = GetPickupInstructionText();
+                CurrentState = CardProcessingState.CardReadyToPickup;
+                IsCountdownVisible = false;
+                IsBusy = false;
+                return CardOperationResult.SuccessResult;
+            }
+
             // Move card to reader
             if (await CheckCountdownExpiredAsync()) return CardOperationResult.CountdownExpired;
             ResetCountdown();
@@ -306,11 +323,12 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
             {
                 await WriteCardFailureApi(initResult, writeResult.ErrorMessage);
                 await DiscardCardToRejectAsync();
+                await WriteCardFailureApi(initResult, writeResult.ErrorMessage);
                 return CardOperationResult.Failed(writeResult.ErrorMessage ?? "Failed to write card data.");
             }
 
             // Print card
-            if (Config.PrinterConfig.PrintText?.Count > 0)
+            if (Config.PrinterConfig.EnablePrint && Config.PrinterConfig.PrintText?.Count > 0)
             {
                 if (await CheckCountdownExpiredAsync()) return CardOperationResult.CountdownExpired;
                 ResetCountdown();
@@ -319,6 +337,7 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
                 if (!printSuccess)
                 {
                     await DiscardCardToRejectAsync();
+                    await WriteCardFailureApi(initResult, writeResult.ErrorMessage);
                     return CardOperationResult.Failed(GetPrinterLastError("Failed to print card."));
                 }
 
@@ -333,7 +352,7 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
             else
             {
                 // Move card to front holder
-                if (!await CardPrinter.MoveCardAsync(PrinterId, CardMoveCommand.MoveToFront))
+                if (!await CardPrinter.MoveCardAsync(PrinterId, CardMoveCommand.MoveToHopper))
                 {
                     return CardOperationResult.Failed(GetPrinterLastError("Failed to move card to output."));
                 }
@@ -470,6 +489,7 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
                 result.FactoryFixId = ExtractJsonString(response.Data, "factoryFixId", "FactoryFixId") ?? string.Empty;
                 result.MainDeputyType = ExtractJsonString(response.Data, "mainDeputyType", "MainDeputyType") ?? "1";
                 result.TenantId = ExtractJsonString(response.Data, "tenantId", "TenantId") ?? tenantId;
+                result.CardTypeName = ExtractJsonString(response.Data, "cardTypeName", "cardTypeName") ?? string.Empty;
                 var apiCardOperate = ExtractJsonString(response.Data, "cardOperate", "CardOperate");
                 var apiWorkStation = ExtractJsonString(response.Data, "workStationNumb", "WorkStationNumb");
                 result.CardOperate = apiCardOperate ?? request.CardOperate;
@@ -507,15 +527,82 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
     {
         var writeResult = new CardWriteResult
         {
-            Success = true,
-            ErrorMessage = string.Empty,
             WrittenCardNo = initResult.CardNo,
             WrittenUserId = initResult.UserId,
             WrittenExpiryDate = initResult.ExpiryDate
         };
 
-        System.Diagnostics.Debug.WriteLine($"[CardOperation] Write card: CardNo={writeResult.WrittenCardNo}, UserId={writeResult.WrittenUserId}, ExpiryDate={writeResult.WrittenExpiryDate}");
-        await Task.Delay(500);
+        // Parse expiry date from initResult.ExpiryDate as DateTime
+        DateTime expiry;
+        uint useTerm;
+        if (DateTime.TryParse(initResult.ExpiryDate, out expiry))
+        {
+            useTerm = (uint)(expiry.Year * 10000 + expiry.Month * 100 + expiry.Day);
+        }
+        else
+        {
+            useTerm = (uint)(DateTime.Today.AddYears(1).Year * 10000 + DateTime.Today.AddYears(1).Month * 100 + DateTime.Today.AddYears(1).Day);
+        }
+
+        // Parse card type from initResult.CardTypeId (0=auto, 1=user)
+        int cardType = 1;
+        if (!string.IsNullOrEmpty(initResult.CardTypeId))
+        {
+            if (!int.TryParse(initResult.CardTypeId, out cardType) || cardType < 1 || cardType > 32)
+            {
+                cardType = 1;
+            }
+        }
+
+        int cardId = 0;
+        if (!string.IsNullOrEmpty(initResult.CardNo))
+        {
+            if (!int.TryParse(initResult.CardNo, out cardId))
+            {
+                cardId = 0;
+            }
+        }
+
+        uint factoryFixId = 0;
+
+        try
+        {
+            System.Diagnostics.Debug.WriteLine($"[CardOperation] Writing to card: CardNo={initResult.CardNo}, UserId={initResult.UserId}, UserType={cardType}, UseTerm={useTerm}");
+
+            bool ok = await Task.Run(() => CardReader.InitCard(
+                serno: cardId,
+                cardNo: initResult.CardNo,
+                userType: cardType,
+                initialValue: 0,
+                useCount: 0,
+                useTerm: useTerm,
+                factoryFixId: out factoryFixId,
+                keyMode: 1,
+                empStrId: initResult.UserId,
+                empName: UserInfoData?.Name ?? "",
+                cardTypeName: initResult.CardTypeName));
+
+            if (!ok)
+            {
+                writeResult.Success = false;
+                writeResult.ErrorMessage = "卡片写入失败";
+                System.Diagnostics.Debug.WriteLine("[CardOperation] CardReader.InitCard returned false");
+            }
+            else
+            {
+                writeResult.Success = true;
+                writeResult.ErrorMessage = string.Empty;
+                writeResult.FactoryFixId = factoryFixId;
+                System.Diagnostics.Debug.WriteLine($"[CardOperation] CardReader.InitCard OK, factoryFixId={factoryFixId}");
+            }
+        }
+        catch (Exception ex)
+        {
+            writeResult.Success = false;
+            writeResult.ErrorMessage = ex.Message;
+            System.Diagnostics.Debug.WriteLine($"[CardOperation] WriteCardAsync exception: {ex.Message}");
+        }
+
         return writeResult;
     }
 
@@ -738,6 +825,7 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
         public string CardOperate { get; set; } = string.Empty;
         public string WorkStationNumb { get; set; } = string.Empty;
         public string TenantId { get; set; } = string.Empty;
+        public string CardTypeName { get; set; } = string.Empty;
     }
 
     private sealed class CardWriteResult
@@ -747,6 +835,7 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
         public string WrittenCardNo { get; set; } = string.Empty;
         public string WrittenUserId { get; set; } = string.Empty;
         public string WrittenExpiryDate { get; set; } = string.Empty;
+        public uint FactoryFixId { get; set; }
     }
 
     #endregion

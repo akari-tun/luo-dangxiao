@@ -7,6 +7,8 @@
   "PrinterConfig": {
     "Provider": "Seaory",
     "DefaultPrinterId": "Seaory S22K",
+    "EnablePrint": false,
+    "EnableIssueCard": true,
     "PrintText": [
       {
         "PropertyName": "Name",

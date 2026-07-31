@@ -3,6 +3,19 @@ using System.Text.Json.Serialization;
 
 namespace luo.dangxiao.wabapi.Dtos.Requests
 {
+    public sealed class SendSmsRequestDto
+    {
+        /// <summary>
+        /// Recipient phone number
+        /// </summary>
+        public string Phone { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 6-digit verification code
+        /// </summary>
+        public string Code { get; set; } = string.Empty;
+    }
+
     public sealed class DynamicRequestDto
     {
         [JsonExtensionData]

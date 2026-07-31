@@ -283,6 +283,51 @@ public sealed class YcCardReader : CardReaderBase
         return cardType >= 0 && cardType <= 10 ? cardType : -1;
     }
 
+    /// <inheritdoc />
+    public override bool InitCard(
+        int serno,
+        string cardNo,
+        int userType,
+        int initialValue,
+        int useCount,
+        uint useTerm,
+        out uint factoryFixId,
+        int keyMode = 1,
+        string empStrId = "U001",
+        string empName = "",
+        string cardTypeName = "")
+    {
+        factoryFixId = 0;
+
+        if (!_reader.Open())
+        {
+            return false;
+        }
+
+        try
+        {
+            var userCode = UserCode.BuildUserCode(
+                keyMode, empStrId, empName, cardTypeName);
+
+            int result = _consumption.InitPosUserCardN12(
+                serno, cardNo, userType, initialValue, useCount, 3000,
+                out uint cardSerno, useTerm,
+                userCode: userCode);
+
+            if (result != (int)ErrorCode.Success)
+            {
+                return false;
+            }
+
+            factoryFixId = cardSerno;
+            return true;
+        }
+        finally
+        {
+            _reader.Halt();
+        }
+    }
+
     private static DateTime DecodeTermDate(uint useTerm)
     {
         if (useTerm == 0) return DateTime.MinValue;

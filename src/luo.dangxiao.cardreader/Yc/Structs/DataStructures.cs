@@ -241,3 +241,66 @@ public struct Ycxfg30UserRecordInfo
         CardUID = new byte[4];
     }
 }
+
+public class UserCode
+{
+    public byte[] Data;
+
+    public UserCode()
+    {
+        Data = new byte[64];
+    }
+
+    /// <summary>
+    /// Builds a UserCode instance with the specified key mode, employee info, and card type name.
+    /// The key mode is stored at Data[8] (0=FF keys, 1=Fixed keys, 2=Calculated keys).
+    /// The user info is packed at Data[9..56]:
+    ///   - Byte 9: empStrId length (1 byte)
+    ///   - Bytes 10..: empStrId (ASCII, max 5 chars)
+    ///   - Next byte: empName length
+    ///   - Next bytes: empName (GB2312)
+    ///   - Next byte: cardTypeName length
+    ///   - Next bytes: cardTypeName (GB2312)
+    /// </summary>
+    public static UserCode BuildUserCode(int keyMode, string empStrId, string empName, string cardTypeName)
+    {
+        var code = new UserCode();
+        code.Data[8] = (byte)keyMode;
+
+        int offset = 9;
+
+        // Pack empStrId (ASCII, max 5)
+        byte[] empIdBytes = System.Text.Encoding.ASCII.GetBytes(
+            empStrId.Length > 5 ? empStrId.Substring(0, 5) : empStrId);
+        code.Data[offset++] = (byte)empIdBytes.Length;
+        for (int i = 0; i < empIdBytes.Length && offset < code.Data.Length; i++)
+        {
+            code.Data[offset++] = empIdBytes[i];
+        }
+
+        // Pack empName (GB2312)
+        byte[] empNameBytes = System.Text.Encoding.GetEncoding("GB2312").GetBytes(empName);
+        if (offset < code.Data.Length)
+        {
+            code.Data[offset++] = (byte)empNameBytes.Length;
+            for (int i = 0; i < empNameBytes.Length && offset < code.Data.Length; i++)
+            {
+                code.Data[offset++] = empNameBytes[i];
+            }
+        }
+
+        // Pack cardTypeName (GB2312)
+        byte[] typeNameBytes = System.Text.Encoding.GetEncoding("GB2312").GetBytes(cardTypeName);
+        if (offset < code.Data.Length)
+        {
+            code.Data[offset] = (byte)typeNameBytes.Length;
+            offset++;
+            for (int i = 0; i < typeNameBytes.Length && offset < code.Data.Length; i++)
+            {
+                code.Data[offset++] = typeNameBytes[i];
+            }
+        }
+
+        return code;
+    }
+}

@@ -133,6 +133,7 @@
     <File Path="../docs/WebApi/FailResult.json" />
     <File Path="../docs/WebApi/GetTeacherByIdentity.json" />
     <File Path="../docs/WebApi/GetTraineeByIdentity.json" />
+    <File Path="TextFile1.json" />
   </Folder>
   <Folder Name="/解决方案项/">
     <File Path="../AGENTS.md" />

@@ -5,7 +5,7 @@ namespace luo.dangxiao.wabapi.Clients
 {
     public interface IYktApiClient
     {
-        Task<SendSmsResponseDto> SendSmsAsync(DynamicRequestDto request, CancellationToken cancellationToken = default);
+        Task<SendSmsResponseDto> SendSmsAsync(SendSmsRequestDto request, CancellationToken cancellationToken = default);
 
         Task<TeacherByMobileResponseDto> GetTeacherByMobileAsync(string mobile, CancellationToken cancellationToken = default);
 

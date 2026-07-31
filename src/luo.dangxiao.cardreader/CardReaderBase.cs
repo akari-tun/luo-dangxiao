@@ -60,6 +60,35 @@ public abstract class CardReaderBase : IDisposable
     public abstract bool WaterRecharge(decimal amount, out decimal balance);
 
     /// <summary>
+    /// Initializes a new user card with serno, card number, type, initial balance, and expiration.
+    /// This is a high-level init that writes both the consumption and user info sectors.
+    /// </summary>
+    /// <param name="serno">Card serial number (logical ID).</param>
+    /// <param name="cardNo">Card number string (max 5 chars).</param>
+    /// <param name="userType">User type (1-32).</param>
+    /// <param name="initialValue">Initial balance in cents.</param>
+    /// <param name="useCount">Initial use count.</param>
+    /// <param name="useTerm">Expiration date as YYYYMMDD (e.g. 20301231).</param>
+    /// <param name="factoryFixId">Physical card ID read back after init.</param>
+    /// <param name="keyMode">Key mode: 0=FF keys, 1=fixed keys, 2=calculated keys.</param>
+    /// <param name="empStrId">Employee/ID string.</param>
+    /// <param name="empName">Employee name.</param>
+    /// <param name="cardTypeName">Card type name.</param>
+    /// <returns>True when initialization succeeds.</returns>
+    public abstract bool InitCard(
+        int serno,
+        string cardNo,
+        int userType,
+        int initialValue,
+        int useCount,
+        uint useTerm,
+        out uint factoryFixId,
+        int keyMode = 1,
+        string empStrId = "U001",
+        string empName = "",
+        string cardTypeName = "");
+
+    /// <summary>
     /// Releases resources held by the reader.
     /// </summary>
     public virtual void Dispose()

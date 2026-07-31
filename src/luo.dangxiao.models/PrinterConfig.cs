@@ -160,6 +160,19 @@ namespace luo.dangxiao.models
         public SeaoryPrintConfig? Seaory { get; set; }
 
         /// <summary>
+        /// Gets or sets whether to print text on the card during card processing.
+        /// Defaults to true. When false, the print step is skipped.
+        /// </summary>
+        public bool EnablePrint { get; set; } = true;
+
+        /// <summary>
+        /// Gets or sets whether to perform physical card issuance (move, read, write, print, eject).
+        /// Defaults to true. When false, the entire hardware pipeline is skipped and the operation
+        /// transitions directly to completion (useful for testing or API-only flows).
+        /// </summary>
+        public bool EnableIssueCard { get; set; } = true;
+
+        /// <summary>
         /// Resolves the configured provider to a supported runtime provider.
         /// </summary>
         /// <param name="warning">A warning payload when fallback is applied.</param>

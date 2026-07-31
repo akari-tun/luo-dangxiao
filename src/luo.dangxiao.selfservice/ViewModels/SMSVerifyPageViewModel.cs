@@ -1,8 +1,16 @@
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Input;
+using luo.dangxiao.common.Enums;
+using luo.dangxiao.interfaces.Mappers;
 using luo.dangxiao.interfaces.ViewModels;
+using luo.dangxiao.models;
 using luo.dangxiao.resources.Languages;
+using luo.dangxiao.wabapi.Dtos.Requests;
+using System.Globalization;
+using System.Security.Principal;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
 
@@ -26,6 +34,8 @@ public partial class SMSVerifyPageViewModel : ViewModelBase, IPageViewModel
 
     [ObservableProperty]
     private string _errorMessage = string.Empty;
+
+    private string _generatedCode = string.Empty;
 
     public SMSVerifyPageViewModel()
     {
@@ -87,22 +97,55 @@ public partial class SMSVerifyPageViewModel : ViewModelBase, IPageViewModel
     }
 
     [RelayCommand(CanExecute = nameof(CanSendCode))]
-    private void SendVerificationCode()
+    private async Task SendVerificationCodeAsync()
     {
-        CountdownSeconds = 60;
-        ErrorMessage = string.Empty;
-        _countdownTimer.Start();
-        SendVerificationCodeCommand.NotifyCanExecuteChanged();
+        var yktApiClient = GetYktApiClient();
+        if (yktApiClient is null)
+        {
+            ErrorMessage = "短信服务不可用，请稍后重试";
+            return;
+        }
+
+        _generatedCode = Random.Shared.Next(100000, 1000000).ToString();
+
+        var request = new SendSmsRequestDto
+        {
+            Phone = PhoneNumber,
+            Code = _generatedCode
+        };
+
+        try
+        {
+            var response = await yktApiClient.SendSmsAsync(request);
+
+            if (!IsApiSuccess(response))
+            {
+                ErrorMessage = FormatApiError(response.Message, "发送失败，请稍后重试");
+                _generatedCode = string.Empty;
+                return;
+            }
+
+            CountdownSeconds = 60;
+            ErrorMessage = string.Empty;
+            _countdownTimer.Start();
+            SendVerificationCodeCommand.NotifyCanExecuteChanged();
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = FormatApiError(ex.Message, "发送失败，请稍后重试");
+            _generatedCode = string.Empty;
+        }
     }
 
     [RelayCommand(CanExecute = nameof(CanVerify))]
-    private void OnVerifyCode()
+    private async Task OnVerifyCode()
     {
         ErrorMessage = string.Empty;
 
-        if (VerificationCode is "1234" or "123456")
+        if (!string.IsNullOrEmpty(_generatedCode) && VerificationCode == _generatedCode)
         {
             VerificationCode = string.Empty;
+            _generatedCode = string.Empty;
             CountdownSeconds = 0;
             _countdownTimer.Stop();
             OnPropertyChanged(nameof(CanSendCode));
@@ -131,5 +174,26 @@ public partial class SMSVerifyPageViewModel : ViewModelBase, IPageViewModel
         OnPropertyChanged(nameof(CanSendCode));
         OnPropertyChanged(nameof(IsCodeSended));
         SendVerificationCodeCommand.NotifyCanExecuteChanged();
+    }
+
+    private static async Task<UserInfoModel> GetUserInfoByIdentityAsync(string phone)
+    {
+        var cfgData = Ioc.Default.GetRequiredService<SelfServiceConfig>();
+        var yktApiClient = GetYktApiClient()
+            ?? throw new InvalidOperationException("未配置 YktApi 服务，请检查配置文件中的 YktApiConfig。");
+        var mapper = Ioc.Default.GetService<IYktUserInfoMapper>()
+            ?? throw new InvalidOperationException("未配置 Ykt 用户映射服务。");
+
+        if (cfgData.ServiceType == SelfServiceType.StaffSelfService)
+        {
+            var response = await yktApiClient.GetTeacherByMobileAsync(phone);
+            EnsureApiSuccess(response.Code, response.Message);
+            return mapper.MapStaff(response.Data, phone);
+        }
+
+        var checkInDate = DateTime.Today.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+        var traineeResponse = await yktApiClient.GetTraineeByMobileAsync(phone, checkInDate);
+        EnsureApiSuccess(traineeResponse.Code, traineeResponse.Message);
+        return mapper.MapStudent(traineeResponse.Data, phone);
     }
 }

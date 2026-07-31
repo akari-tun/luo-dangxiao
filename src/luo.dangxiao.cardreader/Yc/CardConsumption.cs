@@ -353,7 +353,7 @@ public class CardConsumption : IDisposable
         cardNo = System.Text.Encoding.ASCII.GetString(cardNoBytes).TrimEnd('\0', ' ');
     }
 
-        public CardConsumption(CardReader reader)
+    public CardConsumption(CardReader reader)
     {
         _reader = reader ?? throw new ArgumentNullException(nameof(reader));
     }
@@ -1968,6 +1968,96 @@ public class CardConsumption : IDisposable
     }
 
     #endregion
+
+    #region Generic Sector Operations
+
+    /// <summary>
+    /// Write data blocks to a specified sector range with a custom authentication key.
+    /// </summary>
+    /// <param name="key">6-byte authentication key (KeyA or KeyB).</param>
+    /// <param name="keyMode">Key mode byte: e.g. KeyA|KeySet0=0x00, KeyB|KeySet2=0x04+0x02=0x06. Use KeyTypes constants.</param>
+    /// <param name="sector">Target sector number (0-15).</param>
+    /// <param name="startBlock">Starting block offset within sector (0-3). Block 3 is the trailer block (keys + access bits) — write only if intentional.</param>
+    /// <param name="endBlock">Ending block offset within sector (0-3). Must be &gt;= startBlock.</param>
+    /// <param name="blockData">
+    /// Array of 16-byte blocks to write. Length must equal (endBlock - startBlock + 1).
+    /// Each element must be exactly 16 bytes.
+    /// </param>
+    /// <returns>Error code: 0 = success (ErrorCode.Success).</returns>
+    public int WriteSectorData(byte[] key, byte keyMode, byte sector, byte startBlock, byte endBlock, byte[][] blockData)
+    {
+        if (key == null || key.Length != 6)
+        {
+            LogInit($"WriteSectorData: Invalid key (null or length={key?.Length})");
+            return (int)ErrorCode.ParameterError;
+        }
+        if (startBlock > 3 || endBlock > 3 || startBlock > endBlock)
+        {
+            LogInit($"WriteSectorData: Invalid block range [{startBlock}-{endBlock}] for sector {sector}");
+            return (int)ErrorCode.ParameterError;
+        }
+        int expectedBlocks = endBlock - startBlock + 1;
+        if (blockData == null || blockData.Length != expectedBlocks)
+        {
+            LogInit($"WriteSectorData: blockData length {blockData?.Length} != expected {expectedBlocks}");
+            return (int)ErrorCode.ParameterError;
+        }
+        for (int i = 0; i < blockData.Length; i++)
+        {
+            if (blockData[i] == null || blockData[i].Length != 16)
+            {
+                LogInit($"WriteSectorData: blockData[{i}] length {blockData[i]?.Length} != 16");
+                return (int)ErrorCode.ParameterError;
+            }
+        }
+
+        LogInit($"WriteSectorData: sector={sector}, blocks=[{startBlock}-{endBlock}], keyMode=0x{keyMode:X2}");
+
+        // Reselect card
+        int result = _reader.Card(0x52, out _);
+        if (result != (int)ErrorCode.Success)
+        {
+            LogInit($"WriteSectorData: Card select failed, result={result}");
+            return (int)ErrorCode.NoCard;
+        }
+
+        // Load key into reader
+        result = _reader.LoadKey(keyMode, sector, key);
+        if (result != (int)ErrorCode.Success)
+        {
+            LogInit($"WriteSectorData: LoadKey failed, result={result}");
+            return result;
+        }
+
+        // Authenticate sector
+        result = _reader.Authentication(keyMode, sector);
+        if (result != (int)ErrorCode.Success)
+        {
+            LogInit($"WriteSectorData: Authentication failed, result={result}");
+            return result;
+        }
+
+        // Write each block
+        int blockCount = endBlock - startBlock + 1;
+        for (int i = 0; i < blockCount; i++)
+        {
+            byte blockAddr = (byte)(sector * 4 + startBlock + i);
+            result = _reader.Write(blockAddr, blockData[i]);
+            if (result != (int)ErrorCode.Success)
+            {
+                LogInit($"WriteSectorData: Write block {blockAddr} (sector {sector}, offset {startBlock + i}) failed, result={result}");
+                _reader.Halt();
+                return result;
+            }
+        }
+
+        _reader.Halt();
+        LogInit($"WriteSectorData: success, sector={sector}, blocks=[{startBlock}-{endBlock}]");
+        return (int)ErrorCode.Success;
+    }
+
+    #endregion
+
 
     public void Dispose()
     {

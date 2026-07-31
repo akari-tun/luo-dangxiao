@@ -1,6 +1,8 @@
 using luo.dangxiao.cardreader.Yc.Structs;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace luo.dangxiao.cardreader.Yc;
 
@@ -669,4 +671,25 @@ public class UserCode
 
     public byte[] GetKeyA() => Data.AsSpan(0, 6).ToArray();
     public byte[] GetKeyB() => Data.AsSpan(10, 6).ToArray();
+
+    public static UserCode BuildUserCode(int keyMode, string empStrId, string empName, string cardTypeName)
+    {
+        var userCode = new UserCode();
+        using var ms = new MemoryStream(userCode.Data);
+        using var bw = new BinaryWriter(ms);
+
+        byte[] empIdBytes = Encoding.ASCII.GetBytes(empStrId.Length > 5 ? empStrId.Substring(0, 5) : empStrId);
+        byte[] empNameBytes = Encoding.GetEncoding("GB2312").GetBytes(empName);
+        byte[] typeNameBytes = Encoding.GetEncoding("GB2312").GetBytes(cardTypeName);
+
+        bw.Write((byte)empIdBytes.Length);
+        bw.Write(empIdBytes);
+        bw.Write((byte)empNameBytes.Length);
+        bw.Write(empNameBytes);
+        bw.Write((byte)typeNameBytes.Length);
+        bw.Write(typeNameBytes);
+
+        userCode.Data[8] = (byte)keyMode;
+        return userCode;
+    }
 }

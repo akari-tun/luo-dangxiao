@@ -86,4 +86,14 @@ public sealed class VirtualCardReader : CardReaderBase
         balance = _waterBalance;
         return true;
     }
+
+    /// <inheritdoc />
+    public override bool InitCard(
+        int serno, string cardNo, int userType, int initialValue, int useCount,
+        uint useTerm, out uint factoryFixId, int keyMode = 1,
+        string empStrId = "U001", string empName = "", string cardTypeName = "")
+    {
+        factoryFixId = _cardPresent ? 1348446621u : 0u;
+        return _cardPresent;
+    }
 }

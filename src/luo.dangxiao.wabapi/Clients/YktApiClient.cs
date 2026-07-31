@@ -20,9 +20,9 @@ namespace luo.dangxiao.wabapi.Clients
             _httpClient = httpClient;
         }
 
-        public Task<SendSmsResponseDto> SendSmsAsync(DynamicRequestDto request, CancellationToken cancellationToken = default)
+        public Task<SendSmsResponseDto> SendSmsAsync(SendSmsRequestDto request, CancellationToken cancellationToken = default)
         {
-            return PostAsync<DynamicRequestDto, SendSmsResponseDto>("self/api/v1/sendSms", request, cancellationToken);
+            return PostAsync<SendSmsRequestDto, SendSmsResponseDto>("self/api/v1/sendSms", request, cancellationToken);
         }
 
         public Task<TeacherByMobileResponseDto> GetTeacherByMobileAsync(string mobile, CancellationToken cancellationToken = default)
