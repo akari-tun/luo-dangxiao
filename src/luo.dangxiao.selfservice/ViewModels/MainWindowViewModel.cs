@@ -8,6 +8,10 @@ namespace luo.dangxiao.selfservice.ViewModels;
 /// </summary>
 public partial class MainWindowViewModel : ViewModelBase
 {
+    public MainWindowViewModel() : base()
+    {
+    }
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasStartupWarning))]
     [NotifyPropertyChangedFor(nameof(IsStartupWarningVisible))]
@@ -32,6 +36,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void DismissStartupWarning()
     {
+        LogCommand(nameof(DismissStartupWarning));
         IsStartupWarningDismissed = true;
     }
 }

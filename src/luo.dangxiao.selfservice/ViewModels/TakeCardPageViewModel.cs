@@ -68,7 +68,7 @@ public partial class TakeCardPageViewModel : CardOperationViewModelBase
         OnPropertyChanged(nameof(ShowTakeCardConfirmButton));
     }
 
-    public TakeCardPageViewModel(SelfServiceConfig config, CardPrinterBase cardPrinter, CardReaderBase cardReader, IYktApiClient? yktApiClient = null)
+    public TakeCardPageViewModel(SelfServiceConfig config, CardPrinterBase cardPrinter, CardReaderBase cardReader, IYktApiClient? yktApiClient = null) : base()
     {
         _config = config;
         _cardPrinter = cardPrinter;
@@ -100,7 +100,11 @@ public partial class TakeCardPageViewModel : CardOperationViewModelBase
     }
 
     [RelayCommand(CanExecute = nameof(CanStartTakeCard))]
-    private async Task StartTakeCardAsync() => await ExecuteCardProcessAsync("ISSUE");
+    private async Task StartTakeCardAsync()
+    {
+        LogCommand(nameof(StartTakeCardAsync), $"CardNo={MaskLogValue(CardNumber)}, User={MaskLogValue(UserInfo?.Name)}");
+        await ExecuteCardProcessAsync("ISSUE");
+    }
 
     protected override void ConfirmPickup()
     {
@@ -111,6 +115,7 @@ public partial class TakeCardPageViewModel : CardOperationViewModelBase
     [RelayCommand]
     private void LoadData(TakeCardPageParameter parameter)
     {
+        LogCommand(nameof(LoadData), $"TargetFunction={parameter.TargetFunction}, User={MaskLogValue(parameter.Data?.Name)}");
         TargetFunction = parameter.TargetFunction;
         UserInfo = parameter.Data;
         TakeCardTime = null;

@@ -37,6 +37,10 @@ public sealed class StaffInfoPageParameter
 /// </summary>
 public partial class StaffInfoPageViewModel : ViewModelBase, IPageViewModel
 {
+    public StaffInfoPageViewModel() : base()
+    {
+    }
+
     [ObservableProperty]
     private StaffInfoModel _staffInfo = new()
     {
@@ -161,6 +165,7 @@ public partial class StaffInfoPageViewModel : ViewModelBase, IPageViewModel
     [RelayCommand]
     private void LoadData(StaffInfoPageParameter parameter)
     {
+        LogCommand(nameof(LoadData), $"StaffId={MaskLogValue(parameter.StaffId)}, Mode={parameter.Mode}, RechargeAmount={parameter.RechargeAmount}");
         CurrentMode = parameter.Mode;
         RechargeAmount = parameter.RechargeAmount;
 
@@ -175,6 +180,7 @@ public partial class StaffInfoPageViewModel : ViewModelBase, IPageViewModel
     [RelayCommand]
     private void Refresh()
     {
+        LogCommand(nameof(Refresh));
         OnPropertyChanged(nameof(ShowPhoto));
         OnPropertyChanged(nameof(ShowRechargePreview));
         OnPropertyChanged(nameof(ShowCardDetailInfo));

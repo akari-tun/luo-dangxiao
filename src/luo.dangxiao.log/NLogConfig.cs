@@ -5,8 +5,8 @@ using NLog.Targets;
 namespace luo.dangxiao.log;
 
 /// <summary>
-/// Programmatic NLog configuration helper.
-/// Creates a standard file + debug console setup with colored console output.
+/// NLog configuration helper.
+/// Loads the application nlog.config file when it is available, with a programmatic fallback.
 /// </summary>
 public static class NLogConfig
 {
@@ -16,6 +16,16 @@ public static class NLogConfig
 
     public static void Setup(string? logFilePath = null)
     {
+        if (logFilePath is null)
+        {
+            var configFilePath = Path.Combine(AppContext.BaseDirectory, "nlog.config");
+            if (File.Exists(configFilePath))
+            {
+                NLog.LogManager.Configuration = new XmlLoggingConfiguration(configFilePath);
+                return;
+            }
+        }
+
         var config = new LoggingConfiguration();
 
         var layout = SimpleLayout;

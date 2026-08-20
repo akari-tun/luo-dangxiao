@@ -1,7 +1,7 @@
 {
   "Theme": "Light",
   "YktApiConfig": {
-    "BaseUrl": "http://hnswdx-test.nat100.top/dev-api/self/",
+    "BaseUrl": "http://39.98.79.140:8899/dev-api/self/",
     "TimeoutSeconds": 30
   },
   "PrinterConfig": {

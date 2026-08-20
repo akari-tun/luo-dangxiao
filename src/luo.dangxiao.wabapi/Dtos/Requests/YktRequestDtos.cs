@@ -6,9 +6,9 @@ namespace luo.dangxiao.wabapi.Dtos.Requests
     public sealed class SendSmsRequestDto
     {
         /// <summary>
-        /// Recipient phone number
+        /// Recipient mobile phone number
         /// </summary>
-        public string Phone { get; set; } = string.Empty;
+        public string Mobile { get; set; } = string.Empty;
 
         /// <summary>
         /// 6-digit verification code

@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using luo.dangxiao.common.Enums;
 using luo.dangxiao.interfaces.ViewModels;
 using luo.dangxiao.interfaces.Views;
+using luo.dangxiao.models;
 using luo.dangxiao.selfservice.Views;
 
 namespace luo.dangxiao.selfservice.ViewModels;
@@ -27,7 +28,7 @@ public partial class VerifyPageViewModel : ViewModelBase, IPageViewModel
     private readonly IDCardVerifyPageView _idCardView;
     private readonly SMSVerifyPageView _smsModuleView;
 
-    public VerifyPageViewModel()
+    public VerifyPageViewModel() : base()
     {
         _idCardView = new IDCardVerifyPageView();
         _smsModuleView = new SMSVerifyPageView();
@@ -35,6 +36,11 @@ public partial class VerifyPageViewModel : ViewModelBase, IPageViewModel
         if (_idCardView.DataContext is IDCardVerifyPageViewModel idCardViewModel)
         {
             idCardViewModel.VerificationSucceeded += OnVerificationSucceeded;
+        }
+
+        if (_smsModuleView.DataContext is SMSVerifyPageViewModel smsVerifyPageViewModel)
+        {
+            smsVerifyPageViewModel.VerificationSucceeded += OnSmsVerificationSucceeded;
         }
 
         VerifyPageContent = _idCardView;
@@ -53,6 +59,7 @@ public partial class VerifyPageViewModel : ViewModelBase, IPageViewModel
     [RelayCommand]
     private void SwitchToIDCard()
     {
+        LogCommand(nameof(SwitchToIDCard));
         VerifyMethod = VerifyMethod.IDCard;
         VerifyPageContent = _idCardView;
     }
@@ -60,35 +67,46 @@ public partial class VerifyPageViewModel : ViewModelBase, IPageViewModel
     [RelayCommand]
     private void SwitchToSMS()
     {
+        LogCommand(nameof(SwitchToSMS));
         VerifyMethod = VerifyMethod.SMS;
         VerifyPageContent = _smsModuleView;
     }
 
     private void OnVerificationSucceeded(object? sender, IDCardVerificationSucceededEventArgs e)
     {
+        NavigateAfterVerification(e.UserInfo);
+    }
+
+    private void OnSmsVerificationSucceeded(object? sender, SmsVerificationSucceededEventArgs e)
+    {
+        NavigateAfterVerification(e.UserInfo);
+    }
+
+    private void NavigateAfterVerification(UserInfoModel userInfo)
+    {
         var homePage = Ioc.Default.GetRequiredService<HomePageViewModel>();
 
         if (TargetFunction == "TakeCard")
         {
-            homePage.NavigateToTakeCard(e.UserInfo);
+            homePage.NavigateToTakeCard(userInfo);
             return;
         }
 
         if (TargetFunction == "CheckIn")
         {
-            homePage.NavigateToCheckIn(e.UserInfo);
+            homePage.NavigateToCheckIn(userInfo);
             return;
         }
 
         if (TargetFunction == "ReportLoss")
         {
-            homePage.NavigateToReportLoss(e.UserInfo);
+            homePage.NavigateToReportLoss(userInfo);
             return;
         }
 
         if (TargetFunction == "Replacement")
         {
-            homePage.NavigateToReplacement(e.UserInfo);
+            homePage.NavigateToReplacement(userInfo);
             return;
         }
 
@@ -97,11 +115,11 @@ public partial class VerifyPageViewModel : ViewModelBase, IPageViewModel
             homePage.SubPageContent = new RechargePageView(new RechargePageParameter
             {
                 TargetFunction = "Recharge",
-                Data = e.UserInfo
+                Data = userInfo
             });
             return;
         }
 
-        homePage.NavigateToUserInfo(e.UserInfo, TargetFunction);
+        homePage.NavigateToUserInfo(userInfo, TargetFunction);
     }
 }

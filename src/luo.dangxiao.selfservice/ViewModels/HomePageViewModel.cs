@@ -13,6 +13,10 @@ namespace luo.dangxiao.selfservice.ViewModels;
 /// </summary>
 public partial class HomePageViewModel : ViewModelBase, IPageViewModel
 {
+    public HomePageViewModel() : base()
+    {
+    }
+
     [ObservableProperty]
     private HomePageState _currentState = HomePageState.HomePage;
 
@@ -52,6 +56,7 @@ public partial class HomePageViewModel : ViewModelBase, IPageViewModel
     [RelayCommand]
     private void OnFunctionButtonClick(string functionName)
     {
+        LogCommand(nameof(OnFunctionButtonClick), $"Function={functionName}");
         SelectedFunction = functionName;
         CurrentState = HomePageState.SubPageContainer;
         LoadVerifyPage();
@@ -70,6 +75,7 @@ public partial class HomePageViewModel : ViewModelBase, IPageViewModel
 
     public void NavigateToCheckIn(UserInfoModel userInfo)
     {
+        LogCommand(nameof(NavigateToCheckIn), $"User={MaskLogValue(userInfo.Name)}");
         SelectedFunction = "CheckIn";
         CurrentState = HomePageState.SubPageContainer;
         SubPageContent = new CheckInPageView(new CheckInPageParameter
@@ -81,6 +87,7 @@ public partial class HomePageViewModel : ViewModelBase, IPageViewModel
 
     public void NavigateToTakeCard(UserInfoModel userInfo)
     {
+        LogCommand(nameof(NavigateToTakeCard), $"User={MaskLogValue(userInfo.Name)}");
         SelectedFunction = "TakeCard";
         CurrentState = HomePageState.SubPageContainer;
         SubPageContent = new TakeCardPageView(new TakeCardPageParameter
@@ -92,6 +99,7 @@ public partial class HomePageViewModel : ViewModelBase, IPageViewModel
 
     public void NavigateToReportLoss(UserInfoModel userInfo)
     {
+        LogCommand(nameof(NavigateToReportLoss), $"User={MaskLogValue(userInfo.Name)}");
         SelectedFunction = "ReportLoss";
         CurrentState = HomePageState.SubPageContainer;
         SubPageContent = new ReportLossPageView(new ReportLossPageParameter
@@ -103,6 +111,7 @@ public partial class HomePageViewModel : ViewModelBase, IPageViewModel
 
     public void NavigateToReplacement(UserInfoModel userInfo)
     {
+        LogCommand(nameof(NavigateToReplacement), $"User={MaskLogValue(userInfo.Name)}");
         SelectedFunction = "Replacement";
         CurrentState = HomePageState.SubPageContainer;
         SubPageContent = new ReplacementPageView(new ReplacementPageParameter

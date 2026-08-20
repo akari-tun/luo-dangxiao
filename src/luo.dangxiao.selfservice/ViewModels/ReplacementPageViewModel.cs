@@ -45,7 +45,7 @@ public partial class ReplacementPageViewModel : CardOperationViewModelBase
 
     public bool IsProcessingState => IsCardProcessingState;
 
-    public ReplacementPageViewModel(SelfServiceConfig config, CardPrinterBase cardPrinter, CardReaderBase cardReader, IYktApiClient? yktApiClient = null)
+    public ReplacementPageViewModel(SelfServiceConfig config, CardPrinterBase cardPrinter, CardReaderBase cardReader, IYktApiClient? yktApiClient = null) : base()
     {
         _config = config;
         _cardPrinter = cardPrinter;
@@ -93,11 +93,16 @@ public partial class ReplacementPageViewModel : CardOperationViewModelBase
     }
 
     [RelayCommand(CanExecute = nameof(CanReplacement))]
-    private async Task ExecuteReplacementAsync() => await ExecuteCardProcessAsync("REISSUE");
+    private async Task ExecuteReplacementAsync()
+    {
+        LogCommand(nameof(ExecuteReplacementAsync), $"User={MaskLogValue(UserInfo?.Name)}");
+        await ExecuteCardProcessAsync("REISSUE");
+    }
 
     [RelayCommand]
     private void LoadData(ReplacementPageParameter parameter)
     {
+        LogCommand(nameof(LoadData), $"TargetFunction={parameter.TargetFunction}, User={MaskLogValue(parameter.Data?.Name)}");
         TargetFunction = parameter.TargetFunction;
         UserInfo = parameter.Data;
         CurrentState = CardProcessingState.Confirm;

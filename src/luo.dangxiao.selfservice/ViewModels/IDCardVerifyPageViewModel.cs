@@ -54,10 +54,9 @@ public partial class IDCardVerifyPageViewModel : ViewModelBase, IPageViewModel
     /// Initializes a new instance of the <see cref="IDCardVerifyPageViewModel"/> class.
     /// </summary>
     /// <param name="idReader">The configured ID card reader.</param>
-    public IDCardVerifyPageViewModel(IdReaderBase idReader)
+    public IDCardVerifyPageViewModel(IdReaderBase idReader) : base()
     {
         _idReader = idReader;
-        EnsureLogger();
     }
 
     public event EventHandler<IDCardVerificationSucceededEventArgs>? VerificationSucceeded;
@@ -99,6 +98,7 @@ public partial class IDCardVerifyPageViewModel : ViewModelBase, IPageViewModel
     public async Task<UserInfoModel?> VerifyCardAsync(IdCardData cardData)
     {
         var identity = cardData.IdNumber;
+        LogCommand(nameof(VerifyCardAsync), $"Identity={MaskLogValue(identity)}");
         if (string.IsNullOrEmpty(identity))
         {
             PostToUi(() => ErrorMessage = "身份证号码为空");
@@ -112,6 +112,7 @@ public partial class IDCardVerifyPageViewModel : ViewModelBase, IPageViewModel
         }
         catch (Exception ex)
         {
+            Logger.Error(ex, "ID card verification failed. Identity={0}", MaskLogValue(identity));
             PostToUi(() => ErrorMessage = ex.Message);
             return null;
         }
@@ -130,6 +131,7 @@ public partial class IDCardVerifyPageViewModel : ViewModelBase, IPageViewModel
         CancelAutoRead();
 
         _isPolling = true;
+        LogCommand(nameof(StartAutoReadAsync));
         _pollingCts = new CancellationTokenSource();
         var token = _pollingCts.Token;
         PostToUi(() =>
@@ -345,6 +347,7 @@ public partial class IDCardVerifyPageViewModel : ViewModelBase, IPageViewModel
     [RelayCommand]
     private async Task StartVerificationAsync()
     {
+        LogCommand(nameof(StartVerificationAsync));
         ErrorMessage = string.Empty;
         UserName = string.Empty;
         CurrentState = IDCardVerifyState.Processing;
@@ -396,7 +399,7 @@ public partial class IDCardVerifyPageViewModel : ViewModelBase, IPageViewModel
     }
 #endif
 
-    private static async Task<UserInfoModel> GetUserInfoByIdentityAsync(string identity)
+    private async Task<UserInfoModel> GetUserInfoByIdentityAsync(string identity)
     {
         var cfgData = Ioc.Default.GetRequiredService<SelfServiceConfig>();
         var yktApiClient = GetYktApiClient()
@@ -409,13 +412,25 @@ public partial class IDCardVerifyPageViewModel : ViewModelBase, IPageViewModel
         if (cfgData.ServiceType == SelfServiceType.StaffSelfService)
         {
             var response = await yktApiClient.GetTeacherByIdentityAsync(encodedIdentity);
-            EnsureApiSuccess(response.Code, response.Message);
+            LogApiResponse(nameof(yktApiClient.GetTeacherByIdentityAsync), response);
+            var responseIsSuccessful = EnsureApiSuccess(response.Code, response.Message);
+            if (!responseIsSuccessful)
+            {
+                Logger.Warn("Continuing teacher identity parsing because the response data is available. Identity={0}", MaskLogValue(identity));
+            }
+
             return mapper.MapStaff(response.Data, identity);
         }
 
         var checkInDate = DateTime.Today.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
         var traineeResponse = await yktApiClient.GetTraineeByIdentityAsync(encodedIdentity, checkInDate);
-        EnsureApiSuccess(traineeResponse.Code, traineeResponse.Message);
+        LogApiResponse(nameof(yktApiClient.GetTraineeByIdentityAsync), traineeResponse);
+        var traineeResponseIsSuccessful = EnsureApiSuccess(traineeResponse.Code, traineeResponse.Message);
+        if (!traineeResponseIsSuccessful)
+        {
+            Logger.Warn("Continuing trainee identity parsing because the response data is available. Identity={0}", MaskLogValue(identity));
+        }
+
         return mapper.MapStudent(traineeResponse.Data, identity);
     }
 

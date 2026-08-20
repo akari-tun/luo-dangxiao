@@ -27,6 +27,10 @@ public sealed class ReportLossPageParameter
 /// </summary>
 public partial class ReportLossPageViewModel : ViewModelBase
 {
+    public ReportLossPageViewModel() : base()
+    {
+    }
+
     private const int DefaultCountdownSeconds = 60;
     private const int DefaultOperationTimeoutSeconds = 30;
 
@@ -126,6 +130,7 @@ public partial class ReportLossPageViewModel : ViewModelBase
     [RelayCommand]
     private void LoadData(ReportLossPageParameter parameter)
     {
+        LogCommand(nameof(LoadData), $"TargetFunction={parameter.TargetFunction}, User={MaskLogValue(parameter.Data?.Name)}");
         ResetRuntimeState();
         TargetFunction = parameter.TargetFunction;
         UserInfo = parameter.Data;
@@ -138,6 +143,7 @@ public partial class ReportLossPageViewModel : ViewModelBase
     [RelayCommand(CanExecute = nameof(CanReportLoss))]
     private async Task ReportLossAsync()
     {
+        LogCommand(nameof(ReportLossAsync), $"User={MaskLogValue(UserInfo?.Name)}, CardNo={MaskLogValue(UserInfo is null ? null : GetCardNumber(UserInfo))}");
         if (UserInfo is null)
         {
             return;
@@ -183,7 +189,15 @@ public partial class ReportLossPageViewModel : ViewModelBase
         try
         {
             var response = await yktApiClient.LockCardAsync(request, linkedCancellationTokenSource.Token);
-            EnsureApiSuccess(response.Code, response.Message);
+            LogApiResponse(nameof(yktApiClient.LockCardAsync), response);
+            if (!EnsureApiSuccess(response.Code, response.Message))
+            {
+                OperationStatusText = FormatApiError(
+                    response.Message,
+                    LanguageProvider.SelfService_ReportLoss_Status_Failed);
+                ResetCountdown();
+                return;
+            }
 
             UpdateCardStatusToLost(UserInfo);
             ResolveReportLossState(UserInfo);
@@ -204,6 +218,7 @@ public partial class ReportLossPageViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
+            Logger.Error(ex, "Report-loss operation failed. CardNo={0}", MaskLogValue(cardNumber));
             OperationStatusText = string.Format(
                 CultureInfo.CurrentUICulture,
                 LanguageProvider.SelfService_ReportLoss_Status_Failed_WithReason,

@@ -27,6 +27,10 @@ public sealed class CheckInPageParameter
 /// </summary>
 public partial class CheckInPageViewModel : ViewModelBase
 {
+    public CheckInPageViewModel() : base()
+    {
+    }
+
     private const int DefaultCountdownSeconds = 60;
 
     private DispatcherTimer? _countdownTimer;
@@ -121,6 +125,7 @@ public partial class CheckInPageViewModel : ViewModelBase
     [RelayCommand]
     private void LoadData(CheckInPageParameter parameter)
     {
+        LogCommand(nameof(LoadData), $"TargetFunction={parameter.TargetFunction}, User={MaskLogValue(parameter.Data?.Name)}");
         ResetRuntimeState();
         TargetFunction = parameter.TargetFunction;
         StudentInfo = ResolveStudentInfo(parameter.Data);
@@ -132,6 +137,7 @@ public partial class CheckInPageViewModel : ViewModelBase
     [RelayCommand(CanExecute = nameof(CanCheckIn))]
     private async Task CheckInAsync()
     {
+        LogCommand(nameof(CheckInAsync), $"UserId={MaskLogValue(StudentInfo?.UserId)}, RoomCode={StudentInfo?.RoomCode}, DeptId={StudentInfo?.DeptId}");
         if (StudentInfo is null)
         {
             return;
@@ -161,6 +167,7 @@ public partial class CheckInPageViewModel : ViewModelBase
         try
         {
             var response = await yktApiClient.RegisterTraineeAsync(request);
+            LogApiResponse(nameof(yktApiClient.RegisterTraineeAsync), response);
 
             if (!IsApiSuccess(response))
             {
@@ -192,6 +199,7 @@ public partial class CheckInPageViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
+            Logger.Error(ex, "Check-in operation failed. UserId={0}", MaskLogValue(StudentInfo?.UserId));
             OperationStatusText = string.Format(
                 CultureInfo.CurrentUICulture,
                 LanguageProvider.SelfService_CheckIn_Status_Failed_WithReason,

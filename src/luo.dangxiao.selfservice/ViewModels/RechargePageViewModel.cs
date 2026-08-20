@@ -37,6 +37,10 @@ public enum RechargeFlowState
 /// </summary>
 public partial class RechargePageViewModel : ViewModelBase
 {
+    public RechargePageViewModel() : base()
+    {
+    }
+
     private const int DefaultCountdownSeconds = 60;
 
     private DispatcherTimer? _countdownTimer;
@@ -176,6 +180,7 @@ public partial class RechargePageViewModel : ViewModelBase
     [RelayCommand]
     private void LoadData(RechargePageParameter parameter)
     {
+        LogCommand(nameof(LoadData), $"TargetFunction={parameter.TargetFunction}, User={MaskLogValue(parameter.Data?.Name)}");
         ResetRuntimeState();
         TargetFunction = parameter.TargetFunction;
         UserInfo = parameter.Data;
@@ -193,6 +198,7 @@ public partial class RechargePageViewModel : ViewModelBase
     [RelayCommand(CanExecute = nameof(CanRecharge))]
     private async Task RechargeAsync(object amount)
     {
+        LogCommand(nameof(RechargeAsync), $"Amount={amount}, User={MaskLogValue(UserInfo?.Name)}");
         if (amount == null)
         {
             return;
@@ -232,6 +238,7 @@ public partial class RechargePageViewModel : ViewModelBase
         try
         {
             var response = await yktApiClient.GetTeacherRechargeQrCodeAsync(request);
+            LogApiResponse(nameof(yktApiClient.GetTeacherRechargeQrCodeAsync), response);
 
             if (!IsApiSuccess(response))
             {
@@ -262,6 +269,7 @@ public partial class RechargePageViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
+            Logger.Error(ex, "Recharge operation failed. Amount={0}, User={1}", amt, MaskLogValue(UserInfo?.Name));
             ShowQrGenerationErrorAndRecover(ex.Message);
         }
     }

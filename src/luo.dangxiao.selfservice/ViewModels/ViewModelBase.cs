@@ -16,7 +16,6 @@ namespace luo.dangxiao.selfservice.ViewModels
     public abstract partial class ViewModelBase : ObservableObject, IPageViewModel
     {
         #region Logging
-
         /// <summary>
         /// Gets or sets the NLog logger instance for this ViewModel.
         /// Lazily resolved from DI container on first access.
@@ -36,6 +35,76 @@ namespace luo.dangxiao.selfservice.ViewModels
 
         #endregion
 
+        public ViewModelBase()
+        {
+            EnsureLogger();
+        }
+
+        /// <summary>
+        /// Writes a consistent log entry when a user operation starts.
+        /// </summary>
+        protected void LogCommand(string commandName, string? details = null)
+        {
+            Logger.Info("Command {0} started. Details: {1}", commandName, details ?? string.Empty);
+        }
+
+        /// <summary>
+        /// Writes the status and payload returned by a backend API.
+        /// </summary>
+        protected void LogApiResponse<TData>(string apiName, ApiResponseDto<TData> response)
+        {
+            var data = SerializeLogData(response.Data);
+            Logger.Info(
+                "API {0} returned. Success: {1}, Code: {2}, Message: {3}, Data: {4}",
+                apiName,
+                response.Success,
+                response.Code,
+                response.Message ?? string.Empty,
+                data);
+
+            if (response.Code is not (null or 0 or 200))
+            {
+                Logger.Warn(
+                    "API {0} returned a non-success business code. Code: {1}, Message: {2}, Data: {3}",
+                    apiName,
+                    response.Code,
+                    response.Message ?? string.Empty,
+                    data);
+            }
+        }
+
+        /// <summary>
+        /// Masks identifiers before they are written to logs.
+        /// </summary>
+        protected static string MaskLogValue(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return string.Empty;
+            }
+
+            return value.Length <= 4
+                ? "****"
+                : $"{value[..2]}****{value[^2..]}";
+        }
+
+        private static string SerializeLogData<TData>(TData data)
+        {
+            if (data is null)
+            {
+                return "null";
+            }
+
+            try
+            {
+                return JsonSerializer.Serialize(data);
+            }
+            catch (JsonException)
+            {
+                return data.ToString() ?? string.Empty;
+            }
+        }
+
         #region Navigation
 
         /// <summary>
@@ -44,6 +113,7 @@ namespace luo.dangxiao.selfservice.ViewModels
         [RelayCommand]
         protected virtual void Back()
         {
+            LogCommand(nameof(Back));
             Ioc.Default.GetRequiredService<HomePageViewModel>().ReturnHome();
         }
 
@@ -80,35 +150,42 @@ namespace luo.dangxiao.selfservice.ViewModels
         }
 
         /// <summary>
-        /// Validates an API response and throws <see cref="InvalidOperationException"/> on failure.
+        /// Evaluates an API response without throwing for a non-success business code.
+        /// The caller can continue parsing valid response data or handle the failed business operation explicitly.
         /// </summary>
-        protected static void EnsureApiSuccess(int? code, string? message, string? fallbackResourceKey = null)
+        protected bool EnsureApiSuccess(int? code, string? message, string? fallbackResourceKey = null)
         {
             if (IsApiSuccess(code))
             {
-                return;
+                return true;
             }
 
             var errorMsg = string.IsNullOrWhiteSpace(message)
                 ? LanguageProvider.GetLocalizedText(fallbackResourceKey ?? "Msg_Error")
                 : message;
-            throw new InvalidOperationException(errorMsg);
+            Logger.Warn("API response was not successful. Code: {0}, Message: {1}", code, errorMsg);
+            return false;
         }
 
         /// <summary>
-        /// Validates an API response and throws <see cref="InvalidOperationException"/> on failure.
+        /// Evaluates an API response without throwing for a non-success business code.
         /// </summary>
-        protected static void EnsureApiSuccess<TData>(ApiResponseDto<TData> response, string? fallbackResourceKey = null)
+        protected bool EnsureApiSuccess<TData>(ApiResponseDto<TData> response, string? fallbackResourceKey = null)
         {
             if (IsApiSuccess(response))
             {
-                return;
+                return true;
             }
 
             var errorMsg = string.IsNullOrWhiteSpace(response.Message)
                 ? LanguageProvider.GetLocalizedText(fallbackResourceKey ?? "Msg_Error")
                 : response.Message;
-            throw new InvalidOperationException(errorMsg);
+            Logger.Warn(
+                "API response was not successful. Code: {0}, Message: {1}, Data: {2}",
+                response.Code,
+                errorMsg,
+                SerializeLogData(response.Data));
+            return false;
         }
 
         /// <summary>

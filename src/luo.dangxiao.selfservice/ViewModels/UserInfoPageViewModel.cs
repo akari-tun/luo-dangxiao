@@ -65,7 +65,7 @@ public partial class UserInfoPageViewModel : ViewModelBase, IPageViewModel
 
     public bool ShowPrimaryAction => !string.IsNullOrWhiteSpace(PrimaryActionText);
 
-    public UserInfoPageViewModel()
+    public UserInfoPageViewModel() : base()
     {
         var cfgData = Ioc.Default.GetRequiredService<SelfServiceConfig>();
         SelfServiceType = cfgData.ServiceType;
@@ -88,6 +88,7 @@ public partial class UserInfoPageViewModel : ViewModelBase, IPageViewModel
     [RelayCommand]
     private void LoadData(UserInfoPageParameter parameter)
     {
+        LogCommand(nameof(LoadData), $"TargetFunction={parameter.TargetFunction}, User={MaskLogValue(parameter.Data?.Name)}");
         TargetFunction = parameter.TargetFunction;
         CurrentUserInfo = parameter.Data;
 

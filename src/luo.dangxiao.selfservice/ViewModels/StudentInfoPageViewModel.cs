@@ -36,6 +36,10 @@ public sealed class StudentInfoPageParameter
 /// </summary>
 public partial class StudentInfoPageViewModel : ViewModelBase, IPageViewModel
 {
+    public StudentInfoPageViewModel() : base()
+    {
+    }
+
     [ObservableProperty]
     private StudentInfoModel _studentInfo = new()
     {
@@ -205,6 +209,7 @@ public partial class StudentInfoPageViewModel : ViewModelBase, IPageViewModel
     [RelayCommand]
     private void LoadData(StudentInfoPageParameter parameter)
     {
+        LogCommand(nameof(LoadData), $"StudentId={MaskLogValue(parameter.StudentId)}, Mode={parameter.Mode}");
         CurrentMode = parameter.Mode;
 
         if (parameter.Data is not null)
@@ -221,6 +226,7 @@ public partial class StudentInfoPageViewModel : ViewModelBase, IPageViewModel
     [RelayCommand]
     private void Refresh()
     {
+        LogCommand(nameof(Refresh));
         OnPropertyChanged(nameof(ShowPhoto));
         OnPropertyChanged(nameof(ShowFeeInfo));
         OnPropertyChanged(nameof(ShowIdCardNumber));

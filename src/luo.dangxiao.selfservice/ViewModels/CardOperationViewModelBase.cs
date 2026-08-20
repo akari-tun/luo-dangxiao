@@ -41,6 +41,10 @@ public readonly record struct CardOperationResult(bool Success, string? ErrorMes
 /// </summary>
 public abstract partial class CardOperationViewModelBase : ViewModelBase
 {
+    protected CardOperationViewModelBase() : base()
+    {
+    }
+
     #region Dependencies provided by subclasses
 
     /// <summary>
@@ -189,6 +193,7 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
     [RelayCommand(CanExecute = nameof(CanConfirmPickup))]
     protected virtual void ConfirmPickup()
     {
+        LogCommand(nameof(ConfirmPickup));
         IsBusy = true;
         CurrentState = CardProcessingState.Completed;
         StopCountdownTimer();
@@ -196,7 +201,11 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
     }
 
     [RelayCommand(CanExecute = nameof(CanComplete))]
-    protected void Complete() => Back();
+    protected void Complete()
+    {
+        LogCommand(nameof(Complete));
+        Back();
+    }
 
     partial void OnCurrentStateChanged(CardProcessingState value)
     {
@@ -241,6 +250,7 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
     /// </param>
     protected async Task ExecuteCardProcessAsync(string cardOperate)
     {
+        LogCommand(nameof(ExecuteCardProcessAsync), $"Operation={cardOperate}, User={MaskLogValue(UserInfoData?.Name)}, CardNo={MaskLogValue(UserInfoData?.CurrentCard?.CardNo)}");
         ResetCountdown();
         IsBusy = true;
         CurrentState = CardProcessingState.CardProcessing;
@@ -276,7 +286,7 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
                     return CardOperationResult.Failed(initResultSkip.ErrorMessage ?? "Card initialization failed.");
                 }
 
-                WriteCardSuccessApi(initResultSkip);
+                await WriteCardSuccessApiAsync(initResultSkip);
                 PickupInstructionText = GetPickupInstructionText();
                 CurrentState = CardProcessingState.CardReadyToPickup;
                 IsCountdownVisible = false;
@@ -323,7 +333,6 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
             {
                 await WriteCardFailureApi(initResult, writeResult.ErrorMessage);
                 await DiscardCardToRejectAsync();
-                await WriteCardFailureApi(initResult, writeResult.ErrorMessage);
                 return CardOperationResult.Failed(writeResult.ErrorMessage ?? "Failed to write card data.");
             }
 
@@ -359,7 +368,7 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
             }
 
             // Report success
-            WriteCardSuccessApi(initResult);
+            await WriteCardSuccessApiAsync(initResult);
 
             // Transition to ready-to-pickup
             PickupInstructionText = GetPickupInstructionText();
@@ -396,7 +405,7 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"[CardOperation] EnsureCardRecoveryToReject failed: {ex.Message}");
+            Logger.Error(ex, "EnsureCardRecoveryToReject failed. CardNo={0}", MaskLogValue(UserInfoData?.CurrentCard?.CardNo));
             // Fallback: attempt discard anyway in case position check failed
             await DiscardCardToRejectAsync();
         }
@@ -430,7 +439,7 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"[CardOperation] MoveCardToReader failed: {ex.Message}");
+            Logger.Error(ex, "MoveCardToReader failed. PrinterId={0}", PrinterId);
             return false;
         }
     }
@@ -446,7 +455,7 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
 
         if (YktApiClient == null)
         {
-            System.Diagnostics.Debug.WriteLine("[CardOperation] YktApiClient is not configured. Card initialization aborted.");
+            Logger.Warn("YktApiClient is not configured. Card initialization aborted. Operation={0}", cardOperate);
             result.Success = false;
             result.ErrorMessage = "YKT API service is not available.";
             return result;
@@ -475,7 +484,9 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
 
         try
         {
+            Logger.Info("Calling InitCardAsync. Operation={0}, UserId={1}, FactoryFixId={2}, CardNo={3}", cardOperate, MaskLogValue(request.UserId), request.FactoryFixId, MaskLogValue(request.OldCardNo));
             var response = await YktApiClient.InitCardAsync(request, ct);
+            LogApiResponse(nameof(YktApiClient.InitCardAsync), response);
             result.Success = IsApiSuccess(response);
             result.ErrorMessage = FormatApiError(response.Message, "卡片初始化失败。");
 
@@ -501,6 +512,7 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
         }
         catch (Exception ex)
         {
+            Logger.Error(ex, "InitCardAsync failed. Operation={0}, FactoryFixId={1}", cardOperate, factoryFixId);
             result.Success = false;
             result.ErrorMessage = ex.Message;
         }
@@ -567,7 +579,7 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
 
         try
         {
-            System.Diagnostics.Debug.WriteLine($"[CardOperation] Writing to card: CardNo={initResult.CardNo}, UserId={initResult.UserId}, UserType={cardType}, UseTerm={useTerm}");
+            Logger.Info("Writing card. CardNo={0}, UserId={1}, UserType={2}, UseTerm={3}", MaskLogValue(initResult.CardNo), MaskLogValue(initResult.UserId), cardType, useTerm);
 
             bool ok = await Task.Run(() => CardReader.InitCard(
                 serno: cardId,
@@ -586,21 +598,21 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
             {
                 writeResult.Success = false;
                 writeResult.ErrorMessage = "卡片写入失败";
-                System.Diagnostics.Debug.WriteLine("[CardOperation] CardReader.InitCard returned false");
+                Logger.Warn("CardReader.InitCard returned false. CardNo={0}", MaskLogValue(initResult.CardNo));
             }
             else
             {
                 writeResult.Success = true;
                 writeResult.ErrorMessage = string.Empty;
                 writeResult.FactoryFixId = factoryFixId;
-                System.Diagnostics.Debug.WriteLine($"[CardOperation] CardReader.InitCard OK, factoryFixId={factoryFixId}");
+                Logger.Info("CardReader.InitCard succeeded. FactoryFixId={0}", factoryFixId);
             }
         }
         catch (Exception ex)
         {
             writeResult.Success = false;
             writeResult.ErrorMessage = ex.Message;
-            System.Diagnostics.Debug.WriteLine($"[CardOperation] WriteCardAsync exception: {ex.Message}");
+            Logger.Error(ex, "WriteCardAsync failed. CardNo={0}", MaskLogValue(initResult.CardNo));
         }
 
         return writeResult;
@@ -644,7 +656,7 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"[CardOperation] PrintCard failed: {ex.Message}");
+            Logger.Error(ex, "PrintCard failed. CardNo={0}", MaskLogValue(initResult.CardNo));
             return false;
         }
     }
@@ -663,17 +675,22 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
         try
         {
             await CardPrinter.MoveCardAsync(PrinterId, CardMoveCommand.MoveToRejectBoxFront);
-            System.Diagnostics.Debug.WriteLine("[CardOperation] Card moved to reject box.");
+            Logger.Info("Card moved to reject box. CardNo={0}", MaskLogValue(UserInfoData?.CurrentCard?.CardNo));
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"[CardOperation] DiscardCardToReject failed: {ex.Message}");
+            Logger.Error(ex, "DiscardCardToReject failed. CardNo={0}", MaskLogValue(UserInfoData?.CurrentCard?.CardNo));
         }
     }
 
-    private void WriteCardSuccessApi(CardInitResult initResult)
+    private async Task WriteCardSuccessApiAsync(CardInitResult initResult)
     {
-        if (YktApiClient == null) return;
+        if (YktApiClient == null)
+        {
+            Logger.Warn("WriteCardSuccessAsync skipped because YKT API is unavailable.");
+            return;
+        }
+
         try
         {
             var request = new DynamicRequestDto
@@ -686,12 +703,13 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
                     ["tenantId"] = JsonSerializer.SerializeToElement(initResult.TenantId)
                 }
             };
-            _ = YktApiClient.WriteCardSuccessAsync(request);
-            System.Diagnostics.Debug.WriteLine("[CardOperation] WriteCardSuccess API called.");
+            Logger.Info("Calling WriteCardSuccessAsync. CardNo={0}, UserId={1}", MaskLogValue(initResult.CardNo), MaskLogValue(initResult.UserId));
+            var response = await YktApiClient.WriteCardSuccessAsync(request);
+            LogApiResponse(nameof(YktApiClient.WriteCardSuccessAsync), response);
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"[CardOperation] WriteCardSuccess API failed: {ex.Message}");
+            Logger.Error(ex, "WriteCardSuccessAsync failed. CardNo={0}", MaskLogValue(initResult.CardNo));
         }
     }
 
@@ -711,12 +729,13 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
                     ["errorReason"] = JsonSerializer.SerializeToElement(errorMessage ?? "Unknown error")
                 }
             };
-            await YktApiClient.WriteCardFailureAsync(request);
-            System.Diagnostics.Debug.WriteLine("[CardOperation] WriteCardFailure API called.");
+            Logger.Info("Calling WriteCardFailureAsync. CardNo={0}, UserId={1}, Reason={2}", MaskLogValue(initResult.CardNo), MaskLogValue(initResult.UserId), errorMessage ?? string.Empty);
+            var response = await YktApiClient.WriteCardFailureAsync(request);
+            LogApiResponse(nameof(YktApiClient.WriteCardFailureAsync), response);
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"[CardOperation] WriteCardFailure API failed: {ex.Message}");
+            Logger.Error(ex, "WriteCardFailureAsync failed. CardNo={0}", MaskLogValue(initResult.CardNo));
         }
     }
 

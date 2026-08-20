@@ -17,6 +17,19 @@ using System.Windows.Input;
 namespace luo.dangxiao.selfservice.ViewModels;
 
 /// <summary>
+/// Event args for a successful SMS verification.
+/// </summary>
+public sealed class SmsVerificationSucceededEventArgs : EventArgs
+{
+    public SmsVerificationSucceededEventArgs(UserInfoModel userInfo)
+    {
+        UserInfo = userInfo;
+    }
+
+    public UserInfoModel UserInfo { get; }
+}
+
+/// <summary>
 /// ViewModel for SMS verify module.
 /// </summary>
 public partial class SMSVerifyPageViewModel : ViewModelBase, IPageViewModel
@@ -37,7 +50,9 @@ public partial class SMSVerifyPageViewModel : ViewModelBase, IPageViewModel
 
     private string _generatedCode = string.Empty;
 
-    public SMSVerifyPageViewModel()
+    public event EventHandler<SmsVerificationSucceededEventArgs>? VerificationSucceeded;
+
+    public SMSVerifyPageViewModel() : base()
     {
         _countdownTimer = new DispatcherTimer
         {
@@ -107,16 +122,18 @@ public partial class SMSVerifyPageViewModel : ViewModelBase, IPageViewModel
         }
 
         _generatedCode = Random.Shared.Next(100000, 1000000).ToString();
+        LogCommand(nameof(SendVerificationCodeAsync), $"Mobile={MaskLogValue(PhoneNumber)}");
 
         var request = new SendSmsRequestDto
         {
-            Phone = PhoneNumber,
+            Mobile = PhoneNumber,
             Code = _generatedCode
         };
 
         try
         {
             var response = await yktApiClient.SendSmsAsync(request);
+            LogApiResponse(nameof(yktApiClient.SendSmsAsync), response);
 
             if (!IsApiSuccess(response))
             {
@@ -132,6 +149,7 @@ public partial class SMSVerifyPageViewModel : ViewModelBase, IPageViewModel
         }
         catch (Exception ex)
         {
+            Logger.Error(ex, "Send verification SMS failed. Mobile={0}", MaskLogValue(PhoneNumber));
             ErrorMessage = FormatApiError(ex.Message, "发送失败，请稍后重试");
             _generatedCode = string.Empty;
         }
@@ -140,16 +158,28 @@ public partial class SMSVerifyPageViewModel : ViewModelBase, IPageViewModel
     [RelayCommand(CanExecute = nameof(CanVerify))]
     private async Task OnVerifyCode()
     {
+        LogCommand(nameof(OnVerifyCode), $"Mobile={MaskLogValue(PhoneNumber)}");
         ErrorMessage = string.Empty;
 
         if (!string.IsNullOrEmpty(_generatedCode) && VerificationCode == _generatedCode)
         {
-            VerificationCode = string.Empty;
-            _generatedCode = string.Empty;
-            CountdownSeconds = 0;
-            _countdownTimer.Stop();
-            OnPropertyChanged(nameof(CanSendCode));
-            SendVerificationCodeCommand.NotifyCanExecuteChanged();
+            try
+            {
+                var userInfo = await GetUserInfoByIdentityAsync(PhoneNumber);
+
+                VerificationCode = string.Empty;
+                _generatedCode = string.Empty;
+                CountdownSeconds = 0;
+                _countdownTimer.Stop();
+                OnPropertyChanged(nameof(CanSendCode));
+                SendVerificationCodeCommand.NotifyCanExecuteChanged();
+                VerificationSucceeded?.Invoke(this, new SmsVerificationSucceededEventArgs(userInfo));
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "SMS verification failed. Mobile={0}", MaskLogValue(PhoneNumber));
+                ErrorMessage = FormatApiError(ex.Message, "获取人员信息失败，请稍后重试");
+            }
         }
         else
         {
@@ -176,7 +206,7 @@ public partial class SMSVerifyPageViewModel : ViewModelBase, IPageViewModel
         SendVerificationCodeCommand.NotifyCanExecuteChanged();
     }
 
-    private static async Task<UserInfoModel> GetUserInfoByIdentityAsync(string phone)
+    private async Task<UserInfoModel> GetUserInfoByIdentityAsync(string phone)
     {
         var cfgData = Ioc.Default.GetRequiredService<SelfServiceConfig>();
         var yktApiClient = GetYktApiClient()
@@ -187,13 +217,25 @@ public partial class SMSVerifyPageViewModel : ViewModelBase, IPageViewModel
         if (cfgData.ServiceType == SelfServiceType.StaffSelfService)
         {
             var response = await yktApiClient.GetTeacherByMobileAsync(phone);
-            EnsureApiSuccess(response.Code, response.Message);
+            LogApiResponse(nameof(yktApiClient.GetTeacherByMobileAsync), response);
+            var responseIsSuccessful = EnsureApiSuccess(response.Code, response.Message);
+            if (!responseIsSuccessful)
+            {
+                Logger.Warn("Continuing teacher mobile parsing because the response data is available. Mobile={0}", MaskLogValue(phone));
+            }
+
             return mapper.MapStaff(response.Data, phone);
         }
 
         var checkInDate = DateTime.Today.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
         var traineeResponse = await yktApiClient.GetTraineeByMobileAsync(phone, checkInDate);
-        EnsureApiSuccess(traineeResponse.Code, traineeResponse.Message);
+        LogApiResponse(nameof(yktApiClient.GetTraineeByMobileAsync), traineeResponse);
+        var traineeResponseIsSuccessful = EnsureApiSuccess(traineeResponse.Code, traineeResponse.Message);
+        if (!traineeResponseIsSuccessful)
+        {
+            Logger.Warn("Continuing trainee mobile parsing because the response data is available. Mobile={0}", MaskLogValue(phone));
+        }
+
         return mapper.MapStudent(traineeResponse.Data, phone);
     }
 }
