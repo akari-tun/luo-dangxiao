@@ -10,6 +10,7 @@ using luo.dangxiao.resources.Languages;
 using luo.dangxiao.wabapi.Dtos.Requests;
 using System.Globalization;
 using System.Security.Principal;
+using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
@@ -214,9 +215,12 @@ public partial class SMSVerifyPageViewModel : ViewModelBase, IPageViewModel
         var mapper = Ioc.Default.GetService<IYktUserInfoMapper>()
             ?? throw new InvalidOperationException("未配置 Ykt 用户映射服务。");
 
+        var encodedPhone = EncodePhoneToBase64(phone);
+        Logger.Debug("Querying user information by encoded mobile number. Mobile={0}", MaskLogValue(phone));
+
         if (cfgData.ServiceType == SelfServiceType.StaffSelfService)
         {
-            var response = await yktApiClient.GetTeacherByMobileAsync(phone);
+            var response = await yktApiClient.GetTeacherByMobileAsync(encodedPhone);
             LogApiResponse(nameof(yktApiClient.GetTeacherByMobileAsync), response);
             var responseIsSuccessful = EnsureApiSuccess(response.Code, response.Message);
             if (!responseIsSuccessful)
@@ -228,7 +232,7 @@ public partial class SMSVerifyPageViewModel : ViewModelBase, IPageViewModel
         }
 
         var checkInDate = DateTime.Today.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
-        var traineeResponse = await yktApiClient.GetTraineeByMobileAsync(phone, checkInDate);
+        var traineeResponse = await yktApiClient.GetTraineeByMobileAsync(encodedPhone, checkInDate);
         LogApiResponse(nameof(yktApiClient.GetTraineeByMobileAsync), traineeResponse);
         var traineeResponseIsSuccessful = EnsureApiSuccess(traineeResponse.Code, traineeResponse.Message);
         if (!traineeResponseIsSuccessful)
@@ -237,5 +241,11 @@ public partial class SMSVerifyPageViewModel : ViewModelBase, IPageViewModel
         }
 
         return mapper.MapStudent(traineeResponse.Data, phone);
+    }
+
+    private static string EncodePhoneToBase64(string phone)
+    {
+        var bytes = Encoding.UTF8.GetBytes(phone);
+        return Convert.ToBase64String(bytes);
     }
 }
