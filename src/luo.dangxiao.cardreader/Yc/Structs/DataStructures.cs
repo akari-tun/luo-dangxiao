@@ -244,12 +244,37 @@ public struct Ycxfg30UserRecordInfo
 
 public class UserCode
 {
-    public byte[] Data;
+    //public byte[] Data;
+
+    //public UserCode()
+    //{
+    //    Data = new byte[64];
+    //}
+
+    public byte[] Data { get; } = new byte[56];
+
+    public byte EncryptionMode
+    {
+        get => Data[8];
+        set => Data[8] = value;
+    }
 
     public UserCode()
     {
-        Data = new byte[64];
+        Data.AsSpan().Fill(0);
+        Data[8] = 0x01;
     }
+
+    public UserCode(byte[] data)
+    {
+        if (data != null && data.Length >= 48)
+        {
+            Buffer.BlockCopy(data, 0, Data, 0, 48);
+        }
+    }
+
+    public byte[] GetKeyA() => Data.AsSpan(0, 6).ToArray();
+    public byte[] GetKeyB() => Data.AsSpan(10, 6).ToArray();
 
     /// <summary>
     /// Builds a UserCode instance with the specified key mode, employee info, and card type name.

@@ -645,51 +645,51 @@ public static class KeyCalculator
     }
 }
 
-public class UserCode
-{
-    public byte[] Data { get; } = new byte[48];
-    
-    public byte EncryptionMode
-    {
-        get => Data[8];
-        set => Data[8] = value;
-    }
+//public class UserCode
+//{
+//    public byte[] Data { get; } = new byte[48];
 
-    public UserCode()
-    {
-        Data.AsSpan().Fill(0);
-        Data[8] = 0x01;
-    }
+//    public byte EncryptionMode
+//    {
+//        get => Data[8];
+//        set => Data[8] = value;
+//    }
 
-    public UserCode(byte[] data)
-    {
-        if (data != null && data.Length >= 48)
-        {
-            Buffer.BlockCopy(data, 0, Data, 0, 48);
-        }
-    }
+//    public UserCode()
+//    {
+//        Data.AsSpan().Fill(0);
+//        Data[8] = 0x01;
+//    }
 
-    public byte[] GetKeyA() => Data.AsSpan(0, 6).ToArray();
-    public byte[] GetKeyB() => Data.AsSpan(10, 6).ToArray();
+//    public UserCode(byte[] data)
+//    {
+//        if (data != null && data.Length >= 48)
+//        {
+//            Buffer.BlockCopy(data, 0, Data, 0, 48);
+//        }
+//    }
 
-    public static UserCode BuildUserCode(int keyMode, string empStrId, string empName, string cardTypeName)
-    {
-        var userCode = new UserCode();
-        using var ms = new MemoryStream(userCode.Data);
-        using var bw = new BinaryWriter(ms);
+//    public byte[] GetKeyA() => Data.AsSpan(0, 6).ToArray();
+//    public byte[] GetKeyB() => Data.AsSpan(10, 6).ToArray();
 
-        byte[] empIdBytes = Encoding.ASCII.GetBytes(empStrId.Length > 5 ? empStrId.Substring(0, 5) : empStrId);
-        byte[] empNameBytes = Encoding.GetEncoding("GB2312").GetBytes(empName);
-        byte[] typeNameBytes = Encoding.GetEncoding("GB2312").GetBytes(cardTypeName);
+//    public static UserCode BuildUserCode(int keyMode, string empStrId, string empName, string cardTypeName)
+//    {
+//        var userCode = new UserCode();
+//        using var ms = new MemoryStream(userCode.Data);
+//        using var bw = new BinaryWriter(ms);
 
-        bw.Write((byte)empIdBytes.Length);
-        bw.Write(empIdBytes);
-        bw.Write((byte)empNameBytes.Length);
-        bw.Write(empNameBytes);
-        bw.Write((byte)typeNameBytes.Length);
-        bw.Write(typeNameBytes);
+//        byte[] empIdBytes = Encoding.ASCII.GetBytes(empStrId.Length > 5 ? empStrId.Substring(0, 5) : empStrId);
+//        byte[] empNameBytes = Encoding.GetEncoding("GB2312").GetBytes(empName);
+//        byte[] typeNameBytes = Encoding.GetEncoding("GB2312").GetBytes(cardTypeName);
 
-        userCode.Data[8] = (byte)keyMode;
-        return userCode;
-    }
-}
+//        bw.Write((byte)empIdBytes.Length);
+//        bw.Write(empIdBytes);
+//        bw.Write((byte)empNameBytes.Length);
+//        bw.Write(empNameBytes);
+//        bw.Write((byte)typeNameBytes.Length);
+//        bw.Write(typeNameBytes);
+
+//        userCode.Data[8] = (byte)keyMode;
+//        return userCode;
+//    }
+//}

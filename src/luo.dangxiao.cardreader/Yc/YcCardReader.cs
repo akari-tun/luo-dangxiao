@@ -1,6 +1,6 @@
 using System;
 using System.Globalization;
-using luo.dangxiao.cardreader.Yc;
+using luo.dangxiao.cardreader.Yc.Structs;
 using luo.dangxiao.cardreader.Yc.Protocol;
 
 namespace luo.dangxiao.cardreader.Yc;

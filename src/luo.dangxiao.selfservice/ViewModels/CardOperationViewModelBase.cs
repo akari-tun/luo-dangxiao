@@ -355,14 +355,19 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
                 {
                     await Task.Delay(1000, opToken);
                     status = await CardPrinter.GetPrinterStatusAsync(PrinterId);
+                    Logger.Debug("Printer status queried. PrinterId={0} Status={1} LastErrorCode={2} LastErrorMsg={3}",
+                        PrinterId, status, CardPrinter.LastErrorCode, CardPrinter.LastErrorMsg);
                     if (await CheckCountdownExpiredAsync()) return CardOperationResult.CountdownExpired;
                 }
             }
             else
             {
                 // Move card to front holder
-                if (!await CardPrinter.MoveCardAsync(PrinterId, CardMoveCommand.MoveToHopper))
+                var movedToHopper = await CardPrinter.MoveCardAsync(PrinterId, CardMoveCommand.MoveToHopper);
+                if (!movedToHopper)
                 {
+                    Logger.Warn("Failed to move card to output. PrinterId={0} LastErrorCode={1} LastErrorMsg={2}",
+                        PrinterId, CardPrinter.LastErrorCode, CardPrinter.LastErrorMsg);
                     return CardOperationResult.Failed(GetPrinterLastError("Failed to move card to output."));
                 }
             }
@@ -405,7 +410,8 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
         }
         catch (Exception ex)
         {
-            Logger.Error(ex, "EnsureCardRecoveryToReject failed. CardNo={0}", MaskLogValue(UserInfoData?.CurrentCard?.CardNo));
+            Logger.Error(ex, "EnsureCardRecoveryToReject failed. CardNo={0} LastErrorCode={1} LastErrorMsg={2}",
+                MaskLogValue(UserInfoData?.CurrentCard?.CardNo), CardPrinter.LastErrorCode, CardPrinter.LastErrorMsg);
             // Fallback: attempt discard anyway in case position check failed
             await DiscardCardToRejectAsync();
         }
@@ -432,14 +438,27 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
     {
         try
         {
-            _ = await CardPrinter.ConnectAsync(PrinterId);
+            var isConnected = await CardPrinter.ConnectAsync(PrinterId);
+            if (!isConnected)
+            {
+                Logger.Warn("Failed to connect to CardPrinter. PrinterId={0} LastErrorCode={1} LastErrorMsg={2}", PrinterId, CardPrinter.LastErrorCode, CardPrinter.LastErrorMsg);
+                return false;
+            }
             //await CardPrinter.MoveCardAsync(PrinterId, CardMoveCommand.MoveFromStorageToPrepare);
             //await Task.Delay(300);
-            return await CardPrinter.MoveCardAsync(PrinterId, CardMoveCommand.MoveToContact);
+            var moved = await CardPrinter.MoveCardAsync(PrinterId, CardMoveCommand.MoveToContact);
+            if (!moved)
+            {
+                Logger.Warn("Failed to move card to reader position. PrinterId={0} LastErrorCode={1} LastErrorMsg={2}",
+                    PrinterId, CardPrinter.LastErrorCode, CardPrinter.LastErrorMsg);
+            }
+
+            return moved;
         }
         catch (Exception ex)
         {
-            Logger.Error(ex, "MoveCardToReader failed. PrinterId={0}", PrinterId);
+            Logger.Error(ex, "MoveCardToReader failed. PrinterId={0} LastErrorCode={1} LastErrorMsg={2}",
+                PrinterId, CardPrinter.LastErrorCode, CardPrinter.LastErrorMsg);
             return false;
         }
     }
@@ -656,7 +675,8 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
         }
         catch (Exception ex)
         {
-            Logger.Error(ex, "PrintCard failed. CardNo={0}", MaskLogValue(initResult.CardNo));
+            Logger.Error(ex, "PrintCard failed. CardNo={0} LastErrorCode={1} LastErrorMsg={2}",
+                MaskLogValue(initResult.CardNo), CardPrinter.LastErrorCode, CardPrinter.LastErrorMsg);
             return false;
         }
     }
@@ -674,12 +694,22 @@ public abstract partial class CardOperationViewModelBase : ViewModelBase
     {
         try
         {
-            await CardPrinter.MoveCardAsync(PrinterId, CardMoveCommand.MoveToRejectBoxFront);
-            Logger.Info("Card moved to reject box. CardNo={0}", MaskLogValue(UserInfoData?.CurrentCard?.CardNo));
+            var moved = await CardPrinter.MoveCardAsync(PrinterId, CardMoveCommand.MoveToRejectBoxFront);
+            if (moved)
+            {
+                Logger.Info("Card moved to reject box. CardNo={0} LastErrorCode={1} LastErrorMsg={2}",
+                    MaskLogValue(UserInfoData?.CurrentCard?.CardNo), CardPrinter.LastErrorCode, CardPrinter.LastErrorMsg);
+            }
+            else
+            {
+                Logger.Warn("Failed to move card to reject box. CardNo={0} LastErrorCode={1} LastErrorMsg={2}",
+                    MaskLogValue(UserInfoData?.CurrentCard?.CardNo), CardPrinter.LastErrorCode, CardPrinter.LastErrorMsg);
+            }
         }
         catch (Exception ex)
         {
-            Logger.Error(ex, "DiscardCardToReject failed. CardNo={0}", MaskLogValue(UserInfoData?.CurrentCard?.CardNo));
+            Logger.Error(ex, "DiscardCardToReject failed. CardNo={0} LastErrorCode={1} LastErrorMsg={2}",
+                MaskLogValue(UserInfoData?.CurrentCard?.CardNo), CardPrinter.LastErrorCode, CardPrinter.LastErrorMsg);
         }
     }
 
